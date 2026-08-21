@@ -4,26 +4,29 @@ using UnityEngine;
 
 public class SimpleFollow : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    private bool isAttacking = false;
     void Start()
     {
-        StartCoroutine(Follow());
+        StartCoroutine(BehaviorLoop());
     }
 
     // Update is called once per frame
     void Update()
     {
+
     }
 
-    IEnumerator Follow()
+    IEnumerator BehaviorLoop()
     {
-        FollowLogic();
-
-        yield return new WaitForSeconds(GameManager.instance.fixedSecondRate);
-        StartCoroutine(Follow());
+        while (true)
+        {
+            if (!isAttacking)
+            {
+                FollowLogic();
+            }
+            yield return new WaitForSeconds(GameManager.instance.fixedSecondRate);
+        }
     }
-
-
     void FollowLogic()
     {
         Entity PlayerEntity = GameManager.instance.playerEntity;
@@ -39,10 +42,11 @@ public class SimpleFollow : MonoBehaviour
                 if (GridManager.Instance.GetDistance(playerPos, tile) < distance)
                 {
                     bestCoord = tile;
+                    distance = GridManager.Instance.GetDistance(playerPos, tile);
                 }
             }
             GridManager.Instance.MoveEntity(this.GetComponent<Entity>(), bestCoord);
-            if (GridManager.Instance.GetDistance(playerPos, this.GetComponent<Entity>().coords) <= Mathf.Sqrt(2))
+            if (GridManager.Instance.GetDistance(playerPos, this.GetComponent<Entity>().coords) <= 1)
             {
                 StartCoroutine(Attacking());
             }
@@ -51,6 +55,8 @@ public class SimpleFollow : MonoBehaviour
 
     IEnumerator Attacking()
     {
+        isAttacking = true;
+
         Vector2Int targetTile = GameManager.instance.playerEntity.coords;
         List<Vector2Int> dangerZone = new List<Vector2Int> { targetTile };
 
@@ -71,5 +77,7 @@ public class SimpleFollow : MonoBehaviour
             timer += Time.deltaTime;
             yield return null;
         }
+
+        isAttacking = false;
     }
 }

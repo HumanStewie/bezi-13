@@ -33,7 +33,7 @@ public class GridManager : MonoBehaviour
     {
         float currentTilt = Vector3.Angle(Vector3.up, transform.up);
 
-        if (currentTilt >= 35f)
+        if (currentTilt >= 45f)
         {
             transform.rotation = Quaternion.identity;
             GameObject.FindWithTag("Player").transform.position = new Vector3(0, 1, 0);
