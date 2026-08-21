@@ -26,7 +26,6 @@ public class GameManager : MonoBehaviour
     }
     void Start()
     {
-        playerEntity = GameObject.FindWithTag("Player").GetComponent<Entity>();
     }
 
     void StartWave()

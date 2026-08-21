@@ -89,6 +89,10 @@ public class Player : MonoBehaviour
 
     void Attack(Node node)
     {
+        if (node.cords == currentPosition)
+        {
+            return;
+        }
         canAttack = false;
         Vector3 nodeWorldPosition = new Vector3(node.gameObject.transform.position.x, 1, node.gameObject.transform.position.z);
         clickedVector = (nodeWorldPosition - transform.position).normalized * 2f;
