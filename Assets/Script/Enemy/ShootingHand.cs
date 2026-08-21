@@ -1,4 +1,3 @@
-using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -40,7 +39,7 @@ public class ShootingHand : MonoBehaviour
 
         if (PlayerEntity != null)
         {
-            if (GridManager.Instance.GetDistance(playerPos,this.GetComponent<Entity>().coords) <= 4)
+            if (GridManager.Instance.GetDistance(playerPos,this.GetComponent<Entity>().coords) >= 4)
             {
                 List<Vector2Int> possibleTile = GridManager.Instance.GetTilesInRange(this.GetComponent<Entity>().coords, 1);
                 foreach (var tile in possibleTile)
@@ -48,6 +47,7 @@ public class ShootingHand : MonoBehaviour
                     if (GridManager.Instance.GetDistance(playerPos, tile) < distance)
                     {
                         bestCoord = tile;
+                        distance = GridManager.Instance.GetDistance(playerPos, tile);
                     }
                 }
                 GridManager.Instance.MoveEntity(this.GetComponent<Entity>(), bestCoord);
@@ -68,22 +68,7 @@ public class ShootingHand : MonoBehaviour
         GameObject bullet = Instantiate(projectile, this.transform.position, this.transform.rotation);
         bullet.transform.SetParent(GridManager.Instance.transform, true);
 
-        float moveStep = bulletSpeed * Time.deltaTime;
-        bullet.transform.Translate(Vector3.forward * moveStep, Space.Self);
-
-
-        float distToPlayer = Vector3.Distance(bullet.transform.position, GameManager.instance.playerEntity.transform.position);
-        if (distToPlayer <= hitRadius)
-        {
-            GameManager.instance.playerEntity.TakeDamage(5);
-        }
-
-        yield return null;
-
-        if (bullet != null)
-        {
-            Destroy(bullet);
-        }
+        Destroy(bullet, 2f);
 
         yield return new WaitForSeconds(0.5f);
 
