@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.RenderGraphModule;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public enum TargetShape
 {
@@ -19,6 +21,18 @@ public class GridManager : MonoBehaviour
     [SerializeField] int tileSize;
     [SerializeField] private GameObject tilePrefab;
     [SerializeField] private GameObject pivotPoint;
+    [SerializeField] private float yMoveOffset = 0.5f;
+    [Header("References")]
+    [SerializeField] private Camera gameCamera;         // Camera rendering to the RenderTexture
+    [SerializeField] private RawImage displayRawImage;  // UI RawImage displaying the RenderTexture
+    [SerializeField] private Canvas canvas;             // Canvas holding the RawImage
+    [Header("Raycast Settings")]
+    [SerializeField] private LayerMask hitLayers = ~0;
+    [SerializeField] private float maxDistance = 100f;
+    [SerializeField] private bool snapToPixelGrid = false;
+    private RectTransform rawImageRect;
+    private Camera uiCamera;
+    
     public int TileSize { get { return tileSize; } }
     public Dictionary<Vector2Int, Node> Grid { get { return grid; } }
 
@@ -28,6 +42,10 @@ public class GridManager : MonoBehaviour
     {
         if (Instance == null) Instance = this;
         GenerateGrid();
+        
+        rawImageRect = displayRawImage.rectTransform;
+        // If Canvas is Screen Space - Overlay, uiCamera must be null
+        uiCamera = canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera;
     }
     private void Update()
     {
@@ -156,6 +174,69 @@ public class GridManager : MonoBehaviour
         return inRangeTiles;
     }
 
+    /// <summary>
+    /// Take raw mouse screen pos, then output a tile at mouse position
+    /// </summary>
+    /// <param name="mouseCoord"></param>
+    /// <returns></returns>
+    public Node GetTileInMouse(Vector3 mouseCoord)
+    {
+        
+        if (TryGetWorldRay(out Ray ray))
+        {
+            if (Physics.Raycast(ray, out RaycastHit rayHit))
+            {
+                if (rayHit.collider.TryGetComponent<Node>(out Node node))
+                {
+                    ChangeTileColor(node.cords, Color.red);
+                    return node;
+                }
+            }
+        }
+
+        return null;
+    }
+    public bool TryGetWorldRay(out Ray ray)
+    {
+        ray = default;
+        Vector2 mousePos = Input.mousePosition;
+
+        // 1. Convert screen position to local point inside the RawImage RectTransform
+        if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                rawImageRect, 
+                mousePos, 
+                uiCamera, 
+                out Vector2 localPoint))
+        {
+            return false;
+        }
+
+        // 2. Convert local point to normalized UV coordinates (0.0 to 1.0)
+        Rect rect = rawImageRect.rect;
+        float u = (localPoint.x - rect.xMin) / rect.width;
+        float v = (localPoint.y - rect.yMin) / rect.height;
+
+        // 3. Reject if the cursor is outside the RawImage bounds (e.g. letterbox bars)
+        if (u < 0f || u > 1f || v < 0f || v > 1f)
+        {
+            return false;
+        }
+
+        // 4. (Optional) Snap UV to low-res pixel grid
+        if (snapToPixelGrid && displayRawImage.texture != null)
+        {
+            int texWidth = displayRawImage.texture.width;
+            int texHeight = displayRawImage.texture.height;
+
+            u = Mathf.Floor(u * texWidth) / texWidth;
+            v = Mathf.Floor(v * texHeight) / texHeight;
+        }
+
+        // 5. Generate ray from the game camera using Viewport coordinates
+        ray = gameCamera.ViewportPointToRay(new Vector3(u, v, 0f));
+        return true;
+    }
+    
     public List<Vector2Int> GetNodeByX(int x)
     {
         List<Vector2Int> result = new List<Vector2Int>();
@@ -240,7 +321,7 @@ public class GridManager : MonoBehaviour
 
         Vector3 newPos = CoordToWorldPos(targetCoord);
 
-        newPos.y = GetExactPlatformHeight(newPos) + 1.5f;
+        newPos.y = GetExactPlatformHeight(newPos) + yMoveOffset;
 
         entity.transform.position = newPos;
 
