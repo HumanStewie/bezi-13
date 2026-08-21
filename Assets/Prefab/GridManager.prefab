@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3352316834067046231}
   - component: {fileID: 8319398159362911803}
   - component: {fileID: 4705015335422670749}
+  - component: {fileID: 7950982527963067029}
   m_Layer: 0
   m_Name: GridManager
   m_TagString: Untagged
@@ -45,10 +46,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0807a2c358bdc0b4c9f4c5f1370645e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GridManager
-  gridSize: {x: 6, y: 6}
+  gridSize: {x: 20, y: 20}
   tileSize: 2
   tilePrefab: {fileID: 8106605412189767742, guid: 4a48729391f9fdb4f9ad4c5fabbdb997, type: 3}
-  currentShape: Grid
+  pivotPoint: {fileID: 1569130288128944212, guid: 20ba9fbf72e2113408db11118b70ea2b, type: 3}
 --- !u!114 &4705015335422670749
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61,9 +62,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b0860befbf30404b85ac0b90392dd23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TargetingController
+  warnColor: {r: 1, g: 0, b: 0, a: 1}
+  flashInterval: 0.2
+--- !u!114 &7950982527963067029
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2507550359631764306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a12d26d724662b44a806bdb79efac94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  fixedSecondRate: 1
   playerEntity: {fileID: 0}
-  currentValidRange: []
-  currentHoverSpread: []
-  currentHoveredCoord: {x: -999, y: -999}
-  ChangedMesh: {fileID: 0}
-  placeholderRange: 2
+  waveNum: 1
+  NormalHand: {fileID: 1022106986125710323, guid: aa6ee70c5d61bbf449b028e1cfe2707a, type: 3}
+  ShootingHand: {fileID: 0}
+  Block: {fileID: 0}
+  Placer: {fileID: 0}
+  Exploder: {fileID: 0}
+  LaserShooter: {fileID: 0}
+  Tanker: {fileID: 0}
+  TheFeet: {fileID: 0}
