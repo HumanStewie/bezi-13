@@ -15,21 +15,13 @@ public class ShootingHand : MonoBehaviour
     public bool isAttacking = false;
     void Start()
     {
-        StartCoroutine(Follow());
+        StartCoroutine(BehaviourLoop());
     }
 
-    // Update is called once per frame
     void Update()
     {
         Entity PlayerEntity = GameManager.instance.playerEntity;
         Vector2Int playerPos = PlayerEntity.coords;
-    }
-
-    IEnumerator Follow()
-    {
-        FollowLogic();
-        yield return new WaitForSeconds(GameManager.instance.fixedSecondRate);
-        StartCoroutine(Follow());
     }
 
     IEnumerator BehaviourLoop()
