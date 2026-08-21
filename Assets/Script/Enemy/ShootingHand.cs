@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShootingHand : MonoBehaviour
+public class ShootingHand : MonoBehaviour, IEnemy
 {
     public GameObject projectile;
     public float bulletSpeed = 15f;
@@ -29,7 +29,7 @@ public class ShootingHand : MonoBehaviour
     }
 
 
-    void FollowLogic()
+    public void FollowLogic()
     {
         Entity PlayerEntity = GameManager.instance.playerEntity;
         Vector2Int playerPos = PlayerEntity.coords;

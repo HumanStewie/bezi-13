@@ -2,21 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SimpleFollow : MonoBehaviour
+public class SimpleFollow : MonoBehaviour, IEnemy
 {
     private bool isAttacking = false;
     void Start()
     {
-        StartCoroutine(BehaviorLoop());
+        StartCoroutine(Follow());
     }
 
-    // Update is called once per frame
-    void Update()
-    {
 
-    }
-
-    IEnumerator BehaviorLoop()
+    IEnumerator Follow()
     {
         while (true)
         {
@@ -27,13 +22,13 @@ public class SimpleFollow : MonoBehaviour
             yield return new WaitForSeconds(GameManager.instance.fixedSecondRate);
         }
     }
-    void FollowLogic()
+    
+    public void FollowLogic()
     {
         Entity PlayerEntity = GameManager.instance.playerEntity;
         Vector2Int playerPos = PlayerEntity.coords;
         Vector2Int bestCoord = this.GetComponent<Entity>().coords;
         float distance = 50;
-
 
         if (PlayerEntity != null) {
             List<Vector2Int> possibleTile = GridManager.Instance.GetTilesInRange(this.GetComponent<Entity>().coords, 1);
@@ -44,7 +39,10 @@ public class SimpleFollow : MonoBehaviour
                     bestCoord = tile;
                     distance = GridManager.Instance.GetDistance(playerPos, tile);
                 }
+
+                if (GridManager.Instance.GetDistance(playerPos, tile) == 0) return;
             }
+            
             GridManager.Instance.MoveEntity(this.GetComponent<Entity>(), bestCoord);
             if (GridManager.Instance.GetDistance(playerPos, this.GetComponent<Entity>().coords) <= 1)
             {
