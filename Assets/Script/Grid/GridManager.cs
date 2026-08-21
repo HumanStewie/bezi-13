@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.RenderGraphModule;
 
 public enum TargetShape
 {
@@ -28,7 +29,16 @@ public class GridManager : MonoBehaviour
         if (Instance == null) Instance = this;
         GenerateGrid();
     }
+    private void Update()
+    {
+        float currentTilt = Vector3.Angle(Vector3.up, transform.up);
 
+        if (currentTilt >= 35f)
+        {
+            transform.rotation = Quaternion.identity;
+            GameObject.FindWithTag("Player").transform.position = new Vector3(0, 1, 0);
+        }
+    }
     private void GenerateGrid()
     {
         float radius = gridSize.x / 2f;
@@ -210,12 +220,6 @@ public class GridManager : MonoBehaviour
         foreach (var node in grid.Values)
             node.ResetVisuals();
     }
-
-
-
-
-
-
     public Vector3 CoordToWorldPos(Vector2Int coord, float yOffset = 0.5f)
     {
         return transform.position + new Vector3(coord.x * tileSize, yOffset, coord.y * tileSize);
@@ -236,7 +240,7 @@ public class GridManager : MonoBehaviour
 
         Vector3 newPos = CoordToWorldPos(targetCoord);
 
-        newPos.y = GetExactPlatformHeight(newPos) + 0.75f;
+        newPos.y = GetExactPlatformHeight(newPos) + 1.5f;
 
         entity.transform.position = newPos;
 
@@ -248,7 +252,7 @@ public class GridManager : MonoBehaviour
 
         Vector3 rayStartPoint = new Vector3(targetPosition.x, targetPosition.y + 10f, targetPosition.z);
 
-        if (Physics.Raycast(rayStartPoint, Vector3.down, out RaycastHit hit, 20f))
+        if (Physics.SphereCast(rayStartPoint, 0.5f ,Vector3.down, out RaycastHit hit, 20f))
         {
             return hit.point.y;
         }
@@ -256,14 +260,31 @@ public class GridManager : MonoBehaviour
         return targetPosition.y;
     }
 
-    public void FixNodePositions()
+    public Vector2Int SelectRandomPossible()
     {
-        foreach (var kvp in grid)
+        Entity[] allEntities = GameObject.FindObjectsByType<Entity>(FindObjectsSortMode.None);
+
+        HashSet<Vector2Int> occupiedCoords = new HashSet<Vector2Int>();
+        foreach (Entity entity in allEntities)
         {
-            Vector2Int coord = kvp.Key;
-            Node node = kvp.Value;
-            if (node == null) continue;
-            node.transform.localPosition = new Vector3(coord.x * tileSize, 0f, coord.y * tileSize);
+            occupiedCoords.Add(entity.coords);
         }
+
+        List<Vector2Int> freeCoords = new List<Vector2Int>();
+        foreach (Vector2Int gridCoord in GridManager.Instance.Grid.Keys)
+        {
+            if (!occupiedCoords.Contains(gridCoord))
+            {
+                freeCoords.Add(gridCoord);
+            }
+        }
+
+        if (freeCoords.Count == 0)
+        {
+            return new Vector2Int(0, 0);
+        }
+
+        int randomIndex = UnityEngine.Random.Range(0, freeCoords.Count);
+        return freeCoords[randomIndex];
     }
 }

@@ -1,99 +1,61 @@
 using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
-using Unity.Jobs;
 
 public class TargetingController : MonoBehaviour
 {
     public static TargetingController instance;
-
     private GridManager gridManager;
-    public Entity playerEntity;
 
-    private bool isTargeting = false;
+    public Color warnColor = Color.red;
 
-    public List<Vector2Int> currentValidRange = new List<Vector2Int>();
-    public List<Vector2Int> currentHoverSpread = new List<Vector2Int>();
-    private List<Vector2Int> oldHoverSpread = new List<Vector2Int>();
-
-    public Vector2Int currentHoveredCoord =new Vector2Int(-999, -999);
-    private Vector2Int lastHoveredCoord;
-
-    public Mesh ChangedMesh;
-
-
-    public int placeholderRange = 0;
+    public float flashInterval = 0.2f;
 
     private void Awake()
     {
         instance = this;
+    }
+
+    private void Start()
+    {
         gridManager = GridManager.Instance;
     }
-    public void UpdateDragTargeting()
+    public void ShowAttackWarning(List<Vector2Int> targetTiles, float duration)
     {
+        StartCoroutine(WarningRoutine(targetTiles, duration));
+    }
 
-        currentValidRange = GridManager.Instance.GetTilesInRange(playerEntity.coords, placeholderRange);
+    private IEnumerator WarningRoutine(List<Vector2Int> targetTiles, float duration)
+    {
+        float timer = 0f;
+        bool isColored = false;
 
-        foreach (Vector2Int coord in currentValidRange)
+        while (timer < duration)
         {
-            if (!currentHoverSpread.Contains(coord)) 
-            gridManager.ChangeTileColor(coord, Color.white);
-        }
-        isTargeting = true;
+            isColored = !isColored;
 
-
-        Vector2Int mouseCoord = GetCoordinateUnderMouse();
-        if (mouseCoord != currentHoveredCoord)
-        {
-            oldHoverSpread = currentHoverSpread;
-            foreach (Vector2Int coord in oldHoverSpread)
+            foreach (Vector2Int coord in targetTiles)
             {
-                if (!currentValidRange.Contains(coord))
+                if (gridManager.Grid.ContainsKey(coord))
+                {
+                    if (isColored)
+                        gridManager.ChangeTileColor(coord, warnColor);
+                    else
+                        gridManager.Grid[coord].ResetVisuals();
+                }
+            }
+
+            float waitTime = Mathf.Min(flashInterval, duration - timer);
+            yield return new WaitForSeconds(waitTime);
+            timer += waitTime;
+        }
+
+        foreach (Vector2Int coord in targetTiles)
+        {
+            if (gridManager.Grid.ContainsKey(coord))
+            {
                 gridManager.Grid[coord].ResetVisuals();
             }
-
-            UpdateHoverHighlights(mouseCoord);
-            currentHoveredCoord = mouseCoord;
         }
-    }
-    private void UpdateHoverHighlights(Vector2Int mouseCoord)
-    {
-        currentHoverSpread.Clear();
-
-        if (currentValidRange.Contains(mouseCoord))
-        {
-            currentHoverSpread = gridManager.GetTilesInShape(playerEntity.coords, mouseCoord, TargetShape.Single, placeholderRange);
-
-            foreach (Vector2Int coord in currentHoverSpread)
-            {
-                gridManager.ChangeTileColor(coord, Color.red);
-            }
-        }
-    }
-    public bool IsValidTarget(Vector2Int target)
-    {
-        return currentValidRange.Contains(target);
-    }
-    
-
-    public void CancelTargeting()
-    {
-        isTargeting = false;
-
-        currentValidRange.Clear();
-        currentHoverSpread.Clear();
-        gridManager.ResetAllTiles();
-    }
-
-    public Vector2Int GetCoordinateUnderMouse()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit))
-        {
-            if (hit.collider.TryGetComponent(out Node tile))
-            {
-                return tile.cords;
-            }
-        }
-        return new Vector2Int(-999, -999);
     }
 }

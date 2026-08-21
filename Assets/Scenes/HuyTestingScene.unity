@@ -131,6 +131,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cube
       objectReference: {fileID: 0}
+    - target: {fileID: 1278062349625672564, guid: 585b21bf5c3cf58418f0b36c50a4f5f5, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     - target: {fileID: 5483917713809154605, guid: 585b21bf5c3cf58418f0b36c50a4f5f5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -173,23 +177,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7795968008558094130, guid: 585b21bf5c3cf58418f0b36c50a4f5f5, type: 3}
       propertyPath: m_Mass
-      value: 0.05
-      objectReference: {fileID: 0}
-    - target: {fileID: 7795968008558094130, guid: 585b21bf5c3cf58418f0b36c50a4f5f5, type: 3}
-      propertyPath: m_UseGravity
-      value: 1
+      value: 0.02
       objectReference: {fileID: 0}
     - target: {fileID: 7795968008558094130, guid: 585b21bf5c3cf58418f0b36c50a4f5f5, type: 3}
       propertyPath: m_Constraints
       value: 58
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8418633196982104427, guid: 585b21bf5c3cf58418f0b36c50a4f5f5, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 1278062349625672564, guid: 585b21bf5c3cf58418f0b36c50a4f5f5, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 827766486}
+      addedObject: {fileID: 827766493}
   m_SourcePrefab: {fileID: 100100000, guid: 585b21bf5c3cf58418f0b36c50a4f5f5, type: 3}
 --- !u!1 &242406730
 GameObject:
@@ -323,20 +324,27 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1278062349625672564, guid: 585b21bf5c3cf58418f0b36c50a4f5f5, type: 3}
   m_PrefabInstance: {fileID: 1967018}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &827766486
-MonoBehaviour:
+--- !u!65 &827766493
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 827766479}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca35c709f68292a40bc370377d9db87a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Player
-  currentPosition: {x: 0, y: 0}
-  angleTransTime: 15
+  serializedVersion: 3
+  m_Size: {x: 0.008, y: 0.012742328, z: 0.020702558}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1426997368
 GameObject:
   m_ObjectHideFlags: 0
