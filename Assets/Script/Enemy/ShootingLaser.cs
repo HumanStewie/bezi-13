@@ -6,7 +6,7 @@ using UnityEngine;
 public class ShootingLaser : MonoBehaviour
 {
     private LineRenderer laserLine;
-    private Entity myEntity;
+    private Entity entity;
 
     [Header("Laser Settings")]
     public int laserDamage = 5;
@@ -17,7 +17,7 @@ public class ShootingLaser : MonoBehaviour
 
     void Start()
     {
-        myEntity = GetComponent<Entity>();
+        entity = GetComponent<Entity>();
 
         laserLine = GetComponent<LineRenderer>();
         laserLine.enabled = false;
@@ -33,7 +33,7 @@ public class ShootingLaser : MonoBehaviour
             if (!isAttacking && GameManager.instance.playerEntity != null)
             {
                 Vector2Int playerPos = GameManager.instance.playerEntity.coords;
-                Vector2Int myPos = myEntity.coords;
+                Vector2Int myPos = entity.coords;
 
                 if (myPos.x == playerPos.x || myPos.y == playerPos.y)
                 {
@@ -69,7 +69,7 @@ public class ShootingLaser : MonoBehaviour
             }
         }
 
-        GridManager.Instance.MoveEntity(myEntity, bestCoord);
+        GridManager.Instance.MoveEntity(entity, bestCoord);
     }
 
     IEnumerator AttackSequence(Vector2Int lockedTargetPos)
@@ -78,11 +78,19 @@ public class ShootingLaser : MonoBehaviour
 
         Vector3 targetWorldPos = GameManager.instance.playerEntity.transform.position;
         this.transform.LookAt(new Vector3(targetWorldPos.x, this.transform.position.y, targetWorldPos.z));
-
-        yield return new WaitForSeconds(chargeTime);
+        if (entity.coords.x == GameManager.instance.playerEntity.coords.x)
+        {
+            var dangerZone = GridManager.Instance.GetNodeByX(entity.coords.x);
+            TargetingController.instance.ShowAttackWarning(dangerZone, 0.5f);
+        }
+        else
+        {
+            var dangerZone = GridManager.Instance.GetNodeByX(entity.coords.y);
+            TargetingController.instance.ShowAttackWarning(dangerZone, 0.5f);
+        }
+            yield return new WaitForSeconds(chargeTime);
 
         FireLaser();
-
         yield return new WaitForSeconds(laserDuration);
         laserLine.enabled = false;
 
@@ -96,10 +104,9 @@ public class ShootingLaser : MonoBehaviour
         Entity player = GameManager.instance.playerEntity;
 
 
-        if (myEntity.coords.x == player.coords.x || myEntity.coords.y == player.coords.y)
+        if (entity.coords.x == player.coords.x || entity.coords.y == player.coords.y)
         {
             player.TakeDamage(laserDamage);
-            Debug.Log("ZAP! Laser hit the player!");
         }
 
         laserLine.enabled = true;

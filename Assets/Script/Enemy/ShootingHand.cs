@@ -1,3 +1,4 @@
+using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,6 +10,9 @@ public class ShootingHand : MonoBehaviour
     public float maxDistance = 30f;
     public float distanceTraveled = 0f;
     public float hitRadius = 0.8f;
+
+
+    public bool isAttacking = false;
     void Start()
     {
         StartCoroutine(Follow());
@@ -28,8 +32,20 @@ public class ShootingHand : MonoBehaviour
         StartCoroutine(Follow());
     }
 
+    IEnumerator BehaviourLoop()
+    {
+        while (true)
+        {
+            if (!isAttacking)
+            {
+                FollowLogic();
+            }
+            yield return new WaitForSeconds(GameManager.instance.fixedSecondRate);
+        }
+    }
 
-    void FollowLogic()
+
+        void FollowLogic()
     {
         Entity PlayerEntity = GameManager.instance.playerEntity;
         Vector2Int playerPos = PlayerEntity.coords;
