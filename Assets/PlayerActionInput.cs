@@ -97,8 +97,8 @@ public partial class @PlayerActionInput: IInputActionCollection2, IDisposable
                     ""type"": ""Value"",
                     ""id"": ""351f2ccd-1f9f-44bf-9bec-d62ac5c5f408"",
                     ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
-                    ""interactions"": """",
+                    ""processors"": ""NormalizeVector2"",
+                    ""interactions"": ""Press"",
                     ""initialStateCheck"": true
                 },
                 {
