@@ -1,24 +1,31 @@
 using System;
 using System.Collections;
+using TMPro;
 using Unity.IntegerTime;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TippingLogic : MonoBehaviour
 {
     [Header("Physics Settings")]
-    [SerializeField] private float gravity = -9.8f;
-    [SerializeField] private float pivotFriction = 0.5f;
-    [SerializeField] private float platformMomentOfInertia = 50f;
-    [SerializeField] private float slerpResponse = 15f;
     [SerializeField] private float ticksPerSecond = 3f;
-    private Vector3 targetRotation;
-    private Vector3 angularVelocity;
+    [SerializeField] private float tiltAcceleration = 45f;
+    [SerializeField] private float maxAngularVelocity = 30f;
+    [SerializeField] private float damping = 0.95f;
+    
+    [Header("UI References")]
+    [SerializeField] private TextMeshProUGUI tippingPoint;
+    private Quaternion targetRotation;
+    private Vector3 currentAngularVelocity;
     private GridManager gridManager;
+    private float xTilt;
+    private float zTilt;
 
     private void Start()
     {
+        currentAngularVelocity = Vector3.zero;
         gridManager = GridManager.Instance;
-        
+        tippingPoint.text = $"X-Axis Tilt: {xTilt}\nZ-Axis Tilt: {zTilt}";
         StartCoroutine(Rotate());
     }
 
@@ -30,10 +37,18 @@ public class TippingLogic : MonoBehaviour
             if (centerOfMass.magnitude > 0.005)
             {
                 Vector3 tiltAxis = Vector3.Cross(Vector3.up, centerOfMass).normalized;
-                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.AngleAxis(centerOfMass.magnitude * 10f, tiltAxis), 1.0f - Mathf.Exp(-slerpResponse * Time.deltaTime));
+                Vector3 angularAcceleration = tiltAxis * (centerOfMass.magnitude * tiltAcceleration);
+                currentAngularVelocity += angularAcceleration;
             }
             else
-                transform.rotation = Quaternion.identity;
+            {
+                currentAngularVelocity = Vector3.zero;
+            }
+
+            currentAngularVelocity *= damping;
+            currentAngularVelocity = Vector3.ClampMagnitude(currentAngularVelocity, maxAngularVelocity);
+            targetRotation = Quaternion.AngleAxis(currentAngularVelocity.magnitude * Time.deltaTime, currentAngularVelocity.normalized);
+            transform.rotation = targetRotation * transform.rotation;
             yield return new WaitForSeconds(ticksPerSecond);
         }
     }
@@ -61,17 +76,4 @@ public class TippingLogic : MonoBehaviour
         return new Vector3(xCM, 0, yCM);
     }
 
-    private Vector3 GetTotalTorque()
-    {
-        Vector3 torque = new Vector3();
-        
-        
-        foreach (var entity in GridManager.Instance.entities.Values)
-        {
-            torque += Vector3.Cross(gridManager.CoordToWorldPos(entity.coords), gravity * entity.weight * Vector3.up);
-        }
-
-        torque.y = 0;
-        return torque;
-    }
 }
