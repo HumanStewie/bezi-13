@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8319398159362911803}
   - component: {fileID: 4705015335422670749}
   - component: {fileID: 7950982527963067029}
+  - component: {fileID: 3386371047611388895}
   m_Layer: 0
   m_Name: GridManager
   m_TagString: Untagged
@@ -50,10 +51,12 @@ MonoBehaviour:
   tileSize: 2
   tilePrefab: {fileID: 2765608812400039143, guid: e80ba1b2f5546c2468aeea6e0f8e3365, type: 3}
   pivotPoint: {fileID: 1569130288128944212, guid: 20ba9fbf72e2113408db11118b70ea2b, type: 3}
-  yMoveOffset: 0.5
+  yMoveOffset: 0
+  gridWeight: 10
   gameCamera: {fileID: 0}
   displayRawImage: {fileID: 0}
   canvas: {fileID: 0}
+  tippingLogic: {fileID: 3386371047611388895}
   hitLayers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -87,7 +90,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   fixedSecondRate: 1
   playerEntity: {fileID: 0}
-  waveNum: 1
+  currentWave: 0
   NormalHand: {fileID: 1022106986125710323, guid: aa6ee70c5d61bbf449b028e1cfe2707a, type: 3}
   ShootingHand: {fileID: 0}
   Block: {fileID: 0}
@@ -96,3 +99,24 @@ MonoBehaviour:
   LaserShooter: {fileID: 0}
   Tanker: {fileID: 0}
   TheFeet: {fileID: 0}
+  ResetKeyCode: 0
+  started: 0
+  checking: 0
+  enemyKillCount: 0
+--- !u!114 &3386371047611388895
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2507550359631764306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3770a654b321b51409a43691576186b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TippingLogic
+  ticksPerSecond: 0.3
+  tiltAcceleration: 30
+  maxAngularVelocity: 1000
+  damping: 0.95
+  tippingPoint: {fileID: 0}
