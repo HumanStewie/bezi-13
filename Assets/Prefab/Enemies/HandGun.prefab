@@ -42,6 +42,7 @@ GameObject:
   - component: {fileID: 6540834928174154740}
   - component: {fileID: 7072706640603798223}
   - component: {fileID: 8519469401722783512}
+  - component: {fileID: 426017675014662901}
   m_Layer: 0
   m_Name: HandGun
   m_TagString: Untagged
@@ -82,6 +83,7 @@ MonoBehaviour:
   coords: {x: 2, y: 2}
   currentHealth: 0
   maxHealth: 100
+  weight: 1
 --- !u!114 &8519469401722783512
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -104,6 +106,27 @@ MonoBehaviour:
   hitRadius: 0.8
   distanceBeforeShoot: 5
   isAttacking: 0
+--- !u!65 &426017675014662901
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8915065813042629455}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.65379536, y: 1.488517, z: 2.0751123}
+  m_Center: {x: -0.19088417, y: 0.49741602, z: 0}
 --- !u!1001 &2778129824553850486
 PrefabInstance:
   m_ObjectHideFlags: 0

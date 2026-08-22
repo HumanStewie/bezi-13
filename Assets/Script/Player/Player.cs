@@ -25,14 +25,15 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject projectile;
 
     private PlayerUpgrades upgrades;
-
+    private Entity entity;
     
     private void Start()
     {
+        entity = GetComponent<Entity>();
         initialCooldown = attackCooldown;
         targetRotation = transform.rotation;
         transform.SetParent(GameManager.instance.transform);
-        GridManager.Instance.RegisterEntity(GetComponent<Entity>());
+        GridManager.Instance.RegisterEntity(entity);
         upgrades = GetComponent<PlayerUpgrades>();
     }
     void Update()
@@ -45,7 +46,7 @@ public class Player : MonoBehaviour
 
 
 
-        currentPosition = GetComponent<Entity>().coords;
+        currentPosition = entity.coords;
 
         StartCoroutine(MovementDelay());
 
@@ -64,18 +65,21 @@ public class Player : MonoBehaviour
 
         if (!GridManager.Instance.CheckTileExistence(targetPos)) return;
 
-        Entity entitys = GridManager.Instance.GetEntityAtPosition(targetPos);
+        Entity entitys = GridManager.Instance.entities.GetValueOrDefault(targetPos);
 
         if (entitys != null && entitys.entityName == "Block")
         {
+            Debug.Log("op");
             Transform block = entitys.transform;
             block.SetParent(this.transform);
             Blocks.Add(block.GetComponent<Entity>());
             block.localPosition = new Vector3(0, 2, 0);
+            GridManager.Instance.UnregisterEntity(entitys);
+            entity.weight += entitys.weight;
         }
 
-        upgrades.OnPlayerMoved(this.GetComponent<Entity>().coords);
-        GridManager.Instance.MoveEntity(this.GetComponent<Entity>(), targetPos);
+        upgrades.OnPlayerMoved(this.entity.coords);
+        GridManager.Instance.MoveEntity(this.entity, targetPos);
         targetRotation = Quaternion.Euler(xRotationOffset, yRotation, 0);
         latestLook = direction;
     }
@@ -154,13 +158,19 @@ public class Player : MonoBehaviour
 
     void BlockPlacement()
     {
-        Vector2Int PlaceLocation = this.GetComponent<Entity>().coords += latestLook;
+        Vector2Int placeLocation = this.entity.coords + latestLook;
+        Node nodeToPlace = GridManager.Instance.Grid.GetValueOrDefault(placeLocation);
+        Vector3 spawnPos = nodeToPlace.transform.position;
+        spawnPos += nodeToPlace.transform.up * 1.6f;
         if (Blocks.Count > 0)
         {
-            Blocks[0].transform.parent = null;
-            Blocks[0].coords = PlaceLocation;
-            Blocks[0].transform.rotation = Quaternion.identity;
-            Blocks[0].transform.position = GridManager.Instance.CoordToWorldPos(Blocks[0].coords) + new Vector3(0,2,0);
+            entity.weight -= Blocks[0].weight;
+            Blocks[0].transform.SetParent(GridManager.Instance.transform);
+            Blocks[0].coords = placeLocation;
+            Blocks[0].transform.rotation = nodeToPlace.transform.rotation;
+            Blocks[0].transform.position = spawnPos;
+            GridManager.Instance.RegisterEntity(Blocks[0]);
+            
             Blocks.Remove(Blocks[0]);
         }
 

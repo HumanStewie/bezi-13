@@ -43,6 +43,7 @@ GameObject:
   - component: {fileID: 1774862833809261668}
   - component: {fileID: 6356390715627163967}
   - component: {fileID: 3934855341028459782}
+  - component: {fileID: 7277715553953291959}
   m_Layer: 0
   m_Name: HandLazer
   m_TagString: Untagged
@@ -219,6 +220,28 @@ MonoBehaviour:
   coords: {x: 1, y: 1}
   currentHealth: 0
   maxHealth: 100
+  weight: 1
+--- !u!65 &7277715553953291959
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1154371613314712141}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 0.80060196, z: 1.1693006}
+  m_Center: {x: 0, y: 0.099699035, z: 0.08465028}
 --- !u!1001 &6053599664496749862
 PrefabInstance:
   m_ObjectHideFlags: 0

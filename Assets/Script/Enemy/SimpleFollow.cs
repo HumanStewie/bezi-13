@@ -9,6 +9,7 @@ public class SimpleFollow : MonoBehaviour, IEnemy
     private bool isAttacking = false;
     void Start()
     {
+        GridManager.Instance.RegisterEntity(entity);
         StartCoroutine(Follow());
     }
 

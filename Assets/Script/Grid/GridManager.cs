@@ -360,10 +360,14 @@ public class GridManager : MonoBehaviour
 
         RegisterEntity(entity);
     }
-
+    
+    /// <summary>
+    /// Rotate to the target, regardless of rotation. Compensated for rotation
+    /// </summary>
+    /// <param name="entity"></param>
+    /// <param name="targetCoord"></param>
     public void RotateEntityToTarget(Entity entity, Vector2Int targetCoord)
     {
-        var targetPos = CoordToWorldPos(targetCoord);
         Node nodeToRotateTo = grid.GetValueOrDefault(targetCoord);
         Vector3 target = nodeToRotateTo.transform.position;
         target += nodeToRotateTo.transform.up * 1.5f;

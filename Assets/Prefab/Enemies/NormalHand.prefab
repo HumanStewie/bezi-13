@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6176242685989181988}
   - component: {fileID: 333605573046142892}
   - component: {fileID: 3066657023685343071}
+  - component: {fileID: 8994945419836539637}
   m_Layer: 0
   m_Name: NormalHand
   m_TagString: Untagged
@@ -50,6 +51,7 @@ MonoBehaviour:
   coords: {x: 3, y: 3}
   currentHealth: 0
   maxHealth: 100
+  weight: 1
 --- !u!114 &3066657023685343071
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -64,6 +66,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SimpleFollow
   animator: {fileID: 8184380604916184925}
   entity: {fileID: 333605573046142892}
+--- !u!65 &8994945419836539637
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1022106986125710323}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &8161095943389850988
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,6 +22,7 @@ public class ShootingLaser : MonoBehaviour
     void Start()
     {
         entity = GetComponent<Entity>();
+        GridManager.Instance.RegisterEntity(entity);
 
         laserLine = GetComponent<LineRenderer>();
         laserLine.enabled = false;
@@ -54,7 +56,15 @@ public class ShootingLaser : MonoBehaviour
             }
         }
     }
-    
+
+    private void LateUpdate()
+    {
+        if (isAttacking)
+        {
+            laserLine.SetPosition(0, lazerSpawnPoint.position);
+        }
+    }
+
     // TODO: Move towards nearest player axis instead, so that the enemy doesn't awkwardly move close to us
     private void MoveTowardsAlignment(Vector2Int playerPos, Vector2Int myPos)
     {
@@ -77,7 +87,7 @@ public class ShootingLaser : MonoBehaviour
 
     }
 
-    IEnumerator AttackSequence(Vector2Int lockedTargetPos)
+    private IEnumerator AttackSequence(Vector2Int lockedTargetPos)
     {
         isAttacking = true;
         animator.SetBool("HasFinished", false);
@@ -96,8 +106,8 @@ public class ShootingLaser : MonoBehaviour
         }
         yield return new WaitForSeconds(chargeTime);
 
-        FireLaser();
         transform.LookAt(new Vector3(targetWorldPos.x, GameManager.instance.playerEntity.transform.position.y, targetWorldPos.z));
+        FireLaser();
         yield return new WaitForSeconds(laserDuration);
         laserLine.enabled = false;
         animator.SetBool("IsAttacking", false);

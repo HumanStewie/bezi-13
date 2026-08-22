@@ -15,6 +15,7 @@ public class BlockPlacer : MonoBehaviour
     void Start()
     {
         entity = GetComponent<Entity>();
+        GridManager.Instance.RegisterEntity(entity);
         StartCoroutine(BehaviourLoop());
     }
 
@@ -58,10 +59,7 @@ public class BlockPlacer : MonoBehaviour
                 distance = GridManager.Instance.GetDistance(tile, currentTargetTile);
             }
         }
-
-        Vector3 lookAtPosition = GridManager.Instance.CoordToWorldPos(bestTile);
-        lookAtPosition.y = transform.position.y;
-        transform.LookAt(lookAtPosition);
+        GridManager.Instance.RotateEntityToTarget(entity, bestTile);
         GridManager.Instance.MoveEntity(entity, bestTile, 1.5f);
 
         if (entity.coords == currentTargetTile)
@@ -80,12 +78,15 @@ public class BlockPlacer : MonoBehaviour
         /*var randTileWorldPos = GridManager.Instance.GetNode(randTile).transform.position;
         randTileWorldPos.y = transform.position.y + 1;*/
         var randTileWorldPos = GridManager.Instance.CoordToWorldPos(randTile);
-        transform.LookAt(randTileWorldPos);
+        GridManager.Instance.RotateEntityToTarget(entity, randTile);
 
         animator.SetBool("IsAttacking", true);
         yield return new WaitForSeconds(timeToPlaceBlock);
 
-        var block = Instantiate(blockPrefab, GridManager.Instance.CoordToWorldPos(randTile), Quaternion.identity, GridManager.Instance.transform);
+        Node node = GridManager.Instance.Grid.GetValueOrDefault(randTile);
+        Vector3 spawnPos = node.transform.position;
+        spawnPos += node.transform.up;
+        var block = Instantiate(blockPrefab, spawnPos, node.transform.rotation, GridManager.Instance.transform);
         transform.LookAt(block.transform);
 
         animator.SetBool("IsAttacking", false);
