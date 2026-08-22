@@ -32,7 +32,8 @@ public class BlockPlacer : MonoBehaviour
 
     void FollowLogic()
     {
-        if (!hasTarget) {
+        if (!hasTarget)
+        {
             List<Vector2Int> tiles = GridManager.Instance.GetTilesInRange(entity.coords, 6);
 
             var rand = Random.Range(0, tiles.Count);
@@ -44,17 +45,15 @@ public class BlockPlacer : MonoBehaviour
         var bestTile = entity.coords;
         var distance = 67;
 
-        foreach(var tile in GridManager.Instance.GetTilesInRange(entity.coords, 1)) {
-<<<<<<< Updated upstream
+        foreach (var tile in GridManager.Instance.GetTilesInRange(entity.coords, 1))
+        {
             if (tile == currentTargetTile)
             {
-=======
-            if (GridManager.Instance.GetDistance(tile, currentTargetTile) < distance && GridManager.Instance.GetEntityAtPosition(tile) == null) {
->>>>>>> Stashed changes
                 bestTile = tile;
                 break;
             }
-            if (GridManager.Instance.GetDistance(tile, currentTargetTile) < distance && GridManager.Instance.GetEntityAtPosition(tile) == null) {
+            if (GridManager.Instance.GetDistance(tile, currentTargetTile) < distance && GridManager.Instance.GetEntityAtPosition(tile) == null)
+            {
                 bestTile = tile;
                 distance = GridManager.Instance.GetDistance(tile, currentTargetTile);
             }
@@ -65,7 +64,8 @@ public class BlockPlacer : MonoBehaviour
         transform.LookAt(lookAtPosition);
         GridManager.Instance.MoveEntity(entity, bestTile);
 
-        if (entity.coords == currentTargetTile) {
+        if (entity.coords == currentTargetTile)
+        {
             StartCoroutine(Attacking());
         }
     }
@@ -75,19 +75,19 @@ public class BlockPlacer : MonoBehaviour
         List<Vector2Int> tiles = GridManager.Instance.GetTilesInRange(entity.coords, 2);
 
         var rand = Random.Range(0, tiles.Count);
-        
+
         var randTile = tiles[rand];
         /*var randTileWorldPos = GridManager.Instance.GetNode(randTile).transform.position;
         randTileWorldPos.y = transform.position.y + 1;*/
         var randTileWorldPos = GridManager.Instance.CoordToWorldPos(randTile);
         transform.LookAt(randTileWorldPos);
-        
+
         animator.SetBool("IsAttacking", true);
         yield return new WaitForSeconds(timeToPlaceBlock);
 
-        var block = Instantiate(blockPrefab, GridManager.Instance.CoordToWorldPos(randTile) + new Vector3(0,1.5f,0), Quaternion.identity, GridManager.Instance.transform);
+        var block = Instantiate(blockPrefab, GridManager.Instance.CoordToWorldPos(randTile), Quaternion.identity, GridManager.Instance.transform);
         transform.LookAt(block.transform);
-        
+
         animator.SetBool("IsAttacking", false);
         isAttacking = false;
         hasTarget = false;

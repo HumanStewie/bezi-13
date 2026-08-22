@@ -20,6 +20,8 @@ public class Player : MonoBehaviour
     private Vector2Int latestLook = Vector2Int.zero;
 
     List<Entity> Blocks = new();
+    [SerializeField] private GameObject BlockPrefab;
+    [SerializeField] private GameObject projectile;
     
     private void Start()
     {
@@ -78,6 +80,10 @@ public class Player : MonoBehaviour
             if (node)
             {
                 Attack(node);
+                if (GetComponent<PlayerUpgrades>().CanBlock2)
+                {
+                    ThrowBlock(node);
+                }
             }
         }
     }
@@ -103,6 +109,19 @@ public class Player : MonoBehaviour
         clickedVector = (nodeWorldPosition - transform.position).normalized * 2f;
         
         targetRotation = Quaternion.LookRotation(clickedVector, Vector3.up);
+
+        Vector3 forwardDirection = clickedVector.normalized;
+
+        if (GetComponent<PlayerUpgrades>().canShoot)
+        {
+
+            Shoot(forwardDirection);
+        }
+        if (GetComponent<PlayerUpgrades>().canShoot2)
+        {
+            Shoot(-forwardDirection);
+        }
+
         Collider[]  colliders = Physics.OverlapSphere(clickedVector + Vector3.up * 2f + transform.position, hitboxRadius);
         
         foreach (var col in colliders)
@@ -140,9 +159,80 @@ public class Player : MonoBehaviour
         Gizmos.DrawSphere(clickedVector+ Vector3.up * 2f + transform.position, hitboxRadius);
     }
 
-
-    private void Shoot(Vector2Int direction)
+    public void ResetAllBlock()
     {
+        foreach (var block in Blocks)
+        {
+            Blocks.Remove(block);
+            Destroy(block);
+        }
+    }
 
+    public void SummonBlock()
+    {
+        GameObject block = Instantiate(BlockPrefab);
+        block.transform.SetParent(this.transform);
+        Blocks.Add(block.GetComponent<Entity>());
+        block.transform.localPosition = new Vector3(0, 2, 0);
+    }
+
+    private void Shoot(Vector3 shootDirection)
+    {
+        if (projectile == null || shootDirection == Vector3.zero) return;
+
+        Quaternion bulletRotation = Quaternion.LookRotation(shootDirection, Vector3.up);
+
+        GameObject bullet = Instantiate(projectile, transform.position, bulletRotation);
+        bullet.transform.SetParent(GridManager.Instance.transform, true);
+    }
+
+    private void ThrowBlock(Node node)
+    {
+        if (node.cords == currentPosition)
+        {
+            return;
+        }
+        if (Blocks.Count > 0)
+        {
+            StartCoroutine(ActualThrowBlock(node));
+        }
+    }
+
+    IEnumerator ActualThrowBlock(Node node)
+    {
+        float timed = 0f;
+        float throwDuration = 0.5f;
+        float arcHeight = 3f;
+
+
+        Blocks[0].transform.parent = null;
+        Blocks[0].transform.position = GridManager.Instance.CoordToWorldPos(Blocks[0].coords) + new Vector3(0, 2, 0);
+        GameObject block = Blocks[0].gameObject;
+        Blocks.Remove(Blocks[0]);
+
+
+        Vector3 nodeWorldPosition = new Vector3(node.gameObject.transform.position.x, 1, node.gameObject.transform.position.z);
+        clickedVector = (nodeWorldPosition - transform.position).normalized * 2f;
+
+        targetRotation = Quaternion.LookRotation(clickedVector, Vector3.up);
+
+
+        while (timed < throwDuration)
+        {
+            if (block == null) yield break;
+
+            timed += Time.deltaTime;
+            float percent = timed / throwDuration;
+
+            Vector3 currentPos = Vector3.Lerp(transform.position + new Vector3(0,2,0), GridManager.Instance.CoordToWorldPos(node.cords) + new Vector3(0,1,0), percent);
+
+            currentPos.y += 4f * arcHeight * percent * (1f - percent);
+
+            block.transform.position = currentPos;
+
+            block.transform.Rotate(Vector3.right * 1000f * Time.deltaTime);
+
+            yield return null;
+        }
     }
 }

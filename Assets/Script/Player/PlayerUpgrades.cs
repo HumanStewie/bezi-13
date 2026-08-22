@@ -13,8 +13,8 @@ public class PlayerUpgrades : MonoBehaviour
 
     private Action onGenericAbilities;
 
-    public bool canShoot;
-    public bool canShoot2;
+    public bool canShoot = false;
+    public bool canShoot2 = false;
 
     private int secondsActive = 0;
     private Entity entity;
@@ -23,6 +23,15 @@ public class PlayerUpgrades : MonoBehaviour
     public GameObject shockWavePrefab;
     public int AttackCounter = 0;
     public bool shockWaveable;
+
+    public bool CanReset = false;
+    public bool CanReset2 = false;
+
+    public bool CanBlock = false;
+    public bool CanBlock2 = false;
+
+    public bool Possess1= false;
+    public bool Possess2 = false;
 
     void Start()
     {
@@ -57,8 +66,8 @@ public class PlayerUpgrades : MonoBehaviour
             case "DotShooter": canShoot = true; break;
             case "DotShooter2": canShoot2 = true; break;
 
-            case "FriendsInNeed": onGenericAbilities += FriendsInNeed1; break; 
-            case "FriendsInNeed2": onGenericAbilities += FriendsInNeed2; break;
+            case "FriendsInNeed": Possess1 = true; break; 
+            case "FriendsInNeed2": Possess1 = false; Possess2 = true; break;
 
             case "HatredForHand": GetComponent<Player>().damage = 8; break;
             case "HatredForHand2": GetComponent<Player>().damage = 10; break;
@@ -82,8 +91,8 @@ public class PlayerUpgrades : MonoBehaviour
             case "PillarMan": onGenericAbilities += PillarMan1; break;
             case "PillarMan2":onGenericAbilities += PillarMan2; break;
 
-            case "TheGreatReset": onGenericAbilities += TheGreatReset1; break;
-            case "TheGreatReset2": onGenericAbilities += TheGreatReset2; break;
+            case "TheGreatReset": CanReset = true; break;
+            case "TheGreatReset2": CanReset = false; CanReset2 = true; break;
 
             case "FoldUnderPressure": onGenericAbilities += FoldUnderPressure; break; 
             case "OmniBoardtent": onGenericAbilities += OmniBoard; break;
@@ -172,9 +181,6 @@ public class PlayerUpgrades : MonoBehaviour
         }
     }
 
-    private void TheGreatReset1() { }
-    private void TheGreatReset2() { }
-
     private void SpinningBall() { }
     private void SpinningBall2() { }
     private void PillarMan1() { }
@@ -182,8 +188,5 @@ public class PlayerUpgrades : MonoBehaviour
     private void OmniBoard() { }
     private void Professional() { }
     private void WeightLess() { }
-
-    private void FriendsInNeed1() { }
-    private void FriendsInNeed2() { }
     private void FoldUnderPressure() { }
 }

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -7,25 +9,34 @@ public class GameManager : MonoBehaviour
     public float fixedSecondRate;
 
     public Entity playerEntity;
+    private Player player;
+    private PlayerUpgrades playerUpgrades;
 
     public int currentWave = 0;
 
 
-    public GameObject NormalHand;
-    public GameObject ShootingHand;
-    public GameObject Block;
-    public GameObject Placer;
-    public GameObject Exploder;
-    public GameObject LaserShooter;
-    public GameObject Tanker;
-    public GameObject TheFeet;
+    [SerializeField] private GameObject NormalHand;
+    [SerializeField] private GameObject ShootingHand;
+    [SerializeField] private GameObject Block;
+    [SerializeField] private GameObject Placer;
+    [SerializeField] private GameObject Exploder;
+    [SerializeField] private GameObject LaserShooter;
+    [SerializeField] private GameObject Tanker;
+    [SerializeField] private GameObject TheFeet;
 
+    int resetCount = 0;
+    [SerializeField] private KeyCode ResetKeyCode;
 
     [SerializeField] private bool started = false;
     [SerializeField] private bool checking = false;
     private void Awake()
     {
         instance = this;
+    }
+    private void Start()
+    {
+        playerUpgrades = playerEntity.GetComponent<PlayerUpgrades>();
+        player = playerEntity.GetComponent<Player>();   
     }
 
     void StartWave(int wave)
@@ -66,7 +77,7 @@ public class GameManager : MonoBehaviour
                 checking = true;
 
                 UpgradeGrantingLogic.instance.StartGrantingUpgrades();
-                FindAnyObjectByType<Player>().GetComponent<Player>().enabled = false;
+                player.enabled = false;
             }
         }
     }
@@ -75,8 +86,28 @@ public class GameManager : MonoBehaviour
     public void ProceedNextWave()
     {
         checking = false;
-        FindAnyObjectByType<Player>().GetComponent<Player>().enabled = true;
+        player.enabled = true;
         StartWave(currentWave += 1);
+
+        
+        
+        
+        player.ResetAllBlock();
+
+        PossessEnemies();
+        if (playerUpgrades.CanBlock)
+        {
+            player.SummonBlock();
+        }
+
+        if (playerUpgrades.CanReset)
+        {
+            resetCount = 1;
+        }
+        else if (playerUpgrades.CanReset2)
+        {
+            resetCount = 2;
+        }
     }
  
     private void Update()
@@ -87,6 +118,43 @@ public class GameManager : MonoBehaviour
             started = true;
         }
         CheckIfWaveDone();
+
+        if (Input.GetKeyDown(ResetKeyCode))
+        {
+            GridManager.Instance.transform.rotation = Quaternion.identity;
+            resetCount -= 1;
+        }
+    }
+
+    private void PossessEnemies()
+    {
+        Entity[] entities = FindObjectsByType<Entity>(FindObjectsSortMode.None);
+
+        List<Entity> pool = new List<Entity>(entities);
+        List<Entity> chosenItems = new List<Entity>();
+
+        int amountToPick = Mathf.Min(3, pool.Count);
+
+        for (int i = 0; i < amountToPick; i++)
+        {
+            int randomIndex = UnityEngine.Random.Range(0, pool.Count);
+
+            chosenItems.Add(pool[randomIndex]);
+
+            pool.RemoveAt(randomIndex);
+        }
+
+        if (playerUpgrades.Possess1)
+        {
+            chosenItems[0].GetComponent<Rigidbody>().mass = 0;
+        }
+        else if (playerUpgrades.Possess2)
+        {
+            for (int i = 0; i < chosenItems.Count; i++)
+            {
+                chosenItems[i].GetComponent<Rigidbody>().mass = 0;
+            }
+        }
     }
 
     void InstatiateEnemy(GameObject enemy)
