@@ -26,6 +26,11 @@ public class Player : MonoBehaviour
 
     private PlayerUpgrades upgrades;
     private Entity entity;
+
+    public float WRotation = -90f;
+    public float SRotation = 90f;
+    public float ARotation = 180f;
+    public float DRotation = 0f;
     
     private void Start()
     {
@@ -102,10 +107,10 @@ public class Player : MonoBehaviour
 
     IEnumerator MovementDelay()
     {
-        if (Input.GetKeyDown(KeyCode.W)) TryMove(new Vector2Int(0, 1), -90f);
-        else if (Input.GetKeyDown(KeyCode.S)) TryMove(new Vector2Int(0, -1), 90f);
-        else if (Input.GetKeyDown(KeyCode.D)) TryMove(new Vector2Int(1, 0), 0f);
-        else if (Input.GetKeyDown(KeyCode.A)) TryMove(new Vector2Int(-1, 0), 180f);
+        if (Input.GetKeyDown(KeyCode.W)) TryMove(new Vector2Int(0, 1), WRotation);
+        else if (Input.GetKeyDown(KeyCode.S)) TryMove(new Vector2Int(0, -1), SRotation);
+        else if (Input.GetKeyDown(KeyCode.D)) TryMove(new Vector2Int(1, 0), DRotation);
+        else if (Input.GetKeyDown(KeyCode.A)) TryMove(new Vector2Int(-1, 0), ARotation);
         yield return new WaitForSeconds(0.07f);
     }
 

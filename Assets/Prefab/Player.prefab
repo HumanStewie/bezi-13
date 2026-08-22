@@ -144,7 +144,7 @@ MonoBehaviour:
   coords: {x: 0, y: 0}
   currentHealth: 0
   maxHealth: 100
-  weight: 4
+  weight: 40
 --- !u!114 &7413625820205238997
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -163,6 +163,12 @@ MonoBehaviour:
   damage: 1
   attackCooldown: 1
   hitboxRadius: 1
+  BlockPrefab: {fileID: 0}
+  projectile: {fileID: 0}
+  WRotation: 0
+  SRotation: 180
+  ARotation: -90
+  DRotation: 90
 --- !u!54 &2435725570440873794
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -230,3 +236,14 @@ MonoBehaviour:
   shockWavePrefab: {fileID: 0}
   AttackCounter: 0
   shockWaveable: 0
+  CanReset: 0
+  CanReset2: 0
+  CanBlock: 0
+  CanBlock2: 0
+  Possess1: 0
+  Possess2: 0
+  WeightLessNess: 0
+  ProfessionalHater: 0
+  foldUnderPressure: 0
+  Omniboardtent: 0
+  spinningBall: {fileID: 0}
