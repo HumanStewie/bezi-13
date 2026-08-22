@@ -29,6 +29,9 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private bool started = false;
     [SerializeField] private bool checking = false;
+
+
+    public int enemyKillCount = 0; 
     private void Awake()
     {
         instance = this;
@@ -123,6 +126,13 @@ public class GameManager : MonoBehaviour
         {
             GridManager.Instance.transform.rotation = Quaternion.identity;
             resetCount -= 1;
+        }
+        if (playerUpgrades.Omniboardtent)
+        {
+            if (enemyKillCount >= 5)
+            {
+                GridManager.Instance.transform.rotation = Quaternion.identity;
+            }
         }
     }
 

@@ -3,13 +3,20 @@ using UnityEngine;
 public class Lego : MonoBehaviour
 {
     public float Damage;
-    public float selfDestructTime = 2f;
+    public float selfDestructTime = 5f;
 
     public Vector2Int coords;
     void Start()
     {
         coords = GridManager.Instance.WorldToCoord(transform.position);
-        Destroy(gameObject, selfDestructTime);
+        if (!FindAnyObjectByType<PlayerUpgrades>().foldUnderPressure)
+        {
+            Destroy(gameObject, selfDestructTime);
+        }
+        else
+        {
+            Invoke("Explode", 3);
+        }
     }
 
     void Update()
@@ -22,5 +29,19 @@ public class Lego : MonoBehaviour
 
             Destroy(gameObject);
         }
+    }
+
+    void Explode()
+    {
+        var targetTiles = GridManager.Instance.GetTilesInRangeIncludesSquareRoot(this.coords, 1);
+        foreach (var tile in targetTiles)
+        {
+            var Newentity = GridManager.Instance.GetEntityAtPosition(tile);
+            if (Newentity)
+            {
+                Newentity.TakeDamage(10f);
+            }
+        }
+        Destroy(gameObject,0.2f);
     }
 }

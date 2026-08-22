@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerUpgrades : MonoBehaviour
@@ -9,9 +10,8 @@ public class PlayerUpgrades : MonoBehaviour
 
     private Action<Vector2Int> onMoveAbilities;
     private Action onTickAbilities;
-    private Action onAttackAbilities;
-
     private Action onGenericAbilities;
+    private Action onUpdateAbilities;
 
     public bool canShoot = false;
     public bool canShoot2 = false;
@@ -30,13 +30,28 @@ public class PlayerUpgrades : MonoBehaviour
     public bool CanBlock = false;
     public bool CanBlock2 = false;
 
-    public bool Possess1= false;
+    public bool Possess1 = false;
     public bool Possess2 = false;
+
+    public bool WeightLessNess = false;
+
+    public bool ProfessionalHater = false;
+
+    public bool foldUnderPressure = false;
+
+    public bool Omniboardtent = false;
+
+    public GameObject spinningBall;
 
     void Start()
     {
         entity = GetComponent<Entity>();
         StartCoroutine(TimeTicker());
+    }
+
+    private void Update()
+    {
+        onUpdateAbilities?.Invoke();
     }
 
     IEnumerator TimeTicker()
@@ -52,55 +67,48 @@ public class PlayerUpgrades : MonoBehaviour
     public void OnPlayerMoved(Vector2Int oldPos) { onMoveAbilities?.Invoke(oldPos); }
     public void OnGenericAction() { onGenericAbilities?.Invoke(); }
 
-    private void Update()
-    {
-        onAttackAbilities.Invoke();
-    }
     public void AddNewUpgrade(UpgradeData newUpgrade)
     {
         upgrades.Add(newUpgrade);
 
         switch (newUpgrade.IDName)
         {
-
             case "DotShooter": canShoot = true; break;
             case "DotShooter2": canShoot2 = true; break;
 
-            case "FriendsInNeed": Possess1 = true; break; 
+            case "FriendsInNeed": Possess1 = true; break;
             case "FriendsInNeed2": Possess1 = false; Possess2 = true; break;
 
             case "HatredForHand": GetComponent<Player>().damage = 8; break;
             case "HatredForHand2": GetComponent<Player>().damage = 10; break;
 
             case "LegoWalk": onMoveAbilities += LegoWalk; break;
-            case "LegoWalk2": onMoveAbilities += LegoWalk2; break;
+            case "LegoWalk2": onMoveAbilities -= LegoWalk; onMoveAbilities += LegoWalk2; break;
 
             case "RageQuit": onGenericAbilities += RageQuit; break;
-            case "RageQuit2": onAttackAbilities -= RageQuit; onAttackAbilities += RageQuit2; break;
+            case "RageQuit2": onGenericAbilities -= RageQuit; onGenericAbilities += RageQuit2; break;
 
-            case "SpinningBall": onGenericAbilities += SpinningBall; break;
-            case "SpinningBall2": onGenericAbilities += SpinningBall2; break;
+            case "SpinningBall": SpinningBall(); break;
+            case "SpinningBall2": SpinningBall2(); break;
 
-
-            case "BlockThrower": onGenericAbilities += BlockThrower; break;
-            case "BlockThrower2": onGenericAbilities += BlockThrower2; break;
+            case "BlockThrower": CanBlock = true; break;
+            case "BlockThrower2": CanBlock2 = true; break;
 
             case "GoldenWind": onTickAbilities += GoldenWind1; break;
             case "GoldenWind2": onTickAbilities -= GoldenWind1; onTickAbilities += GoldenWind2; break;
 
-            case "PillarMan": onGenericAbilities += PillarMan1; break;
-            case "PillarMan2":onGenericAbilities += PillarMan2; break;
+            case "PillarMan": onUpdateAbilities += PillarMan1; break;
+            case "PillarMan2": onUpdateAbilities -= PillarMan1; onUpdateAbilities += PillarMan2; break;
 
             case "TheGreatReset": CanReset = true; break;
             case "TheGreatReset2": CanReset = false; CanReset2 = true; break;
 
-            case "FoldUnderPressure": onGenericAbilities += FoldUnderPressure; break; 
-            case "OmniBoardtent": onGenericAbilities += OmniBoard; break;
-            case "ProfessionalHater": onGenericAbilities += Professional; break;
-            case "WeightLessNess": onGenericAbilities += WeightLess; break;
+            case "FoldUnderPressure": foldUnderPressure = true; break;
+            case "OmniBoardtent": Omniboardtent = true; break;
+            case "ProfessionalHater": onGenericAbilities += Professional; ProfessionalHater = true; onGenericAbilities -= RageQuit; onGenericAbilities -= RageQuit2; break;
+            case "WeightLessNess": WeightLessNess = true; break;
         }
     }
-
 
     private void LegoWalk(Vector2Int oldPos)
     {
@@ -120,21 +128,24 @@ public class PlayerUpgrades : MonoBehaviour
     {
         if (secondsActive % 10 == 0)
         {
-             Vector2Int chosenTile = GridManager.Instance.SelectRandomPossible();
-             GridManager.Instance.ChangeTileColor(chosenTile, Color.yellow);
+            Vector2Int chosenTile = GridManager.Instance.SelectRandomPossible();
+            GridManager.Instance.ChangeTileColor(chosenTile, Color.yellow);
+
             if (entity.coords == chosenTile)
             {
-                float time = 5f;
-                while (time >= 0)
-                {
-                    GridManager.Instance.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotation;
-                    time -= Time.deltaTime;
-                }
-                GridManager.Instance.GetComponent<Rigidbody>().freezeRotation = false;
-
-                GridManager.Instance.ChangeTileColor(chosenTile, Color.white);
+                StartCoroutine(FreezeGridRoutine(5f, chosenTile));
             }
-        } 
+        }
+    }
+
+    private IEnumerator FreezeGridRoutine(float duration, Vector2Int tile)
+    {
+        GridManager.Instance.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotation;
+
+        yield return new WaitForSeconds(duration);
+
+        GridManager.Instance.GetComponent<Rigidbody>().freezeRotation = false;
+        GridManager.Instance.ChangeTileColor(tile, Color.white);
     }
 
     private void GoldenWind2()
@@ -143,22 +154,13 @@ public class PlayerUpgrades : MonoBehaviour
         {
             Vector2Int chosenTile = GridManager.Instance.SelectRandomPossible();
             GridManager.Instance.ChangeTileColor(chosenTile, Color.yellow);
+
             if (entity.coords == chosenTile)
             {
-                float time = 4f;
-                while (time >= 0)
-                {
-                    GridManager.Instance.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotation;
-                    time -= Time.deltaTime;
-                }
-                GridManager.Instance.GetComponent<Rigidbody>().freezeRotation = false;
-
-                GridManager.Instance.ChangeTileColor(chosenTile, Color.white);
+                StartCoroutine(FreezeGridRoutine(4f, chosenTile));
             }
         }
     }
-    private void BlockThrower() { }
-    private void BlockThrower2() { }
     private void RageQuit()
     {
         if (AttackCounter >= 4)
@@ -181,12 +183,26 @@ public class PlayerUpgrades : MonoBehaviour
         }
     }
 
-    private void SpinningBall() { }
-    private void SpinningBall2() { }
+    private void SpinningBall()
+    {
+        Instantiate(spinningBall);
+    }
+    private void SpinningBall2()
+    {
+        Instantiate(spinningBall);
+        Instantiate(spinningBall);
+    }
     private void PillarMan1() { }
     private void PillarMan2() { }
-    private void OmniBoard() { }
-    private void Professional() { }
-    private void WeightLess() { }
-    private void FoldUnderPressure() { }
+    private void Professional()
+    {
+        if (AttackCounter >= 3)
+        {
+            AttackCounter = 0;
+            Vector3 spawnPos = transform.position + transform.forward * 1f;
+            GameObject shockWave = Instantiate(shockWavePrefab, spawnPos, transform.rotation);
+            shockWave.GetComponent<Shockwave>().damage = 10;
+            shockWave.GetComponent<Shockwave>().lifetime = 6;
+        }
+    }
 }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -22,6 +23,9 @@ public class Player : MonoBehaviour
     List<Entity> Blocks = new();
     [SerializeField] private GameObject BlockPrefab;
     [SerializeField] private GameObject projectile;
+
+    private PlayerUpgrades upgrades;
+
     
     private void Start()
     {
@@ -29,6 +33,7 @@ public class Player : MonoBehaviour
         targetRotation = transform.rotation;
         transform.SetParent(GameManager.instance.transform);
         GridManager.Instance.RegisterEntity(GetComponent<Entity>());
+        upgrades = GetComponent<PlayerUpgrades>();
     }
     void Update()
     {
@@ -69,7 +74,7 @@ public class Player : MonoBehaviour
             block.localPosition = new Vector3(0, 2, 0);
         }
 
-        GetComponent<PlayerUpgrades>().OnPlayerMoved(this.GetComponent<Entity>().coords);
+        upgrades.OnPlayerMoved(this.GetComponent<Entity>().coords);
         GridManager.Instance.MoveEntity(this.GetComponent<Entity>(), targetPos);
         targetRotation = Quaternion.Euler(xRotationOffset, yRotation, 0);
         latestLook = direction;
@@ -82,7 +87,7 @@ public class Player : MonoBehaviour
             if (node)
             {
                 Attack(node);
-                if (GetComponent<PlayerUpgrades>().CanBlock2)
+                if (upgrades.CanBlock2)
                 {
                     ThrowBlock(node);
                 }
@@ -115,12 +120,12 @@ public class Player : MonoBehaviour
 
         Vector3 forwardDirection = clickedVector.normalized;
 
-        if (GetComponent<PlayerUpgrades>().canShoot)
+        if (upgrades.canShoot)
         {
 
             Shoot(forwardDirection);
         }
-        if (GetComponent<PlayerUpgrades>().canShoot2)
+        if (upgrades.canShoot2)
         {
             Shoot(-forwardDirection);
         }
@@ -134,12 +139,17 @@ public class Player : MonoBehaviour
                 if (entity.name != "Player")
                 {
                     entity.TakeDamage(damage);
+                    if (upgrades.WeightLessNess)
+                    {
+                        entity.GetComponent<Rigidbody>().mass = 0;
+                    }
                 }
             }
         }
         attackCooldown = initialCooldown;
         // TODO: Show particle
-        GetComponent<PlayerUpgrades>().AttackCounter += 1;
+        upgrades.AttackCounter += 1;
+        GetComponent<PlayerUpgrades>().OnGenericAction();
     }
 
     void BlockPlacement()
@@ -235,6 +245,17 @@ public class Player : MonoBehaviour
 
             block.transform.Rotate(Vector3.right * 1000f * Time.deltaTime);
 
+            if (upgrades.ProfessionalHater)
+            {
+                Collider[] hitColliders = Physics.OverlapBox(currentPos, new Vector3(0.75f, 0.75f, 0.75f), Quaternion.identity);
+                foreach (var col in hitColliders)
+                {
+                    if (col.TryGetComponent(out Entity enemy) && enemy.name != "Player")
+                    {
+                        enemy.TakeDamage(9999);
+                    }
+                }
+            }
             yield return null;
         }
     }
