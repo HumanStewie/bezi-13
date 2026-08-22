@@ -1,14 +1,9 @@
 fileFormatVersion: 2
-guid: b8cbb491d56e12e468063a500e5026b1
+guid: e5f329d383fd25d41b1d77fd0b9f7ed1
 ModelImporter:
   serializedVersion: 24300
   internalIDToNameTable: []
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Hand
-    second: {fileID: 2100000, guid: d6b8672d6c805c745be7e45f4c4487b5, type: 2}
+  externalObjects: {}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -37,9 +32,67 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Armature|HandIdle
-      takeName: Armature|HandIdle
-      internalID: 5824766902414555587
+      name: Armature|HandLazerBeginShooting
+      takeName: Armature|HandLazerBeginShooting
+      internalID: -8163773027303904284
+      firstFrame: 0
+      lastFrame: 42
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Armature|HandLazerEndShooting
+      takeName: Armature|HandLazerEndShooting
+      internalID: -2702200140295111741
+      firstFrame: 0
+      lastFrame: 18
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Armature|HandLazerIdle
+      takeName: Armature|HandLazerIdle
+      internalID: 5565665948514080361
       firstFrame: 0
       lastFrame: 58
       wrapMode: 0
@@ -66,11 +119,11 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Armature|HandJump
-      takeName: Armature|HandJump
-      internalID: -4034085768521703840
+      name: Armature|HandLazerShooting
+      takeName: Armature|HandLazerShooting
+      internalID: -2907574019337627887
       firstFrame: 0
-      lastFrame: 19
+      lastFrame: 58
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

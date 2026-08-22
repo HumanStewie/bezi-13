@@ -48,8 +48,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GridManager
   gridSize: {x: 20, y: 20}
   tileSize: 2
-  tilePrefab: {fileID: 8106605412189767742, guid: 4a48729391f9fdb4f9ad4c5fabbdb997, type: 3}
+  tilePrefab: {fileID: 2765608812400039143, guid: e80ba1b2f5546c2468aeea6e0f8e3365, type: 3}
   pivotPoint: {fileID: 1569130288128944212, guid: 20ba9fbf72e2113408db11118b70ea2b, type: 3}
+  yMoveOffset: 0.5
+  gameCamera: {fileID: 0}
+  displayRawImage: {fileID: 0}
+  canvas: {fileID: 0}
+  hitLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  maxDistance: 100
+  snapToPixelGrid: 0
 --- !u!114 &4705015335422670749
 MonoBehaviour:
   m_ObjectHideFlags: 0

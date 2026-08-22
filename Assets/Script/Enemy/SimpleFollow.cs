@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class SimpleFollow : MonoBehaviour, IEnemy
 {
+    [SerializeField] private Animator animator;
+    [SerializeField] private Entity entity;
     private bool isAttacking = false;
     void Start()
     {
@@ -25,8 +27,8 @@ public class SimpleFollow : MonoBehaviour, IEnemy
     
     public void FollowLogic()
     {
-        GridManager.Instance.FollowLogic(this.GetComponent<Entity>());
-        if (GridManager.Instance.GetDistance(GameManager.instance.playerEntity.GetComponent<Entity>().coords, this.GetComponent<Entity>().coords) <= 1)
+        GridManager.Instance.FollowLogic(entity);
+        if (GridManager.Instance.GetDistance(GameManager.instance.playerEntity.GetComponent<Entity>().coords, entity.coords) <= 1)
         {
             StartCoroutine(Attacking());
         }
@@ -35,7 +37,7 @@ public class SimpleFollow : MonoBehaviour, IEnemy
     IEnumerator Attacking()
     {
         isAttacking = true;
-
+        animator.SetBool("IsAttacking", true);
         Vector2Int targetTile = GameManager.instance.playerEntity.coords;
         List<Vector2Int> dangerZone = new List<Vector2Int> { targetTile };
 
@@ -59,7 +61,7 @@ public class SimpleFollow : MonoBehaviour, IEnemy
             timer += Time.deltaTime;
             yield return null;
         }
-
+        animator.SetBool("IsAttacking", false);
         isAttacking = false;
     }
 }

@@ -106,7 +106,7 @@ GameObject:
   - component: {fileID: 2416887012953939688}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -139,7 +139,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cfc4ad2080b13e469a9fbd4e23bffa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Entity
-  entityName: 
+  entityName: Player
   coords: {x: 0, y: 0}
   currentHealth: 0
   maxHealth: 100
@@ -158,6 +158,9 @@ MonoBehaviour:
   currentPosition: {x: 0, y: 0}
   angleTransTime: 15
   xRotationOffset: 0
+  damage: 1
+  attackCooldown: 1
+  hitboxRadius: 1
 --- !u!54 &2435725570440873794
 Rigidbody:
   m_ObjectHideFlags: 0

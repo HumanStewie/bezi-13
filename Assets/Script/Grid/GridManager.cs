@@ -37,6 +37,7 @@ public class GridManager : MonoBehaviour
     public Dictionary<Vector2Int, Node> Grid { get { return grid; } }
 
     Dictionary<Vector2Int, Node> grid = new Dictionary<Vector2Int, Node>();
+    public Node GetNode(Vector2Int coord) => grid.TryGetValue(coord, out Node node) ? node : null; 
 
     private void Awake()
     {
@@ -339,6 +340,13 @@ public class GridManager : MonoBehaviour
         entity.transform.position = newPos;
 
         entity.coords = targetCoord;
+    }
+
+    public void RotateEntityToTarget(Entity entity, Vector2Int targetCoord)
+    {
+        var targetPos = CoordToWorldPos(targetCoord);
+        targetPos.y = 2.0f;
+        entity.transform.LookAt(targetPos);
     }
 
     public float GetExactPlatformHeight(Vector3 targetPosition)
