@@ -73,7 +73,7 @@ public class ShootingLaser : MonoBehaviour
         }
         GridManager.Instance.RotateEntityToTarget(entity, bestCoord);
 
-        GridManager.Instance.MoveEntity(entity, bestCoord);
+        GridManager.Instance.MoveEntity(entity, bestCoord, 1.5f);
 
     }
 
@@ -83,7 +83,7 @@ public class ShootingLaser : MonoBehaviour
         animator.SetBool("HasFinished", false);
         animator.SetBool("IsAttacking", true);
         Vector3 targetWorldPos = GameManager.instance.playerEntity.transform.position;
-        this.transform.LookAt(new Vector3(targetWorldPos.x, this.transform.position.y, targetWorldPos.z));
+        this.transform.LookAt(new Vector3(targetWorldPos.x, targetWorldPos.y, targetWorldPos.z));
         if (entity.coords.x == GameManager.instance.playerEntity.coords.x)
         {
             var dangerZone = GridManager.Instance.GetNodeByX(entity.coords.x);
@@ -97,6 +97,7 @@ public class ShootingLaser : MonoBehaviour
         yield return new WaitForSeconds(chargeTime);
 
         FireLaser();
+        transform.LookAt(new Vector3(targetWorldPos.x, GameManager.instance.playerEntity.transform.position.y, targetWorldPos.z));
         yield return new WaitForSeconds(laserDuration);
         laserLine.enabled = false;
         animator.SetBool("IsAttacking", false);

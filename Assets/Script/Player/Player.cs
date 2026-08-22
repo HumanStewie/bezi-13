@@ -27,6 +27,8 @@ public class Player : MonoBehaviour
     {
         initialCooldown = attackCooldown;
         targetRotation = transform.rotation;
+        transform.SetParent(GameManager.instance.transform);
+        GridManager.Instance.RegisterEntity(GetComponent<Entity>());
     }
     void Update()
     {
@@ -105,7 +107,8 @@ public class Player : MonoBehaviour
             return;
         }
         canAttack = false;
-        Vector3 nodeWorldPosition = new Vector3(node.gameObject.transform.position.x, 1, node.gameObject.transform.position.z);
+        Vector3 nodeWorldPosition = node.transform.position;
+        nodeWorldPosition.y += 1f;
         clickedVector = (nodeWorldPosition - transform.position).normalized * 2f;
         
         targetRotation = Quaternion.LookRotation(clickedVector, Vector3.up);

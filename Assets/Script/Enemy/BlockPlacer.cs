@@ -62,7 +62,7 @@ public class BlockPlacer : MonoBehaviour
         Vector3 lookAtPosition = GridManager.Instance.CoordToWorldPos(bestTile);
         lookAtPosition.y = transform.position.y;
         transform.LookAt(lookAtPosition);
-        GridManager.Instance.MoveEntity(entity, bestTile);
+        GridManager.Instance.MoveEntity(entity, bestTile, 1.5f);
 
         if (entity.coords == currentTargetTile)
         {

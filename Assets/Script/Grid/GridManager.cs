@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 using UnityEngine.Rendering.RenderGraphModule;
 using UnityEngine.EventSystems;
@@ -18,32 +19,34 @@ public class GridManager : MonoBehaviour
 {
     public static GridManager Instance;
     public Vector2Int gridSize;
-    [SerializeField] int tileSize;
+    [Header("Grid Setttings")]
+    [SerializeField] float tileSize;
     [SerializeField] private GameObject tilePrefab;
     [SerializeField] private GameObject pivotPoint;
     [SerializeField] private float yMoveOffset = 0.5f;
+    public float gridWeight = 5f;
     [Header("References")]
     [SerializeField] private Camera gameCamera;         // Camera rendering to the RenderTexture
     [SerializeField] private RawImage displayRawImage;  // UI RawImage displaying the RenderTexture
     [SerializeField] private Canvas canvas;             // Canvas holding the RawImage
+    [SerializeField] private TippingLogic tippingLogic;
     [Header("Raycast Settings")]
     [SerializeField] private LayerMask hitLayers = ~0;
     [SerializeField] private float maxDistance = 100f;
     [SerializeField] private bool snapToPixelGrid = false;
     private RectTransform rawImageRect;
     private Camera uiCamera;
-    
-    public int TileSize { get { return tileSize; } }
+
+    private float TileSize => tileSize; 
     public Dictionary<Vector2Int, Node> Grid { get { return grid; } }
-
     Dictionary<Vector2Int, Node> grid = new Dictionary<Vector2Int, Node>();
-    public Node GetNode(Vector2Int coord) => grid.TryGetValue(coord, out Node node) ? node : null; 
-
+    
+    public Dictionary<Vector2Int, Entity> entities = new Dictionary<Vector2Int, Entity>();
+    
     private void Awake()
     {
         if (Instance == null) Instance = this;
         GenerateGrid();
-        
         rawImageRect = displayRawImage.rectTransform;
         // If Canvas is Screen Space - Overlay, uiCamera must be null
         uiCamera = canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera;
@@ -56,6 +59,11 @@ public class GridManager : MonoBehaviour
         {
             transform.rotation = Quaternion.identity;
             GameObject.FindWithTag("Player").transform.position = new Vector3(0, 1, 0);
+        }
+
+        if (currentTilt > 0) // if tilting, rotate the moving plane
+        {
+            
         }
     }
     private void GenerateGrid()
@@ -81,7 +89,7 @@ public class GridManager : MonoBehaviour
             }
         }
 
-        Instantiate(pivotPoint, new Vector3(centerX, -1, centerY), Quaternion.identity);
+        Instantiate(pivotPoint, new Vector3(centerX, -2, centerY), Quaternion.identity);
     }
 
 
@@ -105,7 +113,7 @@ public class GridManager : MonoBehaviour
         node.Initialize(cords);
         grid.Add(cords, node);
     }
-
+    
     public int GetDistance(Vector2Int x, Vector2Int y)
     {
         return Mathf.Abs(x.x - y.x) + Mathf.Abs(x.y - y.y);
@@ -210,7 +218,7 @@ public class GridManager : MonoBehaviour
 
         return null;
     }
-    public bool TryGetWorldRay(out Ray ray)
+    private bool TryGetWorldRay(out Ray ray)
     {
         ray = default;
         Vector2 mousePos = Input.mousePosition;
@@ -300,8 +308,7 @@ public class GridManager : MonoBehaviour
         }
         return false;
     }
-
-
+    
 
 
     public void ChangeTileColor(Vector2Int coord, Color color)
@@ -317,7 +324,9 @@ public class GridManager : MonoBehaviour
     }
     public Vector3 CoordToWorldPos(Vector2Int coord, float yOffset = 0.5f)
     {
-        return transform.position + new Vector3(coord.x * tileSize, yOffset, coord.y * tileSize);
+        Vector3 worldPos = new Vector3(coord.x * tileSize, 0, coord.y * tileSize);
+        
+        return transform.position + worldPos;
     }
 
     public Vector2Int WorldToCoord(Vector3 worldPos)
@@ -328,25 +337,37 @@ public class GridManager : MonoBehaviour
         return new Vector2Int(x, y);
     }
 
+    public void RegisterEntity(Entity entity)
+    {
+        entities.Add(entity.coords, entity);
+    }
 
-    public void MoveEntity(Entity entity, Vector2Int targetCoord)
+    public void UnregisterEntity(Entity entity)
+    {
+        entities.Remove(entity.coords);
+    }
+    
+    public void MoveEntity(Entity entity, Vector2Int targetCoord, float yOffset = 1.0f)
     {
         if (!grid.ContainsKey(targetCoord)) return;
-
-        Vector3 newPos = CoordToWorldPos(targetCoord);
-
-        newPos.y = GetExactPlatformHeight(newPos) + yMoveOffset;
-
+        if (entities.TryGetValue(targetCoord, out var occupant) && occupant != entity) return; // If there's someone there already, stop
+        UnregisterEntity(entity);
+        Node nodeToMove = grid.GetValueOrDefault(targetCoord);
+        Vector3 newPos = nodeToMove.transform.position;
+        newPos += nodeToMove.transform.up * yOffset;
         entity.transform.position = newPos;
-
         entity.coords = targetCoord;
+
+        RegisterEntity(entity);
     }
 
     public void RotateEntityToTarget(Entity entity, Vector2Int targetCoord)
     {
         var targetPos = CoordToWorldPos(targetCoord);
-        targetPos.y = 2.0f;
-        entity.transform.LookAt(targetPos);
+        Node nodeToRotateTo = grid.GetValueOrDefault(targetCoord);
+        Vector3 target = nodeToRotateTo.transform.position;
+        target += nodeToRotateTo.transform.up * 1.5f;
+        entity.transform.LookAt(target);
     }
 
     public float GetExactPlatformHeight(Vector3 targetPosition)
@@ -356,10 +377,32 @@ public class GridManager : MonoBehaviour
 
         if (Physics.SphereCast(rayStartPoint, 0.5f ,Vector3.down, out RaycastHit hit, 20f))
         {
-            return hit.point.y;
+            
+            return hit.collider.transform.position.y;
+        }
+        
+        return targetPosition.y;
+    }
+
+    private Vector3 rayStartPoint;
+    public Node GetNodeBelowFeet(Vector3 targetPosition)
+    {
+
+        rayStartPoint = new Vector3(targetPosition.x, targetPosition.y + 10f, targetPosition.z);
+        if (Physics.SphereCast(rayStartPoint, 0.5f ,Vector3.down, out RaycastHit hit, 20f))
+        {
+            return hit.collider.gameObject.GetComponent<Node>();
         }
 
-        return targetPosition.y;
+        return grid.GetValueOrDefault(WorldToCoord(targetPosition));
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawSphere(rayStartPoint, 1);
+        Gizmos.color = Color.red;
+        Gizmos.DrawRay(rayStartPoint, Vector3.down * 100f);
     }
 
     public Vector2Int SelectRandomPossible()
@@ -421,7 +464,7 @@ public class GridManager : MonoBehaviour
                 lookAtTarget.y = transform.position.y + 1;
                 entity.transform.LookAt(lookAtTarget);
 
-                MoveEntity(entity, bestCoord);
+                MoveEntity(entity, bestCoord, 1.5f);
             }
         }
     }

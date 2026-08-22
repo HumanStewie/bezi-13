@@ -28,8 +28,11 @@ public class SimpleFollow : MonoBehaviour, IEnemy
     public void FollowLogic()
     {
         GridManager.Instance.FollowLogic(entity);
+        GridManager.Instance.RotateEntityToTarget(entity, GameManager.instance.playerEntity.coords);
+        
         if (GridManager.Instance.GetDistance(GameManager.instance.playerEntity.GetComponent<Entity>().coords, entity.coords) <= 1)
         {
+            
             StartCoroutine(Attacking());
         }
     }
@@ -40,17 +43,13 @@ public class SimpleFollow : MonoBehaviour, IEnemy
         animator.SetBool("IsAttacking", true);
         Vector2Int targetTile = GameManager.instance.playerEntity.coords;
         List<Vector2Int> dangerZone = new List<Vector2Int> { targetTile };
-
-        Vector3 lookAtTarget = GridManager.Instance.CoordToWorldPos(targetTile);
-        lookAtTarget.y = transform.position.y;
-        transform.LookAt(lookAtTarget);
         TargetingController.instance.ShowAttackWarning(dangerZone, 0.5f);
         yield return new WaitForSeconds(0.5f);
 
         float activeDuration = 0.6f;
         float timer = 0f;
         bool hasDealtDamage = false;
-
+        GridManager.Instance.MoveEntity(entity, entity.coords, 1.5f);
         while (timer < activeDuration)
         {
             if (!hasDealtDamage && GameManager.instance.playerEntity.coords == targetTile)

@@ -17,6 +17,7 @@ public class ShootingHand : MonoBehaviour
     public bool isAttacking = false;
     void Start()
     {
+        GridManager.Instance.MoveEntity(entity, entity.coords, 1.5f);
         StartCoroutine(BehaviourLoop());
     }
     IEnumerator BehaviourLoop()
@@ -53,11 +54,12 @@ public class ShootingHand : MonoBehaviour
                         distance = GridManager.Instance.GetDistance(playerPos, tile);
                     }
                 }
-                GridManager.Instance.MoveEntity(entity, bestCoord);
+                GridManager.Instance.MoveEntity(entity, bestCoord, 1.5f);
                 GridManager.Instance.RotateEntityToTarget(entity, PlayerEntity.coords);
             }
             else
             {
+                GridManager.Instance.MoveEntity(entity, bestCoord, 1.5f);
                 StartCoroutine(Attacking());
             }
         }
@@ -72,10 +74,10 @@ public class ShootingHand : MonoBehaviour
 
         GameObject bullet = Instantiate(projectile, spawnPoint.transform.position, spawnPoint.transform.rotation);
         bullet.transform.SetParent(GridManager.Instance.transform, true);
+        yield return new WaitForSeconds(0.5f);
 
         Destroy(bullet, 2f);
         
-        yield return new WaitForSeconds(0.5f);
         animator.SetBool("IsAttacking", false);
 
         isAttacking = false;

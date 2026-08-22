@@ -104,6 +104,7 @@ GameObject:
   - component: {fileID: 7413625820205238997}
   - component: {fileID: 2435725570440873794}
   - component: {fileID: 2416887012953939688}
+  - component: {fileID: 1309904002155684049}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -143,6 +144,7 @@ MonoBehaviour:
   coords: {x: 0, y: 0}
   currentHealth: 0
   maxHealth: 100
+  weight: 4
 --- !u!114 &7413625820205238997
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -169,7 +171,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7876006513180433605}
   serializedVersion: 5
-  m_Mass: 1
+  m_Mass: 6
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -186,7 +188,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 122
   m_CollisionDetection: 0
 --- !u!65 &2416887012953939688
 BoxCollider:
@@ -209,3 +211,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.3064075, y: 2.0375497, z: 0.50772023}
   m_Center: {x: 0.001858145, y: 0.9747399, z: 0}
+--- !u!114 &1309904002155684049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7876006513180433605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60e37893b3ebeb947adbbce7d2040c62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerUpgrades
+  upgrades: []
+  canShoot: 0
+  canShoot2: 0
+  legoPrefab: {fileID: 0}
+  shockWavePrefab: {fileID: 0}
+  AttackCounter: 0
+  shockWaveable: 0
