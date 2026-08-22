@@ -122,6 +122,19 @@ public class GridManager : MonoBehaviour
         }
         return result;
     }
+
+    public List<Vector2Int> GetTilesInRangeIncludesSquareRoot(Vector2Int origin, int range)
+    {
+        List<Vector2Int> result = new List<Vector2Int>();
+
+        foreach (var coord in grid.Keys)
+        {
+            float distance = Vector2Int.Distance(origin, coord);
+            if (distance <= range - 1 + Mathf.Sqrt(2) && distance > 0)
+                result.Add(coord);
+        }
+        return result;
+    }
     public List<Vector2Int> GetTilesInShape(Vector2Int origin, Vector2Int mouseCoord, TargetShape targetShape, int radius)
     {
         List<Vector2Int> inRangeTiles = new List<Vector2Int>();
@@ -367,5 +380,74 @@ public class GridManager : MonoBehaviour
 
         int randomIndex = UnityEngine.Random.Range(0, freeCoords.Count);
         return freeCoords[randomIndex];
+    }
+
+
+
+    //Enemy Follow Logic
+    public void FollowLogic(Entity entity)
+    {
+        Entity PlayerEntity = GameManager.instance.playerEntity;
+        Vector2Int playerPos = PlayerEntity.coords;
+        Vector2Int bestCoord = entity.coords;
+        float distance = 50;
+
+        if (PlayerEntity != null)
+        {
+            List<Vector2Int> possibleTile = GetTilesInRangeIncludesSquareRoot(entity.coords, 1);
+            foreach (var tile in possibleTile)
+            {
+                if (GetDistance(playerPos, tile) < distance && GetEntityAtPosition(tile) == null)
+                {
+                    bestCoord = tile;
+                    distance = GetDistance(playerPos, tile);
+                }
+
+                if (GetDistance(playerPos, tile) == 0) return;
+            }
+
+            if (bestCoord != entity.coords && bestCoord != playerPos)
+            {
+
+                Vector3 lookAtTarget = CoordToWorldPos(bestCoord);
+                lookAtTarget.y = transform.position.y + 1;
+                entity.transform.LookAt(lookAtTarget);
+
+                MoveEntity(entity, bestCoord);
+            }
+        }
+    }
+
+    public void FollowLogicButNoDiagonal(Entity entity)
+    {
+        Entity PlayerEntity = GameManager.instance.playerEntity;
+        Vector2Int playerPos = PlayerEntity.coords;
+        Vector2Int bestCoord = entity.coords;
+        float distance = 50;
+
+        if (PlayerEntity != null)
+        {
+            List<Vector2Int> possibleTile = GetTilesInRange(entity.coords, 1);
+            foreach (var tile in possibleTile)
+            {
+                if (GetDistance(playerPos, tile) < distance && GetEntityAtPosition(tile) == null)
+                {
+                    bestCoord = tile;
+                    distance = GetDistance(playerPos, tile);
+                }
+
+                if (GetDistance(playerPos, tile) == 0) return;
+            }
+
+            if (bestCoord != entity.coords && bestCoord != playerPos)
+            {
+
+                Vector3 lookAtTarget = CoordToWorldPos(bestCoord);
+                lookAtTarget.y = transform.position.y + 1;
+                entity.transform.LookAt(lookAtTarget);
+
+                MoveEntity(entity, bestCoord);
+            }
+        }
     }
 }

@@ -37,11 +37,12 @@ public class BlockPlacer : MonoBehaviour
     void FollowLogic()
     {
         if (!hasTarget) {
-            List<Vector2Int> tiles = GridManager.Instance.GetTilesInRange(entity.coords, 7);
+            List<Vector2Int> tiles = GridManager.Instance.GetTilesInRange(entity.coords, 6);
 
             var rand = UnityEngine.Random.Range(0, tiles.Count);
 
             currentTargetTile = tiles[rand];
+            hasTarget = true;
         }
 
             var bestTile = entity.coords;
@@ -49,11 +50,15 @@ public class BlockPlacer : MonoBehaviour
         var distance = 67;
 
         foreach(var tile in GridManager.Instance.GetTilesInRange(entity.coords, 1)) {
-            if (GridManager.Instance.GetDistance(tile, currentTargetTile) < distance) {
+            if (GridManager.Instance.GetDistance(tile, currentTargetTile) < distance || GridManager.Instance.GetEntityAtPosition(tile) == null) {
                 bestTile = tile;
                 distance = GridManager.Instance.GetDistance(tile,currentTargetTile);
             }
         }
+
+        Vector3 lookAtPosition = GridManager.Instance.CoordToWorldPos(bestTile);
+        lookAtPosition.y = transform.position.y + 1;
+        transform.LookAt(lookAtPosition);
         GridManager.Instance.MoveEntity(entity, bestTile);
 
         if (entity.coords == currentTargetTile) {
@@ -72,8 +77,8 @@ public class BlockPlacer : MonoBehaviour
 
         yield return new WaitForSeconds(2f);
 
-        Instantiate(blockPrefab, GridManager.Instance.CoordToWorldPos(randTile), Quaternion.identity, GridManager.Instance.transform);
-
+        var block = Instantiate(blockPrefab, GridManager.Instance.CoordToWorldPos(randTile), Quaternion.identity, GridManager.Instance.transform);
+        transform.LookAt(block.transform);
         isAttacking = false;
     }
 }

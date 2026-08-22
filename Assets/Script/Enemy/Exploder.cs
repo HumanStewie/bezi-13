@@ -33,23 +33,8 @@ public class Exploder : MonoBehaviour
 
     void FollowLogic()
     {
-        var playerEntity = GameManager.instance.playerEntity;
-        var playerCoord = playerEntity.coords;
-
-
-        Vector2Int bestCoord = entity.coords;
-
-        float distance = 60;
-
-        foreach(var tile in GridManager.Instance.GetTilesInRange(entity.coords,1))
-        {
-            if (GridManager.Instance.GetDistance(tile, playerCoord) < distance) {
-                bestCoord = tile;
-                distance = GridManager.Instance.GetDistance(tile, bestCoord);
-            }
-        }
-        GridManager.Instance.MoveEntity(entity, bestCoord);
-        if (GridManager.Instance.GetDistance(entity.coords, playerCoord) <= 2)
+        GridManager.Instance.FollowLogic(entity);
+        if (GridManager.Instance.GetDistance(entity.coords, GameManager.instance.playerEntity.GetComponent<Entity>().coords) <= 2)
         {
             StartCoroutine(Attacking());
         }
@@ -59,16 +44,15 @@ public class Exploder : MonoBehaviour
         isAttacking = true;
         List<Vector2Int> targetTiles = GridManager.Instance.GetTilesInRange(entity.coords, 3);
         targetTiles.Add(entity.coords);
-        TargetingController.instance.ShowAttackWarning(targetTiles, 0.5f);
+        TargetingController.instance.ShowAttackWarning(targetTiles, 1f);
 
         Vector3 originalScale = this.transform.localScale;
 
         float timer = 0;
-
         float pulseSpeed = 25f;
         float pulseAmount = 0.3f;
 
-        while (timer <= 0.4f)
+        while (timer <= 0.7f)
         {
             float scaleMultiplier = 1f + (Mathf.Sin(timer * pulseSpeed) * pulseAmount);
             transform.localScale = originalScale * scaleMultiplier;
@@ -81,7 +65,7 @@ public class Exploder : MonoBehaviour
         timer = 0f;
         Vector3 currentScale = transform.localScale;
         Vector3 explodingScale = originalScale * 2f;
-        while (timer < 0.5f)
+        while (timer < 0.3f)
         {
             float percentComplete = timer / 0.1f;
             transform.localScale = Vector3.Lerp(currentScale, explodingScale, percentComplete);
@@ -99,6 +83,7 @@ public class Exploder : MonoBehaviour
                 Newentity.TakeDamage(10f);
             }
         }
+        yield return null;
         Destroy(this.gameObject);
     }
 }

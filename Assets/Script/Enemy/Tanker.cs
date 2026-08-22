@@ -14,30 +14,8 @@ public class Tanker : MonoBehaviour
     {
         while (true)
         {
-            FollowLogic();
-            yield return new WaitForSeconds(GameManager.instance.fixedSecondRate);
-        }
-    }
-    void FollowLogic()
-    {
-        Entity PlayerEntity = GameManager.instance.playerEntity;
-        Vector2Int playerPos = PlayerEntity.coords;
-        Vector2Int bestCoord = this.GetComponent<Entity>().coords;
-        float distance = 50;
-
-
-        if (PlayerEntity != null)
-        {
-            List<Vector2Int> possibleTile = GridManager.Instance.GetTilesInRange(this.GetComponent<Entity>().coords, 1);
-            foreach (var tile in possibleTile)
-            {
-                if (GridManager.Instance.GetDistance(playerPos, tile) > distance)
-                {
-                    bestCoord = tile;
-                    distance = GridManager.Instance.GetDistance(playerPos, tile);
-                }
-            }
-            GridManager.Instance.MoveEntity(this.GetComponent<Entity>(), bestCoord);
+            GridManager.Instance.FollowLogicButNoDiagonal(this.GetComponent<Entity>());
+            yield return new WaitForSeconds(GameManager.instance.fixedSecondRate * 1.5f);
         }
     }
 }

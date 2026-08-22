@@ -44,7 +44,7 @@ public class ShootingHand : MonoBehaviour
                 List<Vector2Int> possibleTile = GridManager.Instance.GetTilesInRange(this.GetComponent<Entity>().coords, 1);
                 foreach (var tile in possibleTile)
                 {
-                    if (GridManager.Instance.GetDistance(playerPos, tile) < distance)
+                    if (GridManager.Instance.GetDistance(playerPos, tile) < distance && GridManager.Instance.GetEntityAtPosition(tile) == null)
                     {
                         bestCoord = tile;
                         distance = GridManager.Instance.GetDistance(playerPos, tile);

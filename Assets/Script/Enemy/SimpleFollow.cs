@@ -25,29 +25,10 @@ public class SimpleFollow : MonoBehaviour, IEnemy
     
     public void FollowLogic()
     {
-        Entity PlayerEntity = GameManager.instance.playerEntity;
-        Vector2Int playerPos = PlayerEntity.coords;
-        Vector2Int bestCoord = this.GetComponent<Entity>().coords;
-        float distance = 50;
-
-        if (PlayerEntity != null) {
-            List<Vector2Int> possibleTile = GridManager.Instance.GetTilesInRange(this.GetComponent<Entity>().coords, 1);
-            foreach (var tile in possibleTile)
-            {
-                if (GridManager.Instance.GetDistance(playerPos, tile) < distance)
-                {
-                    bestCoord = tile;
-                    distance = GridManager.Instance.GetDistance(playerPos, tile);
-                }
-
-                if (GridManager.Instance.GetDistance(playerPos, tile) == 0) return;
-            }
-            
-            GridManager.Instance.MoveEntity(this.GetComponent<Entity>(), bestCoord);
-            if (GridManager.Instance.GetDistance(playerPos, this.GetComponent<Entity>().coords) <= 1)
-            {
-                StartCoroutine(Attacking());
-            }
+        GridManager.Instance.FollowLogic(this.GetComponent<Entity>());
+        if (GridManager.Instance.GetDistance(GameManager.instance.playerEntity.GetComponent<Entity>().coords, this.GetComponent<Entity>().coords) <= 1)
+        {
+            StartCoroutine(Attacking());
         }
     }
 
@@ -58,6 +39,9 @@ public class SimpleFollow : MonoBehaviour, IEnemy
         Vector2Int targetTile = GameManager.instance.playerEntity.coords;
         List<Vector2Int> dangerZone = new List<Vector2Int> { targetTile };
 
+        Vector3 lookAtTarget = GridManager.Instance.CoordToWorldPos(targetTile);
+        lookAtTarget.y = transform.position.y;
+        transform.LookAt(lookAtTarget);
         TargetingController.instance.ShowAttackWarning(dangerZone, 0.5f);
         yield return new WaitForSeconds(0.5f);
 

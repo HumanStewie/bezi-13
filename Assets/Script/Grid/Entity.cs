@@ -18,6 +18,7 @@ public class Entity : MonoBehaviour
     private void Awake()
     {
         currentHealth = maxHealth;
+        coords = GridManager.Instance.WorldToCoord(this.transform.position);
     }
     public void TakeDamage(float damage)
     {

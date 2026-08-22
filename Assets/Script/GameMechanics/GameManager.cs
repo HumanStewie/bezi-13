@@ -24,9 +24,6 @@ public class GameManager : MonoBehaviour
     {
         instance = this;
     }
-    void Start()
-    {
-    }
 
     void StartWave()
     {
