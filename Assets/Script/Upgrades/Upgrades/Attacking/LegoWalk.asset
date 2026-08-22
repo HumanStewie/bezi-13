@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d74de23ba62dc754c96bbf1c456c3a43, type: 3}
+  m_Name: LegoWalk
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
+  IDName: LegoWalk
+  isAttack: 1
+  Description: Tiles you walk on create lego for 3s, dealing 3 damages for enemies
+    stepping on it
+  nextTier: {fileID: 11400000, guid: dad9ed33b98742c4e980672bc98d1861, type: 2}

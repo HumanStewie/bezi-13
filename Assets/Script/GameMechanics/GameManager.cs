@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
 
     public Entity playerEntity;
 
-    public int waveNum = 1;
+    public int currentWave = 0;
 
 
     public GameObject NormalHand;
@@ -20,14 +20,17 @@ public class GameManager : MonoBehaviour
     public GameObject Tanker;
     public GameObject TheFeet;
 
+
+    [SerializeField] private bool started = false;
+    [SerializeField] private bool checking = false;
     private void Awake()
     {
         instance = this;
     }
 
-    void StartWave()
+    void StartWave(int wave)
     {
-        switch(waveNum)
+        switch(wave)
         {
             case 1:
                 Wave1(); break;
@@ -42,7 +45,49 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    void CheckIfWaveDone()
+    {
+        if (started && !checking)
+        {
+            Entity[] entities = FindObjectsByType<Entity>(FindObjectsSortMode.None);
+            bool enemiesStillAlive = false;
 
+            foreach (Entity entity in entities)
+            {
+                if (entity.entityName != "Player")
+                {
+                    enemiesStillAlive = true;
+                    break;
+                }
+            }
+
+            if (!enemiesStillAlive)
+            {
+                checking = true;
+
+                UpgradeGrantingLogic.instance.StartGrantingUpgrades();
+                FindAnyObjectByType<Player>().GetComponent<Player>().enabled = false;
+            }
+        }
+    }
+
+
+    public void ProceedNextWave()
+    {
+        checking = false;
+        FindAnyObjectByType<Player>().GetComponent<Player>().enabled = true;
+        StartWave(currentWave += 1);
+    }
+ 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.P) && !started)
+        {
+            StartWave(currentWave += 1);
+            started = true;
+        }
+        CheckIfWaveDone();
+    }
 
     void InstatiateEnemy(GameObject enemy)
     {
@@ -53,17 +98,17 @@ public class GameManager : MonoBehaviour
     void Wave1()
     {
         float valueCost = 5.5f;
-        int rand = UnityEngine.Random.Range(0, 3);
 
         while (valueCost > 0) {
+            int rand = UnityEngine.Random.Range(0, 3);
             if (rand == 0 || rand == 1)
             {
-                Instantiate(NormalHand);
+                InstatiateEnemy(NormalHand);
                 valueCost -= 1f;
             }
             else
             {
-                Instantiate(ShootingHand);
+                InstatiateEnemy(ShootingHand);
                 valueCost -= 1.5f;
             }
         }
@@ -73,22 +118,23 @@ public class GameManager : MonoBehaviour
     {
         float valueCost = 6f;
         Instantiate(Exploder);
-        int rand = UnityEngine.Random.Range(0, 4);
         while (valueCost > 0)
         {
+            int rand = UnityEngine.Random.Range(0, 4);
+
             if (rand == 0 || rand == 1)
             {
-                Instantiate(NormalHand);
+                InstatiateEnemy(NormalHand);
                 valueCost -= 1f;
             }
             else if (rand == 2)
             {
-                Instantiate(ShootingHand);
+                InstatiateEnemy(ShootingHand);
                 valueCost -= 1.5f;
             }
             else
             {
-                Instantiate(Exploder);
+                InstatiateEnemy(Exploder);
                 valueCost -= 1.5f;
             }
         }
@@ -97,27 +143,28 @@ public class GameManager : MonoBehaviour
     {
         float valueCost = 8f;
         InstatiateEnemy(Placer);
-        int rand = UnityEngine.Random.Range(0, 5);
         while (valueCost > 0)
         {
+            int rand = UnityEngine.Random.Range(0, 4);
+
             if (rand == 0 || rand == 1)
             {
-                Instantiate(NormalHand);
+                InstatiateEnemy(NormalHand);
                 valueCost -= 1f;
             }
             else if (rand == 2)
             {
-                Instantiate(ShootingHand);
+                InstatiateEnemy(ShootingHand);
                 valueCost -= 1.5f;
             }
             else if (rand == 3)
             {
-                Instantiate(Exploder);
+                InstatiateEnemy(Exploder);
                 valueCost -= 1.5f;
             }
             else if (rand == 4)
             {
-                Instantiate(Placer);
+                InstatiateEnemy(Placer);
                 valueCost -= 2f;
             }
         }
@@ -127,22 +174,23 @@ public class GameManager : MonoBehaviour
     {
         float valueCost = 11f;
         InstatiateEnemy(Placer);
-        int rand = UnityEngine.Random.Range(0, 6);
         while (valueCost > 0)
         {
+            int rand = UnityEngine.Random.Range(0, 4);
+
             if (rand == 0)
             {
-                Instantiate(NormalHand);
+                InstatiateEnemy(NormalHand);
                 valueCost -= 1f;
             }
             else if (rand == 1 || rand == 2)
             {
-                Instantiate(ShootingHand);
+                InstatiateEnemy(ShootingHand);
                 valueCost -= 1.5f;
             }
             else if (rand == 3)
             {
-                Instantiate(Exploder);
+                InstatiateEnemy(Exploder);
                 valueCost -= 1.5f;
             }
             else if (rand == 5 ||  rand == 4)
@@ -157,27 +205,28 @@ public class GameManager : MonoBehaviour
     {
         float valueCost = 11f;
         InstatiateEnemy(Placer);
-        int rand = UnityEngine.Random.Range(0, 6);
         while (valueCost > 0)
         {
+            int rand = UnityEngine.Random.Range(0, 4);
+
             if (rand == 0)
             {
-                Instantiate(NormalHand);
+                InstatiateEnemy(NormalHand);
                 valueCost -= 1f;
             }
             else if (rand == 1 || rand == 2)
             {
-                Instantiate(ShootingHand);
+                InstatiateEnemy(ShootingHand);
                 valueCost -= 1.5f;
             }
             else if (rand == 3)
             {
-                Instantiate(Exploder);
+                InstatiateEnemy(Exploder);
                 valueCost -= 1.5f;
             }
             else if (rand == 5 || rand == 4)
             {
-                Instantiate(Placer);
+                InstatiateEnemy(Placer);
                 valueCost -= 2f;
             }
         }

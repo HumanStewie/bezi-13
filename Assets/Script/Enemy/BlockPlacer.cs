@@ -45,8 +45,12 @@ public class BlockPlacer : MonoBehaviour
         var distance = 67;
 
         foreach(var tile in GridManager.Instance.GetTilesInRange(entity.coords, 1)) {
+<<<<<<< Updated upstream
             if (tile == currentTargetTile)
             {
+=======
+            if (GridManager.Instance.GetDistance(tile, currentTargetTile) < distance && GridManager.Instance.GetEntityAtPosition(tile) == null) {
+>>>>>>> Stashed changes
                 bestTile = tile;
                 break;
             }
@@ -62,7 +66,6 @@ public class BlockPlacer : MonoBehaviour
         GridManager.Instance.MoveEntity(entity, bestTile);
 
         if (entity.coords == currentTargetTile) {
-            hasTarget = false;
             StartCoroutine(Attacking());
         }
     }
@@ -82,10 +85,11 @@ public class BlockPlacer : MonoBehaviour
         animator.SetBool("IsAttacking", true);
         yield return new WaitForSeconds(timeToPlaceBlock);
 
-        var block = Instantiate(blockPrefab, GridManager.Instance.CoordToWorldPos(randTile), Quaternion.identity, GridManager.Instance.transform);
+        var block = Instantiate(blockPrefab, GridManager.Instance.CoordToWorldPos(randTile) + new Vector3(0,1.5f,0), Quaternion.identity, GridManager.Instance.transform);
         transform.LookAt(block.transform);
         
         animator.SetBool("IsAttacking", false);
         isAttacking = false;
+        hasTarget = false;
     }
 }

@@ -1,9 +1,6 @@
-using System;
 using System.Collections;
-using Unity.VisualScripting;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.LowLevel;
 
 public class Player : MonoBehaviour
 {
@@ -11,7 +8,7 @@ public class Player : MonoBehaviour
     [SerializeField] private Vector2Int currentPosition = Vector2Int.zero;
     [SerializeField] private float angleTransTime = 15f;
     [SerializeField] private float xRotationOffset = 0f;
-    [SerializeField] private int damage = 1;
+    public int damage = 1;
     [SerializeField] private float attackCooldown = 1.0f;
     [SerializeField] private float hitboxRadius = 1.0f;
     
@@ -19,6 +16,10 @@ public class Player : MonoBehaviour
     private float initialCooldown;
     private bool canAttack = true;
     private Vector3 clickedVector;
+
+    private Vector2Int latestLook = Vector2Int.zero;
+
+    List<Entity> Blocks = new();
     
     private void Start()
     {
@@ -30,46 +31,48 @@ public class Player : MonoBehaviour
         if (!canAttack)
             attackCooldown -= Time.deltaTime;
         if (attackCooldown <= 0) canAttack = true;
+        Attack();
+
+
+
+
         currentPosition = GetComponent<Entity>().coords;
+
         StartCoroutine(MovementDelay());
+
+
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * angleTransTime);
+
+
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            BlockPlacement();
+        }
     }
-    void Movement()
+    void TryMove(Vector2Int direction, float yRotation)
     {
-        if (Input.GetKeyDown(KeyCode.W))
+        Vector2Int targetPos = currentPosition + direction;
+
+        if (!GridManager.Instance.CheckTileExistence(targetPos)) return;
+
+        Entity entitys = GridManager.Instance.GetEntityAtPosition(targetPos);
+
+        if (entitys != null && entitys.entityName == "Block")
         {
-            if (GridManager.Instance.CheckTileExistence(currentPosition + new Vector2Int(0, 1)))
-            {
-                GridManager.Instance.MoveEntity(this.GetComponent<Entity>(), currentPosition + new Vector2Int(0, 1));
-                targetRotation = Quaternion.Euler(xRotationOffset, -90f, 0);
-            }
-        }
-        else if (Input.GetKeyDown(KeyCode.S))
-        {
-            if (GridManager.Instance.CheckTileExistence(currentPosition + new Vector2Int(0, -1)))
-            {
-                GridManager.Instance.MoveEntity(this.GetComponent<Entity>(), currentPosition + new Vector2Int(0, -1));
-                targetRotation = Quaternion.Euler(xRotationOffset, 90, 0);
-            }
-        }
-        else if (Input.GetKeyDown(KeyCode.D))
-        {
-            if (GridManager.Instance.CheckTileExistence(currentPosition + new Vector2Int(1, 0)))
-            {
-                GridManager.Instance.MoveEntity(this.GetComponent<Entity>(), currentPosition + new Vector2Int(1, 0));
-                targetRotation = Quaternion.Euler(xRotationOffset, 0, 0);
-            }
-        }
-        else if (Input.GetKeyDown(KeyCode.A))
-        {
-            if (GridManager.Instance.CheckTileExistence(currentPosition + new Vector2Int(-1, 0)))
-            {
-                GridManager.Instance.MoveEntity(this.GetComponent<Entity>(), currentPosition + new Vector2Int(-1, 0));
-                targetRotation = Quaternion.Euler(xRotationOffset, 180, 0);
-            }
+            Transform block = entitys.transform;
+            block.SetParent(this.transform);
+            Blocks.Add(block.GetComponent<Entity>());
+            block.localPosition = new Vector3(0, 2, 0);
         }
 
-        if (Input.GetMouseButtonDown(0))
+        GetComponent<PlayerUpgrades>().OnPlayerMoved(this.GetComponent<Entity>().coords);
+        GridManager.Instance.MoveEntity(this.GetComponent<Entity>(), targetPos);
+        targetRotation = Quaternion.Euler(xRotationOffset, yRotation, 0);
+        latestLook = direction;
+    }
+    void Attack()
+    {
+        if (Input.GetMouseButtonDown(0) && canAttack)
         {
             var node = GridManager.Instance.GetTileInMouse(Input.mousePosition);
             if (node)
@@ -80,10 +83,12 @@ public class Player : MonoBehaviour
     }
 
 
-
     IEnumerator MovementDelay()
     {
-        Movement();
+        if (Input.GetKeyDown(KeyCode.W)) TryMove(new Vector2Int(0, 1), -90f);
+        else if (Input.GetKeyDown(KeyCode.S)) TryMove(new Vector2Int(0, -1), 90f);
+        else if (Input.GetKeyDown(KeyCode.D)) TryMove(new Vector2Int(1, 0), 0f);
+        else if (Input.GetKeyDown(KeyCode.A)) TryMove(new Vector2Int(-1, 0), 180f);
         yield return new WaitForSeconds(0.07f);
     }
 
@@ -110,14 +115,34 @@ public class Player : MonoBehaviour
                 }
             }
         }
-        
+        attackCooldown = initialCooldown;
         // TODO: Show particle
-        
+        GetComponent<PlayerUpgrades>().AttackCounter += 1;
+    }
+
+    void BlockPlacement()
+    {
+        Vector2Int PlaceLocation = this.GetComponent<Entity>().coords += latestLook;
+        if (Blocks.Count > 0)
+        {
+            Blocks[0].transform.parent = null;
+            Blocks[0].coords = PlaceLocation;
+            Blocks[0].transform.rotation = Quaternion.identity;
+            Blocks[0].transform.position = GridManager.Instance.CoordToWorldPos(Blocks[0].coords) + new Vector3(0,2,0);
+            Blocks.Remove(Blocks[0]);
+        }
+
     }
 
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawSphere(clickedVector+ Vector3.up * 2f + transform.position, hitboxRadius);
+    }
+
+
+    private void Shoot(Vector2Int direction)
+    {
+
     }
 }
