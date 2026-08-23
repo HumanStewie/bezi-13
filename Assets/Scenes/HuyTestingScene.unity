@@ -119,52 +119,17 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &94804908 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7876006513180433605, guid: f0d7a7dba6b7ac54db2db8d78d1b809b, type: 3}
-  m_PrefabInstance: {fileID: 1651108309}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &94804913 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5893565407996569, guid: f0d7a7dba6b7ac54db2db8d78d1b809b, type: 3}
   m_PrefabInstance: {fileID: 1651108309}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 94804908}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1cfc4ad2080b13e469a9fbd4e23bffa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Entity
---- !u!114 &94804914
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 94804908}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60e37893b3ebeb947adbbce7d2040c62, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerUpgrades
-  upgrades: []
-  canShoot: 0
-  canShoot2: 0
-  legoPrefab: {fileID: 0}
-  shockWavePrefab: {fileID: 0}
-  AttackCounter: 0
-  shockWaveable: 0
-  CanReset: 1
-  CanReset2: 0
-  CanBlock: 0
-  CanBlock2: 0
-  Possess1: 0
-  Possess2: 0
-  WeightLessNess: 0
-  ProfessionalHater: 0
-  foldUnderPressure: 0
-  Omniboardtent: 0
-  spinningBall: {fileID: 0}
 --- !u!4 &120333927 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3352316834067046231, guid: 6462bfda5ec6dc24f97545ab40456218, type: 3}
@@ -2710,32 +2675,8 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 5893565407996569, guid: f0d7a7dba6b7ac54db2db8d78d1b809b, type: 3}
-      propertyPath: entityName
-      value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 5893565407996569, guid: f0d7a7dba6b7ac54db2db8d78d1b809b, type: 3}
-      propertyPath: currentHealth
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7413625820205238997, guid: f0d7a7dba6b7ac54db2db8d78d1b809b, type: 3}
-      propertyPath: projectile
-      value: 
-      objectReference: {fileID: 1497308509255535280, guid: 5348222ba638c674b858500fe1652f71, type: 3}
-    - target: {fileID: 7413625820205238997, guid: f0d7a7dba6b7ac54db2db8d78d1b809b, type: 3}
-      propertyPath: attackEffect
-      value: 
-      objectReference: {fileID: 8896347255057429044, guid: 01c01f72d28388a41bcb25e27303bbfc, type: 3}
-    - target: {fileID: 7413625820205238997, guid: f0d7a7dba6b7ac54db2db8d78d1b809b, type: 3}
-      propertyPath: attackCooldown
-      value: 0.3
-      objectReference: {fileID: 0}
     - target: {fileID: 7876006513180433605, guid: f0d7a7dba6b7ac54db2db8d78d1b809b, type: 3}
       propertyPath: m_Name
-      value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 7876006513180433605, guid: f0d7a7dba6b7ac54db2db8d78d1b809b, type: 3}
-      propertyPath: m_TagString
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 8491111655207114296, guid: f0d7a7dba6b7ac54db2db8d78d1b809b, type: 3}
@@ -2781,10 +2722,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 7876006513180433605, guid: f0d7a7dba6b7ac54db2db8d78d1b809b, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 94804914}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f0d7a7dba6b7ac54db2db8d78d1b809b, type: 3}
 --- !u!1001 &1693329979
 PrefabInstance:
@@ -2838,6 +2776,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4705015335422670749, guid: 6462bfda5ec6dc24f97545ab40456218, type: 3}
+      propertyPath: warningPrefab
+      value: 
+      objectReference: {fileID: 614814539020569832, guid: 77a5fd2fb1e57034386bf7cc8ea0022d, type: 3}
     - target: {fileID: 7950982527963067029, guid: 6462bfda5ec6dc24f97545ab40456218, type: 3}
       propertyPath: Block
       value: 

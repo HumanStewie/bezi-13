@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 public class SimpleFollow : MonoBehaviour, IEnemy
 {
@@ -12,7 +14,13 @@ public class SimpleFollow : MonoBehaviour, IEnemy
         GridManager.Instance.RegisterEntity(entity);
         StartCoroutine(Follow());
     }
-
+    void Update()
+    {
+        if (!isAttacking && GridManager.Instance.GetDistance(GameManager.instance.playerEntity.GetComponent<Entity>().coords, entity.coords) <= 1)
+        {
+            StartCoroutine(Attacking());
+        }
+    }
 
     IEnumerator Follow()
     {
@@ -30,21 +38,15 @@ public class SimpleFollow : MonoBehaviour, IEnemy
     {
         GridManager.Instance.FollowLogic(entity);
         GridManager.Instance.RotateEntityToTarget(entity, GameManager.instance.playerEntity.coords);
-        
-        if (GridManager.Instance.GetDistance(GameManager.instance.playerEntity.GetComponent<Entity>().coords, entity.coords) <= 1)
-        {
-            
-            StartCoroutine(Attacking());
-        }
     }
-
+    
     IEnumerator Attacking()
     {
         isAttacking = true;
         animator.SetBool("IsAttacking", true);
         Vector2Int targetTile = GameManager.instance.playerEntity.coords;
         List<Vector2Int> dangerZone = new List<Vector2Int> { targetTile };
-        TargetingController.instance.ShowAttackWarning(dangerZone, 0.5f);
+        TargetingController.instance.ShowAttackWarning(dangerZone, 1.5f);
         yield return new WaitForSeconds(1.5f);
 
         float activeDuration = 0.3f;

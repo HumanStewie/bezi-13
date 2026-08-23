@@ -7,9 +7,7 @@ public class TargetingController : MonoBehaviour
     public static TargetingController instance;
     private GridManager gridManager;
 
-    public Color warnColor = Color.red;
-
-    public float flashInterval = 0.2f;
+    public GameObject warningPrefab;
 
     private void Awake()
     {
@@ -20,42 +18,48 @@ public class TargetingController : MonoBehaviour
     {
         gridManager = GridManager.Instance;
     }
-    public void ShowAttackWarning(List<Vector2Int> targetTiles, float duration)
+    public void ShowAttackWarning(List<Vector2Int> dangerZone, float duration)
     {
-        StartCoroutine(WarningRoutine(targetTiles, duration));
+        StartCoroutine(ExpandWarningRoutine(dangerZone, duration));
     }
 
-    private IEnumerator WarningRoutine(List<Vector2Int> targetTiles, float duration)
+    private IEnumerator ExpandWarningRoutine(List<Vector2Int> dangerZone, float duration)
     {
-        float timer = 0f;
-        bool isColored = false;
+        List<GameObject> activeDecals = new List<GameObject>();
 
-        while (timer < duration)
+        foreach (Vector2Int coord in dangerZone)
         {
-            isColored = !isColored;
+            Vector3 tileCenter = GridManager.Instance.CoordToWorldPos(coord);
 
-            foreach (Vector2Int coord in targetTiles)
-            {
-                if (gridManager.Grid.ContainsKey(coord))
-                {
-                    if (isColored)
-                        gridManager.ChangeTileColor(coord, warnColor);
-                    else
-                        gridManager.Grid[coord].ResetVisuals();
-                }
-            }
+            Vector3 spawnPos = tileCenter + new Vector3(0, 1.01f, 0);
 
-            float waitTime = Mathf.Min(flashInterval, duration - timer);
-            yield return new WaitForSeconds(waitTime);
-            timer += waitTime;
+            GameObject decal = Instantiate(warningPrefab, spawnPos, Quaternion.Euler(90, 0, 0));
+            decal.transform.localScale = Vector3.one * 0.1f;
+
+            activeDecals.Add(decal);
         }
 
-        foreach (Vector2Int coord in targetTiles)
+        float elapsed = 0f;
+        Vector3 targetScale = new Vector3(2f, 2f, 2f);
+
+        while (elapsed < duration)
         {
-            if (gridManager.Grid.ContainsKey(coord))
+            elapsed += Time.deltaTime;
+            float percent = elapsed / duration;
+
+            foreach (GameObject decal in activeDecals)
             {
-                gridManager.Grid[coord].ResetVisuals();
+                if (decal != null)
+                {
+                    decal.transform.localScale = Vector3.Lerp(Vector3.one * 0.1f, targetScale, percent);
+                }
             }
+            yield return null;
+        }
+
+        foreach (GameObject decal in activeDecals)
+        {
+            Destroy(decal);
         }
     }
 }
