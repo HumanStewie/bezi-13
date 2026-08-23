@@ -14,6 +14,7 @@ public class Player : MonoBehaviour
     public int damage = 5;
     [SerializeField] private float attackCooldown = 0.3f;
     [SerializeField] private float hitboxRadius = 1.0f;
+    [SerializeField] private Animator animator;
     
     private Quaternion targetRotation;
     private float initialCooldown;
@@ -182,6 +183,7 @@ public class Player : MonoBehaviour
         {
             return;
         }
+        
         canAttack = false;
         Vector3 nodeWorldPosition = node.transform.position;
         nodeWorldPosition.y += 1f;
@@ -202,7 +204,7 @@ public class Player : MonoBehaviour
         }
         
 
-        Collider[]  colliders = Physics.OverlapSphere(clickedVector + Vector3.up * 2f + transform.position, hitboxRadius);
+        Collider[]  colliders = Physics.OverlapSphere(clickedVector + Vector3.up * 1f + transform.position, hitboxRadius);
         foreach (var col in colliders)
         {
             if (col.TryGetComponent(out Entity entity))
@@ -220,12 +222,20 @@ public class Player : MonoBehaviour
         attackCooldown = initialCooldown;
         upgrades.AttackCounter += 1;
         GetComponent<PlayerUpgrades>().OnGenericAction();
+        animator.SetBool("IsAttacking", false);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(clickedVector + Vector3.up * 1f + transform.position, 1.0f);
     }
 
     private IEnumerator AttackLungeRoutine(Vector3 direction)
     {
         isAttacking = true;
-        Vector3 basePos = GridManager.Instance.CoordToWorldPos(GetComponent<Entity>().coords);
+        
+        /*Vector3 basePos = GridManager.Instance.CoordToWorldPos(GetComponent<Entity>().coords);
 
         Vector3 boardUp = GridManager.Instance.transform.up;
 
@@ -252,17 +262,18 @@ public class Player : MonoBehaviour
 
         Vector3 lungeTarget = basePos + (flatDirection * distanceMultiplier) + (boardUp * 0.5f);
 
-        Quaternion tiltRot = baseRot * Quaternion.Euler(-xRot, direction.y - dirYOffset, 0);
+        Quaternion tiltRot = baseRot * Quaternion.Euler(-xRot, direction.y - dirYOffset, 0);*/
 
         float lungeSpeed = lungeTime;
         float elapsed = 0f;
-
+        animator.SetBool("IsAttacking", isAttacking);
+        animator.Play("DominoAttack");
         while (elapsed < lungeSpeed)
         {
             elapsed += Time.deltaTime;
-            float t = elapsed / lungeSpeed;
+            /*float t = elapsed / lungeSpeed;
             transform.position = Vector3.Lerp(basePos, lungeTarget, t);
-            transform.rotation = Quaternion.Slerp(baseRot, tiltRot, t);
+            transform.rotation = Quaternion.Slerp(baseRot, tiltRot, t);*/
             yield return null;
         }
 
@@ -271,16 +282,18 @@ public class Player : MonoBehaviour
         while (elapsed < lungeSpeed)
         {
             elapsed += Time.deltaTime;
-            float t = elapsed / lungeSpeed;
+            /*float t = elapsed / lungeSpeed;
             transform.position = Vector3.Lerp(lungeTarget, basePos, t);
-            transform.rotation = Quaternion.Slerp(tiltRot, baseRot, t);
+            transform.rotation = Quaternion.Slerp(tiltRot, baseRot, t);*/
             yield return null;
         }
 
-        transform.position = basePos;
-        transform.rotation = baseRot;
-
+        /*transform.position = basePos;
+        transform.rotation = baseRot;*/
+        
         isAttacking = false;
+        animator.SetBool("IsAttacking", isAttacking);
+        
     }
 
 
