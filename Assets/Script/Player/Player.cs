@@ -76,14 +76,6 @@ public class Player : MonoBehaviour
         }
     }
 
-    private Node targetNode;
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.matrix = Matrix4x4.TRS(targetNode.transform.position, targetNode.transform.rotation, Vector3.one);
-        Gizmos.color = Color.red;
-        Gizmos.DrawCube(Vector3.zero, new Vector3(0.5f, 50f, 0.5f));
-    }
     void TryMove(Vector2Int direction, float yRotation)
     {
         Vector2Int targetPos = currentPosition + direction;
@@ -94,7 +86,7 @@ public class Player : MonoBehaviour
             return;
         }
 
-        targetNode = GridManager.Instance.Grid.GetValueOrDefault(targetPos);
+        Node targetNode = GridManager.Instance.Grid.GetValueOrDefault(targetPos);
         
         Collider[] colliders = Physics.OverlapBox(targetNode.transform.position, new Vector3(0.5f, 50f, 0.5f), Quaternion.FromToRotation(Vector3.up, GridManager.Instance.transform.up));
         if (colliders.Length > 0)

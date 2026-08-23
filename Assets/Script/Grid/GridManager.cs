@@ -31,9 +31,6 @@ public class GridManager : MonoBehaviour
     [SerializeField] private float maxDistance = 100f;
     [SerializeField] private bool snapToPixelGrid = false;
 
-    [Header("UI Settings")] 
-    [SerializeField] private Camera minimapCamera;
-    
     private RectTransform rawImageRect;
     private Camera uiCamera;
 
@@ -415,13 +412,6 @@ public class GridManager : MonoBehaviour
         return grid.GetValueOrDefault(WorldToCoord(targetPosition));
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.green;
-        Gizmos.DrawSphere(rayStartPoint, 1);
-        Gizmos.color = Color.red;
-        Gizmos.DrawRay(rayStartPoint, Vector3.down * 100f);
-    }
 
     public Vector2Int SelectRandomPossible()
     {

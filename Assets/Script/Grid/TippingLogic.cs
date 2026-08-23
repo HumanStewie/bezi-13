@@ -70,11 +70,6 @@ public class TippingLogic : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.white;
-        Gizmos.DrawSphere(centerOfMass, 0.1f);
-    }
 
     /// <summary>
     /// Calculate weight of every entities on the board then output current center of mass
