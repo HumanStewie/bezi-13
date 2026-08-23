@@ -4,7 +4,7 @@ using UnityEngine;
 public class Block : MonoBehaviour
 {
     [SerializeField] private Entity entity;
-    
+    public bool isHeld;
     private Rigidbody rb;
     void Start()
     {
