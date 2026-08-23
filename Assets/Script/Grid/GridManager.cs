@@ -360,7 +360,11 @@ public class GridManager : MonoBehaviour
     
     public void MoveEntity(Entity entity, Vector2Int targetCoord, float yOffset = 1.0f)
     {
-        if (!grid.ContainsKey(targetCoord)) return;
+        if (!grid.ContainsKey(targetCoord))
+        {
+            Debug.Log("No move, in MoveEntity");
+            return;
+        }
         // if (entities.TryGetValue(targetCoord, out var set) && set.Count > 0) return; // If there's someone there already, stop
         UnregisterEntity(entity);
         Node nodeToMove = grid.GetValueOrDefault(targetCoord);

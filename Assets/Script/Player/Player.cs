@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -74,26 +75,44 @@ public class Player : MonoBehaviour
             BlockPlacement();
         }
     }
+
+    private Node targetNode;
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.matrix = Matrix4x4.TRS(targetNode.transform.position, targetNode.transform.rotation, Vector3.one);
+        Gizmos.color = Color.red;
+        Gizmos.DrawCube(Vector3.zero, new Vector3(0.5f, 50f, 0.5f));
+    }
     void TryMove(Vector2Int direction, float yRotation)
     {
         Vector2Int targetPos = currentPosition + direction;
 
-        if (!GridManager.Instance.CheckTileExistence(targetPos)) return;
+        if (!GridManager.Instance.CheckTileExistence(targetPos))
+        {
+            Debug.Log("No move, in TryMove");
+            return;
+        }
 
+        targetNode = GridManager.Instance.Grid.GetValueOrDefault(targetPos);
         
-        Collider[] colliders = Physics.OverlapBox(GridManager.Instance.CoordToWorldPos(targetPos), new Vector3(0.5f, 50f, 0.5f));
+        Collider[] colliders = Physics.OverlapBox(targetNode.transform.position, new Vector3(0.5f, 50f, 0.5f), Quaternion.FromToRotation(Vector3.up, GridManager.Instance.transform.up));
         if (colliders.Length > 0)
         {
             foreach (var col in colliders)
             {
-                if (col.TryGetComponent(out Entity e) && e.entityName is not "Block") return;
-                if (!col.TryGetComponent(out Block _)) continue;
-                
+                if (col.TryGetComponent(out Entity e) && e.entityName is not ("Block" or "Player"))
+                {
+                    Debug.Log("No move, in loop");
+                    return;
+                }
+                if (!col.TryGetComponent(out Block b)) continue;
+                if (b.isHeld) continue;
                 Transform block = e.transform;
                 block.SetParent(this.transform);
                 Blocks.Add(e);
-                
-                block.localPosition = new Vector3(0, transform.position.y  + Blocks.Count * 2, 0);
+                b.isHeld = true;
+                block.localPosition = new Vector3(0, Blocks.Count * 2, 0);
                 entity.weight += e.weight;
             }
         }
@@ -109,7 +128,32 @@ public class Player : MonoBehaviour
         }
         targetRotation = Quaternion.Euler(xRotationOffset, yRotation, 0);
         latestLook = direction;
+        Debug.Log(Blocks.Count);
     }
+    
+    void BlockPlacement()
+    {
+        Vector2Int placeLocation = this.entity.coords + latestLook;
+        Node nodeToPlace = GridManager.Instance.Grid.GetValueOrDefault(placeLocation);
+        if (!nodeToPlace) return;
+        Vector3 spawnPos = nodeToPlace.transform.position;
+        spawnPos += nodeToPlace.transform.up * 1.6f;
+        if (Blocks.Count > 0)
+        {
+            Entity lastBlock = Blocks[Blocks.Count - 1];
+            entity.weight -= lastBlock.weight;
+            lastBlock.transform.SetParent(GridManager.Instance.transform);
+            lastBlock.coords = placeLocation;
+            lastBlock.transform.rotation = nodeToPlace.transform.rotation;
+            lastBlock.transform.position = spawnPos;
+            lastBlock.GetComponent<Block>().isHeld = false;
+            GridManager.Instance.RegisterEntity(lastBlock);
+            
+            Blocks.Remove(lastBlock);
+        }
+        Debug.Log(Blocks.Count);
+    }
+
     void Attack()
     {
         if (Input.GetMouseButtonDown(0) && canAttack)
@@ -129,7 +173,10 @@ public class Player : MonoBehaviour
 
     IEnumerator MovementDelay()
     {
-        if (Input.GetKeyDown(KeyCode.W)) TryMove(new Vector2Int(0, 1), WRotation);
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            TryMove(new Vector2Int(0, 1), WRotation);
+        }
         else if (Input.GetKeyDown(KeyCode.S)) TryMove(new Vector2Int(0, -1), SRotation);
         else if (Input.GetKeyDown(KeyCode.D)) TryMove(new Vector2Int(1, 0), DRotation);
         else if (Input.GetKeyDown(KeyCode.A)) TryMove(new Vector2Int(-1, 0), ARotation);
@@ -180,7 +227,6 @@ public class Player : MonoBehaviour
         attackCooldown = initialCooldown;
         upgrades.AttackCounter += 1;
         GetComponent<PlayerUpgrades>().OnGenericAction();
-
     }
 
     private IEnumerator AttackLungeRoutine(Vector3 direction)
@@ -237,33 +283,6 @@ public class Player : MonoBehaviour
         transform.rotation = baseRot;
     }
 
-    void BlockPlacement()
-    {
-        Vector2Int placeLocation = this.entity.coords + latestLook;
-        Node nodeToPlace = GridManager.Instance.Grid.GetValueOrDefault(placeLocation);
-        if (!nodeToPlace) return;
-        Vector3 spawnPos = nodeToPlace.transform.position;
-        spawnPos += nodeToPlace.transform.up * 1.6f;
-        if (Blocks.Count > 0)
-        {
-            Entity lastBlock = Blocks[Blocks.Count - 1];
-            entity.weight -= lastBlock.weight;
-            lastBlock.transform.SetParent(GridManager.Instance.transform);
-            lastBlock.coords = placeLocation;
-            lastBlock.transform.rotation = nodeToPlace.transform.rotation;
-            lastBlock.transform.position = spawnPos;
-            GridManager.Instance.RegisterEntity(lastBlock);
-            
-            Blocks.Remove(lastBlock);
-        }
-    }
-
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawSphere(clickedVector+ Vector3.up * 2f + transform.position, hitboxRadius);
-    }
 
     public void ResetAllBlock()
     {
