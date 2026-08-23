@@ -90,6 +90,9 @@ public class BlockPlacer : MonoBehaviour
         transform.LookAt(block.transform);
 
         animator.SetBool("IsAttacking", false);
+
+
+
         isAttacking = false;
         hasTarget = false;
     }

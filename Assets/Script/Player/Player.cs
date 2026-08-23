@@ -10,14 +10,14 @@ public class Player : MonoBehaviour
     [SerializeField] private Vector2Int currentPosition = Vector2Int.zero;
     [SerializeField] private float angleTransTime = 15f;
     [SerializeField] private float xRotationOffset = 0f;
-    public int damage = 1;
+    public int damage = 5;
     [SerializeField] private float attackCooldown = 0.3f;
     [SerializeField] private float hitboxRadius = 1.0f;
     
     private Quaternion targetRotation;
     private float initialCooldown;
     private bool canAttack = true;
-
+    private bool isAttacking = false;
     private Vector3 clickedVector;
 
     private Vector2Int latestLook = Vector2Int.zero;
@@ -58,21 +58,22 @@ public class Player : MonoBehaviour
         if (attackCooldown <= 0) canAttack = true;
         Attack();
 
+        if (!isAttacking)
+        {
+            Attack();
+            StartCoroutine(MovementDelay());
 
+            if (Input.GetKeyDown(KeyCode.F))
+            {
+                BlockPlacement();
+            }
+        }
 
 
         currentPosition = entity.coords;
 
-        StartCoroutine(MovementDelay());
-
-
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * angleTransTime);
 
-
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            BlockPlacement();
-        }
     }
     void TryMove(Vector2Int direction, float yRotation)
     {
@@ -185,10 +186,14 @@ public class Player : MonoBehaviour
 
     private IEnumerator AttackLungeRoutine(Vector3 direction)
     {
+        isAttacking = true;
         Vector3 basePos = GridManager.Instance.CoordToWorldPos(GetComponent<Entity>().coords);
 
+        Vector3 boardUp = GridManager.Instance.transform.up;
 
-        Quaternion baseRot = Quaternion.LookRotation(direction, Vector3.up);
+        Vector3 flatDirection = Vector3.ProjectOnPlane(direction, boardUp).normalized;
+
+        Quaternion baseRot = Quaternion.LookRotation(flatDirection, boardUp);
 
         float angleY = baseRot.eulerAngles.y;
         if (angleY > 180f)
@@ -202,11 +207,12 @@ public class Player : MonoBehaviour
         {
             distanceMultiplier = 1f + (Mathf.Abs(angleY - 90f) / 90f) * 2f;
         }
-        else 
+        else
         {
             distanceMultiplier = 1f + (Mathf.Abs(angleY + 90f) / 90f) * 2f;
         }
-        Vector3 lungeTarget = basePos + (direction * distanceMultiplier) + (Vector3.up * 0.5f);
+
+        Vector3 lungeTarget = basePos + (flatDirection * distanceMultiplier) + (boardUp * 0.5f);
 
         Quaternion tiltRot = baseRot * Quaternion.Euler(-xRot, direction.y - dirYOffset, 0);
 
@@ -235,6 +241,8 @@ public class Player : MonoBehaviour
 
         transform.position = basePos;
         transform.rotation = baseRot;
+
+        isAttacking = false;
     }
 
     void BlockPlacement()

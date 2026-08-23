@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,14 +9,15 @@ public class ShootingLaser : MonoBehaviour
     private Entity entity;
 
     [SerializeField] private Animator animator;
-    
+
     [Header("Laser Settings")]
     [SerializeField] private Transform lazerSpawnPoint;
     public int laserDamage = 5;
-    public float chargeTime = 0.5f;   
-    public float laserDuration = 0.2f; 
+    public float chargeTime = 0.5f;
+    public float laserDuration = 2.0f;
 
     private bool isAttacking = false;
+    public List<Vector2Int> firezone;
 
     void Start()
     {
@@ -26,7 +26,7 @@ public class ShootingLaser : MonoBehaviour
 
         laserLine = GetComponent<LineRenderer>();
         laserLine.enabled = false;
-        laserLine.useWorldSpace = true; 
+        laserLine.useWorldSpace = true;
         animator.SetBool("IsAttacking", isAttacking);
         StartCoroutine(BehaviorLoop());
     }
@@ -59,13 +59,13 @@ public class ShootingLaser : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (isAttacking)
+        if (isAttacking && laserLine.enabled)
         {
             laserLine.SetPosition(0, lazerSpawnPoint.position);
+            laserLine.SetPosition(1, lazerSpawnPoint.position + (transform.forward * 500f));
         }
     }
 
-    // TODO: Move towards nearest player axis instead, so that the enemy doesn't awkwardly move close to us
     private void MoveTowardsAlignment(Vector2Int playerPos, Vector2Int myPos)
     {
         List<Vector2Int> possibleTiles = GridManager.Instance.GetTilesInRange(myPos, 1);
@@ -82,9 +82,7 @@ public class ShootingLaser : MonoBehaviour
             }
         }
         GridManager.Instance.RotateEntityToTarget(entity, bestCoord);
-
         GridManager.Instance.MoveEntity(entity, bestCoord, 1.5f);
-
     }
 
     private IEnumerator AttackSequence(Vector2Int lockedTargetPos)
@@ -92,47 +90,59 @@ public class ShootingLaser : MonoBehaviour
         isAttacking = true;
         animator.SetBool("HasFinished", false);
         animator.SetBool("IsAttacking", true);
+
         Vector3 targetWorldPos = GameManager.instance.playerEntity.transform.position;
-        this.transform.LookAt(new Vector3(targetWorldPos.x, targetWorldPos.y, targetWorldPos.z));
+        GridManager.Instance.RotateEntityToTargetWithY(this.transform, targetWorldPos);
+        List<Vector2Int> dangerZone = new List<Vector2Int>();
+
         if (entity.coords.x == GameManager.instance.playerEntity.coords.x)
         {
-            var dangerZone = GridManager.Instance.GetNodeByX(entity.coords.x);
-            TargetingController.instance.ShowAttackWarning(dangerZone, 0.5f);
+            dangerZone = new List<Vector2Int>(GridManager.Instance.GetNodeByX(entity.coords.x));
+            if (entity.coords.y <= GameManager.instance.playerEntity.coords.y)
+                dangerZone.RemoveAll(zone => zone.y < entity.coords.y); 
+            else
+                dangerZone.RemoveAll(zone => zone.y > entity.coords.y);
         }
         else
         {
-            var dangerZone = GridManager.Instance.GetNodeByY(entity.coords.y);
-            TargetingController.instance.ShowAttackWarning(dangerZone, 0.5f);
+            dangerZone = new List<Vector2Int>(GridManager.Instance.GetNodeByY(entity.coords.y));
+            if (entity.coords.x <= GameManager.instance.playerEntity.coords.x)
+                dangerZone.RemoveAll(zone => zone.x < entity.coords.x);
+            else
+                dangerZone.RemoveAll(zone => zone.x > entity.coords.x);
         }
+
+        firezone = dangerZone;
+        TargetingController.instance.ShowAttackWarning(dangerZone, chargeTime);
         yield return new WaitForSeconds(chargeTime);
-
-        transform.LookAt(new Vector3(targetWorldPos.x, GameManager.instance.playerEntity.transform.position.y, targetWorldPos.z));
-        FireLaser();
-        yield return new WaitForSeconds(laserDuration);
-        laserLine.enabled = false;
-        animator.SetBool("IsAttacking", false);
-        animator.SetBool("HasFinished", true);
-        yield return new WaitForSeconds(GameManager.instance.fixedSecondRate);
-        isAttacking = false;
-    }
-
-    void FireLaser()
-    {
-        Entity player = GameManager.instance.playerEntity;
-
-
-        if (entity.coords.x == player.coords.x || entity.coords.y == player.coords.y)
-        {
-            player.TakeDamage(laserDamage);
-        }
 
         laserLine.enabled = true;
 
-        Vector3 startPos = lazerSpawnPoint.position;
-        laserLine.SetPosition(0, startPos);
+        float attackTimer = 0f;
+        float damageTickTimer = 0f;
 
-        Vector3 shootDirection = this.transform.forward;
-        Vector3 endPos = startPos + (shootDirection * 500f);
-        laserLine.SetPosition(1, endPos);
+        while (attackTimer < laserDuration)
+        {
+            attackTimer += Time.deltaTime;
+            damageTickTimer += Time.deltaTime;
+
+            if (damageTickTimer >= 0.1f)
+            {
+                Entity player = GameManager.instance.playerEntity;
+                if (firezone.Contains(player.coords))
+                {
+                    player.TakeDamage(laserDamage);
+                }
+                damageTickTimer = 0f;
+            }
+            yield return null;
+        }
+
+        laserLine.enabled = false;
+        animator.SetBool("IsAttacking", false);
+        animator.SetBool("HasFinished", true);
+
+        yield return new WaitForSeconds(GameManager.instance.fixedSecondRate);
+        isAttacking = false;
     }
 }

@@ -383,6 +383,18 @@ public class GridManager : MonoBehaviour
         target += nodeToRotateTo.transform.up * 1.5f;
         entity.transform.LookAt(target);
     }
+    public void RotateEntityToTargetWithY(Transform objectToRotate, Vector3 targetWorldPos)
+    {
+        Vector3 boardUp = transform.up;
+        Vector3 rawDirection = targetWorldPos - objectToRotate.position;
+
+        Vector3 flatDirection = Vector3.ProjectOnPlane(rawDirection, boardUp);
+
+        if (flatDirection != Vector3.zero)
+        {
+            objectToRotate.rotation = Quaternion.LookRotation(flatDirection, boardUp);
+        }
+    }
 
     public float GetExactPlatformHeight(Vector3 targetPosition)
     {

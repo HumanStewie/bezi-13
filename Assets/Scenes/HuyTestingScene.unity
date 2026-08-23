@@ -894,7 +894,7 @@ Transform:
   m_GameObject: {fileID: 637645730}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1593.4756, y: -0.00001, z: 1667.5375}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1190,6 +1190,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 759627006}
   m_CullTransparentMesh: 1
+--- !u!1001 &894132112
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1154371613314712141, guid: cab0648d504c49447a88f339ae8ee2bb, type: 3}
+      propertyPath: m_Name
+      value: HandLazer
+      objectReference: {fileID: 0}
+    - target: {fileID: 7347757843571502449, guid: cab0648d504c49447a88f339ae8ee2bb, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7347757843571502449, guid: cab0648d504c49447a88f339ae8ee2bb, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7347757843571502449, guid: cab0648d504c49447a88f339ae8ee2bb, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7347757843571502449, guid: cab0648d504c49447a88f339ae8ee2bb, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7347757843571502449, guid: cab0648d504c49447a88f339ae8ee2bb, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7347757843571502449, guid: cab0648d504c49447a88f339ae8ee2bb, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7347757843571502449, guid: cab0648d504c49447a88f339ae8ee2bb, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7347757843571502449, guid: cab0648d504c49447a88f339ae8ee2bb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7347757843571502449, guid: cab0648d504c49447a88f339ae8ee2bb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7347757843571502449, guid: cab0648d504c49447a88f339ae8ee2bb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: cab0648d504c49447a88f339ae8ee2bb, type: 3}
 --- !u!1 &921174814
 GameObject:
   m_ObjectHideFlags: 0
@@ -2781,8 +2838,12 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3386371047611388895, guid: 6462bfda5ec6dc24f97545ab40456218, type: 3}
+      propertyPath: fixedStep
+      value: 0.007
+      objectReference: {fileID: 0}
+    - target: {fileID: 3386371047611388895, guid: 6462bfda5ec6dc24f97545ab40456218, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3386371047611388895, guid: 6462bfda5ec6dc24f97545ab40456218, type: 3}
       propertyPath: tippingPoint
@@ -2931,3 +2992,4 @@ SceneRoots:
   - {fileID: 409032323}
   - {fileID: 1650290966}
   - {fileID: 637645731}
+  - {fileID: 894132112}

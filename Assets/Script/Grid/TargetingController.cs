@@ -9,6 +9,8 @@ public class TargetingController : MonoBehaviour
 
     public GameObject warningPrefab;
 
+    public float targetscale = 1f;
+
     private void Awake()
     {
         instance = this;
@@ -29,18 +31,21 @@ public class TargetingController : MonoBehaviour
 
         foreach (Vector2Int coord in dangerZone)
         {
-            Vector3 tileCenter = GridManager.Instance.CoordToWorldPos(coord);
+            if (gridManager.Grid.TryGetValue(coord, out Node node))
+            {
+                Vector3 spawnPos = node.transform.position + (node.transform.up * 1.01f);
 
-            Vector3 spawnPos = tileCenter + new Vector3(0, 1.01f, 0);
+                GameObject decal = Instantiate(warningPrefab, spawnPos, Quaternion.identity, node.transform);
 
-            GameObject decal = Instantiate(warningPrefab, spawnPos, Quaternion.Euler(90, 0, 0));
-            decal.transform.localScale = Vector3.one * 0.1f;
+                decal.transform.localScale = Vector3.one * 0.1f;
+                decal.transform.localRotation = Quaternion.Euler(90, 0, 0);
 
-            activeDecals.Add(decal);
+                activeDecals.Add(decal);
+            }
         }
 
         float elapsed = 0f;
-        Vector3 targetScale = new Vector3(2f, 2f, 2f);
+        Vector3 targetScale = Vector3.one * targetscale;
 
         while (elapsed < duration)
         {
