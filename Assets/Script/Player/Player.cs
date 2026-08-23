@@ -155,6 +155,7 @@ public class Player : MonoBehaviour
             var node = GridManager.Instance.GetTileInMouse(Input.mousePosition);
             if (node)
             {
+                Debug.Log("yessss");
                 Attack(node);
                 if (upgrades.CanBlock2)
                 {

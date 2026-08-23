@@ -68,7 +68,7 @@ public class GameManager : MonoBehaviour
 
             foreach (Entity entity in entities)
             {
-                if (entity.entityName != "Player")
+                if (entity.entityName != "Player" && entity.entityName != "Block")
                 {
                     enemiesStillAlive = true;
                     break;

@@ -207,12 +207,11 @@ public class GridManager : MonoBehaviour
             {
                 if (rayHit.collider.TryGetComponent<Node>(out Node node))
                 {
-                    ChangeTileColor(node.cords, Color.red);
                     return node;
                 }
                 else if (rayHit.collider.TryGetComponent<Entity>(out Entity entity))
                 {
-                    return GetNodeBelowFeet(CoordToWorldPos(entity.coords));
+                    return grid.GetValueOrDefault(entity.coords);
                 }
             }
         }
@@ -424,6 +423,13 @@ public class GridManager : MonoBehaviour
         return grid.GetValueOrDefault(WorldToCoord(targetPosition));
     }
 
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawSphere(rayStartPoint, 1);
+        Gizmos.color = Color.red;
+        Gizmos.DrawRay(rayStartPoint, Vector3.down * 100f);
+    }
 
     public Vector2Int SelectRandomPossible()
     {
