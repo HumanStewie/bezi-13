@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class Player : MonoBehaviour
 {
@@ -78,21 +79,33 @@ public class Player : MonoBehaviour
 
         if (!GridManager.Instance.CheckTileExistence(targetPos)) return;
 
-        Entity entitys = GridManager.Instance.entities.GetValueOrDefault(targetPos);
-
-        if (entitys != null && entitys.entityName == "Block")
+        
+        Collider[] colliders = Physics.OverlapBox(GridManager.Instance.CoordToWorldPos(targetPos), new Vector3(0.5f, 8f, 0.5f));
+        if (colliders.Length > 0)
         {
-            Debug.Log("op");
-            Transform block = entitys.transform;
-            block.SetParent(this.transform);
-            Blocks.Add(block.GetComponent<Entity>());
-            block.localPosition = new Vector3(0, 2, 0);
-            GridManager.Instance.UnregisterEntity(entitys);
-            entity.weight += entitys.weight;
+            foreach (var col in colliders)
+            {
+                if (col.TryGetComponent(out Entity e) && e.entityName is not "Block") return;
+                if (!col.TryGetComponent(out Block b)) continue;
+                
+                Transform block = b.transform;
+                block.SetParent(this.transform);
+                Blocks.Add(block.GetComponent<Entity>());
+                block.localPosition = new Vector3(0, 2, 0);
+                
+                entity.weight += b.GetComponent<Entity>().weight;
+            }
         }
 
         upgrades.OnPlayerMoved(this.entity.coords);
         GridManager.Instance.MoveEntity(this.entity, targetPos);
+        if (Blocks.Count > 0)
+        {
+            foreach (var b in Blocks)
+            {
+                b.coords = entity.coords;
+            }
+        }
         targetRotation = Quaternion.Euler(xRotationOffset, yRotation, 0);
         latestLook = direction;
     }
@@ -227,6 +240,7 @@ public class Player : MonoBehaviour
     {
         Vector2Int placeLocation = this.entity.coords + latestLook;
         Node nodeToPlace = GridManager.Instance.Grid.GetValueOrDefault(placeLocation);
+        if (!nodeToPlace) return;
         Vector3 spawnPos = nodeToPlace.transform.position;
         spawnPos += nodeToPlace.transform.up * 1.6f;
         if (Blocks.Count > 0)

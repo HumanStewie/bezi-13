@@ -1,8 +1,5 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering.RenderGraphModule;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public enum TargetShape
@@ -40,7 +37,7 @@ public class GridManager : MonoBehaviour
     public Dictionary<Vector2Int, Node> Grid { get { return grid; } }
     Dictionary<Vector2Int, Node> grid = new Dictionary<Vector2Int, Node>();
     
-    public Dictionary<Vector2Int, Entity> entities = new Dictionary<Vector2Int, Entity>();
+    public Dictionary<Vector2Int, HashSet<Entity>> entities = new Dictionary<Vector2Int, HashSet<Entity>>();
     
     private void Awake()
     {
@@ -338,25 +335,31 @@ public class GridManager : MonoBehaviour
 
     public void RegisterEntity(Entity entity)
     {
-        entities.Add(entity.coords, entity);
+        if (!entities.TryGetValue(entity.coords, out var set))
+        {
+            set = new HashSet<Entity>();
+            entities.Add(entity.coords, set);
+        }
+        set.Add(entity);
     }
 
     public void UnregisterEntity(Entity entity)
     {
-        entities.Remove(entity.coords);
+        if (!entities.TryGetValue(entity.coords, out var set)) return;
+        set.Remove(entity);
+        if (set.Count == 0) entities.Remove(entity.coords);
     }
     
     public void MoveEntity(Entity entity, Vector2Int targetCoord, float yOffset = 1.0f)
     {
         if (!grid.ContainsKey(targetCoord)) return;
-        if (entities.TryGetValue(targetCoord, out var occupant) && occupant != entity) return; // If there's someone there already, stop
+        // if (entities.TryGetValue(targetCoord, out var set) && set.Count > 0) return; // If there's someone there already, stop
         UnregisterEntity(entity);
         Node nodeToMove = grid.GetValueOrDefault(targetCoord);
         Vector3 newPos = nodeToMove.transform.position;
         newPos += nodeToMove.transform.up * yOffset;
         entity.transform.position = newPos;
         entity.coords = targetCoord;
-
         RegisterEntity(entity);
     }
     

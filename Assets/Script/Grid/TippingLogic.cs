@@ -86,8 +86,8 @@ public class TippingLogic : MonoBehaviour
         float xCM = 0f;
         float yCM = 0f;
         
-        foreach (Entity entity in GridManager.Instance.entities.Values)
-        {
+        foreach (Entity entity in FindObjectsByType<Entity>(FindObjectsSortMode.None))
+        {   
             totalWeight += entity.weight;
             xCM += entity.coords.x * entity.weight;
             yCM += entity.coords.y * entity.weight;
