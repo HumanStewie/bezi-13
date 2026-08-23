@@ -52,6 +52,7 @@ public class Player : MonoBehaviour
         transform.SetParent(GameManager.instance.transform);
         GridManager.Instance.RegisterEntity(entity);
         upgrades = GetComponent<PlayerUpgrades>();
+        SummonBlock();
     }
     void Update()
     {
@@ -147,6 +148,7 @@ public class Player : MonoBehaviour
         }
         Debug.Log(Blocks.Count);
     }
+    
 
     void Attack()
     {
@@ -180,32 +182,34 @@ public class Player : MonoBehaviour
 
     void Attack(Node node)
     {
-        if (node.cords == currentPosition)
-        {
-            return;
-        }
-        
+        if (node.cords == currentPosition) return;
+
         canAttack = false;
+
+        Vector3 boardUp = GridManager.Instance.transform.up;
+
         Vector3 nodeWorldPosition = node.transform.position;
-        nodeWorldPosition.y += 1f;
+        nodeWorldPosition += boardUp * 1f; 
+
         clickedVector = (nodeWorldPosition - transform.position).normalized * 2f;
-        
-        targetRotation = Quaternion.LookRotation(clickedVector, Vector3.up);
-        Vector3 forwardDirection = clickedVector.normalized;
+
+        Vector3 flatDirection = Vector3.ProjectOnPlane(clickedVector, boardUp);
+        if (flatDirection != Vector3.zero)
+        if (flatDirection != Vector3.zero)
+        {
+            targetRotation = Quaternion.LookRotation(flatDirection, boardUp);
+
+            transform.rotation = targetRotation;
+        }
+
+        Vector3 forwardDirection = transform.forward;
+
         StartCoroutine(AttackLungeRoutine(forwardDirection));
 
-        if (upgrades.canShoot)
-        {
+        if (upgrades.canShoot) { Shoot(forwardDirection); }
+        if (upgrades.canShoot2) { Shoot(-forwardDirection); }
 
-            Shoot(forwardDirection);
-        }
-        if (upgrades.canShoot2)
-        {
-            Shoot(-forwardDirection);
-        }
-        
-
-        Collider[]  colliders = Physics.OverlapSphere(clickedVector + Vector3.up * 1f + transform.position, hitboxRadius);
+        Collider[] colliders = Physics.OverlapSphere(transform.position + (forwardDirection * 1f) + (boardUp * 1f), hitboxRadius);
         foreach (var col in colliders)
         {
             if (col.TryGetComponent(out Entity entity))
@@ -215,11 +219,12 @@ public class Player : MonoBehaviour
                     entity.TakeDamage(damage);
                     if (upgrades.WeightLessNess)
                     {
-                        entity.GetComponent<Rigidbody>().mass = 0;
+                        entity.weight = 0;
                     }
                 }
             }
         }
+
         attackCooldown = initialCooldown;
         upgrades.AttackCounter += 1;
         GetComponent<PlayerUpgrades>().OnGenericAction();
@@ -235,94 +240,78 @@ public class Player : MonoBehaviour
     private IEnumerator AttackLungeRoutine(Vector3 direction)
     {
         isAttacking = true;
-        
-        /*Vector3 basePos = GridManager.Instance.CoordToWorldPos(GetComponent<Entity>().coords);
-
-        Vector3 boardUp = GridManager.Instance.transform.up;
-
-        Vector3 flatDirection = Vector3.ProjectOnPlane(direction, boardUp).normalized;
-
-        Quaternion baseRot = Quaternion.LookRotation(flatDirection, boardUp);
-
-        float angleY = baseRot.eulerAngles.y;
-        if (angleY > 180f)
-        {
-            angleY -= 360f;
-        }
-
-        float distanceMultiplier = 1f;
-
-        if (angleY >= 0f && angleY <= 180f)
-        {
-            distanceMultiplier = 1f + (Mathf.Abs(angleY - 90f) / 90f) * 2f;
-        }
-        else
-        {
-            distanceMultiplier = 1f + (Mathf.Abs(angleY + 90f) / 90f) * 2f;
-        }
-
-        Vector3 lungeTarget = basePos + (flatDirection * distanceMultiplier) + (boardUp * 0.5f);
-
-        Quaternion tiltRot = baseRot * Quaternion.Euler(-xRot, direction.y - dirYOffset, 0);*/
-
         float lungeSpeed = lungeTime;
         float elapsed = 0f;
         animator.SetBool("IsAttacking", isAttacking);
         animator.Play("DominoAttack");
-        while (elapsed < lungeSpeed)
+        while (elapsed < lungeSpeed * 2)
         {
             elapsed += Time.deltaTime;
-            /*float t = elapsed / lungeSpeed;
-            transform.position = Vector3.Lerp(basePos, lungeTarget, t);
-            transform.rotation = Quaternion.Slerp(baseRot, tiltRot, t);*/
             yield return null;
         }
-
-        elapsed = 0f;
-
-        while (elapsed < lungeSpeed)
-        {
-            elapsed += Time.deltaTime;
-            /*float t = elapsed / lungeSpeed;
-            transform.position = Vector3.Lerp(lungeTarget, basePos, t);
-            transform.rotation = Quaternion.Slerp(tiltRot, baseRot, t);*/
-            yield return null;
-        }
-
-        /*transform.position = basePos;
-        transform.rotation = baseRot;*/
         
         isAttacking = false;
         animator.SetBool("IsAttacking", isAttacking);
-        
     }
 
 
     public void ResetAllBlock()
     {
-        foreach (var block in Blocks)
+        for (int i = Blocks.Count - 1; i >= 0; i--)
         {
-            Blocks.Remove(block);
-            Destroy(block);
+            Entity block = Blocks[i];
+
+            this.entity.weight -= block.weight;
+
+            Destroy(block.gameObject);
         }
+
+        Blocks.Clear();
     }
 
     public void SummonBlock()
     {
-        GameObject block = Instantiate(BlockPrefab);
-        block.transform.SetParent(this.transform);
-        Blocks.Add(block.GetComponent<Entity>());
-        block.transform.localPosition = new Vector3(0, 2, 0);
+        GameObject blockObj = Instantiate(BlockPrefab);
+
+        Entity blockEntity = blockObj.GetComponent<Entity>();
+        Blocks.Add(blockEntity);
+
+        blockObj.GetComponent<Block>().isHeld = true;
+        blockEntity.coords = this.entity.coords;
+        this.entity.weight += blockEntity.weight;
+
+        StartCoroutine(ForceParentAtEndOfFrame(blockObj, Blocks.Count));
+    }
+
+    private IEnumerator ForceParentAtEndOfFrame(GameObject blockObj, int stackCount)
+    {
+        yield return new WaitForEndOfFrame();
+
+        if (blockObj != null)
+        {
+            blockObj.transform.SetParent(this.transform);
+
+            blockObj.transform.localRotation = Quaternion.identity;
+
+            Vector3 currentPos = blockObj.transform.localPosition;
+            currentPos.y = stackCount * 2f;
+            currentPos.x = 0f;
+            currentPos.z = 0f;
+            blockObj.transform.localPosition = currentPos;
+        }
     }
 
     private void Shoot(Vector3 shootDirection)
     {
         if (projectile == null || shootDirection == Vector3.zero) return;
 
-        Quaternion bulletRotation = Quaternion.LookRotation(shootDirection, Vector3.up);
+        Vector3 boardUp = GridManager.Instance.transform.up;
 
-        GameObject bullet = Instantiate(projectile, transform.position, bulletRotation);
-        bullet.transform.SetParent(GridManager.Instance.transform, true);
+        Quaternion bulletRotation = Quaternion.LookRotation(shootDirection, boardUp);
+
+        Vector3 spawnPos = transform.position + (boardUp * 0.5f) + (shootDirection * 0.5f);
+
+        GameObject bullet = Instantiate(projectile, spawnPos, bulletRotation, GridManager.Instance.transform);
     }
 
     private void ThrowBlock(Node node)
@@ -343,37 +332,44 @@ public class Player : MonoBehaviour
         float throwDuration = 0.5f;
         float arcHeight = 3f;
 
+        Entity thrownBlockEntity = Blocks[0];
+        GameObject blockObj = thrownBlockEntity.gameObject;
+        Blocks.Remove(thrownBlockEntity);
 
-        Blocks[0].transform.parent = null;
-        Blocks[0].transform.position = GridManager.Instance.CoordToWorldPos(Blocks[0].coords) + new Vector3(0, 2, 0);
-        GameObject block = Blocks[0].gameObject;
-        Blocks.Remove(Blocks[0]);
+        this.entity.weight -= thrownBlockEntity.weight;
 
+        blockObj.transform.SetParent(GridManager.Instance.transform);
 
-        Vector3 nodeWorldPosition = new Vector3(node.gameObject.transform.position.x, 1, node.gameObject.transform.position.z);
-        clickedVector = (nodeWorldPosition - transform.position).normalized * 2f;
+        Vector3 boardUp = GridManager.Instance.transform.up;
+        Vector3 rawDirection = node.transform.position - transform.position;
+        Vector3 flatDirection = Vector3.ProjectOnPlane(rawDirection, boardUp);
+        if (flatDirection != Vector3.zero)
+        {
+            targetRotation = Quaternion.LookRotation(flatDirection, boardUp);
+        }
 
-        targetRotation = Quaternion.LookRotation(clickedVector, Vector3.up);
-
+        Vector3 startPos = transform.position + (boardUp * 2f); 
+        Vector3 endPos = node.transform.position + (boardUp * 1f); 
 
         while (timed < throwDuration)
         {
-            if (block == null) yield break;
+            if (blockObj == null) yield break;
 
             timed += Time.deltaTime;
             float percent = timed / throwDuration;
 
-            Vector3 currentPos = Vector3.Lerp(transform.position + new Vector3(0,2,0), GridManager.Instance.CoordToWorldPos(node.cords) + new Vector3(0,1,0), percent);
+            Vector3 currentPos = Vector3.Lerp(startPos, endPos, percent);
 
-            currentPos.y += 4f * arcHeight * percent * (1f - percent);
+            float currentArc = 4f * arcHeight * percent * (1f - percent);
+            currentPos += boardUp * currentArc;
 
-            block.transform.position = currentPos;
+            blockObj.transform.position = currentPos;
 
-            block.transform.Rotate(Vector3.right * 1000f * Time.deltaTime);
+            blockObj.transform.Rotate(Vector3.right * 1000f * Time.deltaTime, Space.Self);
 
             if (upgrades.ProfessionalHater)
             {
-                Collider[] hitColliders = Physics.OverlapBox(currentPos, new Vector3(0.75f, 0.75f, 0.75f), Quaternion.identity);
+                Collider[] hitColliders = Physics.OverlapBox(currentPos, new Vector3(0.75f, 0.75f, 0.75f), GridManager.Instance.transform.rotation);
                 foreach (var col in hitColliders)
                 {
                     if (col.TryGetComponent(out Entity enemy) && enemy.name != "Player")
@@ -383,6 +379,16 @@ public class Player : MonoBehaviour
                 }
             }
             yield return null;
+        }
+
+        if (blockObj != null)
+        {
+            blockObj.transform.position = endPos;
+            blockObj.transform.rotation = node.transform.rotation;
+
+            thrownBlockEntity.coords = node.cords;
+            thrownBlockEntity.GetComponent<Block>().isHeld = false;
+            GridManager.Instance.RegisterEntity(thrownBlockEntity);
         }
     }
 }

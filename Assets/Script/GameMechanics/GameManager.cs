@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Unity.Mathematics;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -30,6 +29,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private bool started = false;
     [SerializeField] private bool checking = false;
 
+
+    [SerializeField] private Material weightLess;
 
     public int enemyKillCount = 0; 
     private void Awake()
@@ -112,7 +113,7 @@ public class GameManager : MonoBehaviour
             resetCount = 2;
         }
     }
- 
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.P) && !started)
@@ -122,49 +123,81 @@ public class GameManager : MonoBehaviour
         }
         CheckIfWaveDone();
 
-        if (Input.GetKeyDown(ResetKeyCode))
+        if (Input.GetKeyDown(ResetKeyCode) && resetCount > 0)
         {
-            GridManager.Instance.transform.rotation = Quaternion.identity;
             resetCount -= 1;
+            ResetBoardPhysics();
         }
-        if (playerUpgrades.Omniboardtent)
+
+        if (playerUpgrades.Omniboardtent && enemyKillCount >= 5)
         {
-            if (enemyKillCount >= 5)
-            {
-                GridManager.Instance.transform.rotation = Quaternion.identity;
-            }
+            enemyKillCount = 0;
+            ResetBoardPhysics();
         }
+    }
+    private void ResetBoardPhysics()
+    {
+        GridManager.Instance.transform.rotation = Quaternion.identity;
+
+        TippingLogic tipping = GridManager.Instance.GetComponent<TippingLogic>();
+        if (tipping != null) tipping.ForceResetTilt();
     }
 
     private void PossessEnemies()
     {
         Entity[] entities = FindObjectsByType<Entity>(FindObjectsSortMode.None);
+        List<Entity> pool = new List<Entity>();
 
-        List<Entity> pool = new List<Entity>(entities);
-        List<Entity> chosenItems = new List<Entity>();
+        foreach (Entity e in entities)
+        {
+            if (e.entityName != "Player" && e.entityName != "Block")
+            {
+                pool.Add(e);
+            }
+        }
 
         int amountToPick = Mathf.Min(3, pool.Count);
+        if (amountToPick == 0) return;
 
+        List<Entity> chosenItems = new List<Entity>();
         for (int i = 0; i < amountToPick; i++)
         {
             int randomIndex = UnityEngine.Random.Range(0, pool.Count);
-
             chosenItems.Add(pool[randomIndex]);
-
             pool.RemoveAt(randomIndex);
         }
 
         if (playerUpgrades.Possess1)
         {
-            chosenItems[0].GetComponent<Rigidbody>().mass = 0;
+            chosenItems[0].weight = 0;
+            AddMaterial(chosenItems[0].GetComponentInChildren<SkinnedMeshRenderer>(), weightLess);
         }
         else if (playerUpgrades.Possess2)
         {
             for (int i = 0; i < chosenItems.Count; i++)
             {
-                chosenItems[i].GetComponent<Rigidbody>().mass = 0;
+                chosenItems[i].weight = 0;
+                AddMaterial(chosenItems[i].GetComponentInChildren<SkinnedMeshRenderer>(), weightLess);
             }
         }
+    }
+
+    void AddMaterial(SkinnedMeshRenderer skinnedMeshRenderer, Material extraMat)
+    {
+        if (skinnedMeshRenderer == null || extraMat == null) return;
+
+        Material[] currentMats = skinnedMeshRenderer.materials;
+
+        Material[] newMats = new Material[currentMats.Length + 1];
+
+        for (int i = 0; i < currentMats.Length; i++)
+        {
+            newMats[i] = currentMats[i];
+        }
+
+        newMats[newMats.Length - 1] = extraMat;
+
+        skinnedMeshRenderer.materials = newMats;
     }
 
     void InstatiateEnemy(GameObject enemy)
@@ -175,7 +208,7 @@ public class GameManager : MonoBehaviour
 
     void Wave1()
     {
-        float valueCost = 5.5f;
+        float valueCost = 3.5f;
 
         while (valueCost > 0) {
             int rand = UnityEngine.Random.Range(0, 3);

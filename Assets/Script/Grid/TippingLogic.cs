@@ -14,7 +14,9 @@ public class TippingLogic : MonoBehaviour
     [SerializeField] private float tiltAcceleration = 45f;
     [SerializeField] private float maxAngularVelocity = 30f;
     [SerializeField] private float damping = 0.95f;
-    
+
+    private bool isFrozen = false;
+
     [Header("UI References")]
     [SerializeField] private TextMeshProUGUI tippingPoint;
     private Quaternion targetRotation;
@@ -32,7 +34,7 @@ public class TippingLogic : MonoBehaviour
         tippingPoint.text = $"X-Axis Tilt: {xTilt}\nZ-Axis Tilt: {zTilt}";
         StartCoroutine(Rotate());
     }
-    
+
     /// <summary>
     /// IEnumerator but not necessary. Get Center of Mass, get torque from it, which is also acceleration, stripped out of magnitude
     /// So we apply it again then add it together.
@@ -46,26 +48,29 @@ public class TippingLogic : MonoBehaviour
     {
         while (true)
         {
-            centerOfMass = GetCenterOfMass();
-            if (centerOfMass.magnitude > 0.005)
+            if (!isFrozen)
             {
-                Vector3 tiltAxis = Vector3.Cross(Vector3.up, centerOfMass);
-                
-                Vector3 angularAcceleration = tiltAxis * tiltAcceleration;
-                currentAngularVelocity += angularAcceleration;
-            }
-            else
-            {
-                currentAngularVelocity = Vector3.zero;
+                centerOfMass = GetCenterOfMass();
+                if (centerOfMass.magnitude > 0.005)
+                {
+                    Vector3 tiltAxis = Vector3.Cross(Vector3.up, centerOfMass);
+                    Vector3 angularAcceleration = tiltAxis * tiltAcceleration;
+                    currentAngularVelocity += angularAcceleration;
+                }
+                else
+                {
+                    currentAngularVelocity = Vector3.zero;
+                }
+
+                currentAngularVelocity *= damping;
+                currentAngularVelocity = Vector3.ClampMagnitude(currentAngularVelocity, maxAngularVelocity);
+                targetRotation = Quaternion.AngleAxis(currentAngularVelocity.magnitude * fixedStep, currentAngularVelocity.normalized);
+
+                transform.rotation = targetRotation * transform.rotation;
+                xTilt = transform.rotation.x;
+                zTilt = transform.rotation.z;
             }
 
-            currentAngularVelocity *= damping;
-            currentAngularVelocity = Vector3.ClampMagnitude(currentAngularVelocity, maxAngularVelocity);
-            targetRotation = Quaternion.AngleAxis(currentAngularVelocity.magnitude * fixedStep, currentAngularVelocity.normalized);
-            
-            transform.rotation = targetRotation * transform.rotation;
-            xTilt = transform.rotation.x;
-            zTilt = transform.rotation.z;
             yield return new WaitForSeconds(secondsPerTick);
         }
     }
@@ -94,9 +99,33 @@ public class TippingLogic : MonoBehaviour
         
         return new Vector3(xCM, 2, yCM);
     }
+    public void ApplyPillarManBuff(float weightMultiplier, float accelerationMultiplier)
+    {
+        if (gridManager != null)
+        {
+            gridManager.gridWeight *= weightMultiplier;
+        }
 
+        tiltAcceleration *= accelerationMultiplier;
+
+    }
     private void Update()
     {
         tippingPoint.text = $"WS Tilt: {xTilt}\nAD Tilt: {zTilt}";
+    }
+
+    public void SetFreeze(bool frozen)
+    {
+        isFrozen = frozen;
+        if (frozen)
+        {
+            currentAngularVelocity = Vector3.zero;
+        }
+    }
+    public void ForceResetTilt()
+    {
+        currentAngularVelocity = Vector3.zero;
+        xTilt = 0f;
+        zTilt = 0f;
     }
 }

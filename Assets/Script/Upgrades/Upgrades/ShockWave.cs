@@ -16,7 +16,7 @@ public class Shockwave : MonoBehaviour
 
     void Update()
     {
-        transform.position += transform.forward * speed * Time.deltaTime;
+        transform.Translate(Vector3.forward * speed * Time.deltaTime);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -28,8 +28,6 @@ public class Shockwave : MonoBehaviour
             hitEntity.TakeDamage(damage);
 
             hitEntities.Add(hitEntity);
-
-            Debug.Log($"Shockwave hit {hitEntity.gameObject.name} for {damage} damage!");
         }
     }
 }

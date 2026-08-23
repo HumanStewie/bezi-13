@@ -3,8 +3,8 @@ using UnityEngine;
 public class SpinningBall : MonoBehaviour
 {
     [Header("Orbit Settings")]
-    public float orbitRadius = 1.5f;
-    public float spinSpeed = 100f;
+    public float orbitRadius = 3f;
+    public float spinSpeed = 200f;
     public int damage = 3;
 
     private Transform targetPlayer;

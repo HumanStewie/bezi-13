@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerUpgrades : MonoBehaviour
@@ -19,7 +18,7 @@ public class PlayerUpgrades : MonoBehaviour
     private int secondsActive = 0;
     private Entity entity;
 
-    public GameObject legoPrefab;
+    public List<GameObject> legoPrefab;
     public GameObject shockWavePrefab;
     public int AttackCounter = 0;
     public bool shockWaveable;
@@ -97,8 +96,8 @@ public class PlayerUpgrades : MonoBehaviour
             case "GoldenWind": onTickAbilities += GoldenWind1; break;
             case "GoldenWind2": onTickAbilities -= GoldenWind1; onTickAbilities += GoldenWind2; break;
 
-            case "PillarMan": onUpdateAbilities += PillarMan1; break;
-            case "PillarMan2": onUpdateAbilities -= PillarMan1; onUpdateAbilities += PillarMan2; break;
+            case "PillarMan": PillarMan1(); break;
+            case "PillarMan2": PillarMan2(); break;
 
             case "TheGreatReset": CanReset = true; break;
             case "TheGreatReset2": CanReset = false; CanReset2 = true; break;
@@ -112,62 +111,106 @@ public class PlayerUpgrades : MonoBehaviour
 
     private void LegoWalk(Vector2Int oldPos)
     {
-        GameObject lego = Instantiate(legoPrefab, GridManager.Instance.CoordToWorldPos(oldPos), Quaternion.identity, GridManager.Instance.transform);
+        var rand = UnityEngine.Random.Range(0, 3);
+
+        Node tileNode = GridManager.Instance.Grid.GetValueOrDefault(oldPos);
+        if (tileNode == null) return;
+
+        GameObject lego = Instantiate(legoPrefab[rand]);
+        lego.transform.SetParent(GridManager.Instance.transform);
+
+        Vector3 boardUp = GridManager.Instance.transform.up;
+        Vector3 flatDirection = Vector3.ProjectOnPlane(transform.forward, boardUp);
+        if (flatDirection != Vector3.zero)
+        {
+            lego.transform.rotation = Quaternion.LookRotation(flatDirection, boardUp);
+        }
+
+        lego.transform.position = tileNode.transform.position;
+
+        lego.transform.localPosition = new Vector3(lego.transform.localPosition.x, 1.2f, lego.transform.localPosition.z);
         lego.GetComponent<Lego>().Damage = 3;
         lego.GetComponent<Lego>().selfDestructTime = 3;
     }
 
     private void LegoWalk2(Vector2Int oldPos)
     {
-        GameObject lego = Instantiate(legoPrefab, GridManager.Instance.CoordToWorldPos(oldPos), Quaternion.identity, GridManager.Instance.transform);
+        var rand = UnityEngine.Random.Range(0, 3);
+
+        Node tileNode = GridManager.Instance.Grid.GetValueOrDefault(oldPos);
+        if (tileNode == null) return;
+
+        GameObject lego = Instantiate(legoPrefab[rand]);
+        lego.transform.SetParent(GridManager.Instance.transform);
+
+        Vector3 boardUp = GridManager.Instance.transform.up;
+        Vector3 flatDirection = Vector3.ProjectOnPlane(transform.forward, boardUp);
+        if (flatDirection != Vector3.zero)
+        {
+            lego.transform.rotation = Quaternion.LookRotation(flatDirection, boardUp);
+        }
+
+        lego.transform.position = tileNode.transform.position;
+
+        lego.transform.localPosition = new Vector3(lego.transform.localPosition.x, 1.2f, lego.transform.localPosition.z);
         lego.GetComponent<Lego>().Damage = 5;
         lego.GetComponent<Lego>().selfDestructTime = 7;
     }
 
     private void GoldenWind1()
     {
-        if (secondsActive % 10 == 0)
+        if (secondsActive > 0 && secondsActive % 10 == 0)
         {
-            Vector2Int chosenTile = GridManager.Instance.SelectRandomPossible();
-            GridManager.Instance.ChangeTileColor(chosenTile, Color.yellow);
+            StartCoroutine(GoldenWindMechanic(5f));
+        }
+    }
 
-            if (entity.coords == chosenTile)
-            {
-                StartCoroutine(FreezeGridRoutine(5f, chosenTile));
-            }
+    private void GoldenWind2()
+    {
+        if (secondsActive > 0 && secondsActive % 7 == 0)
+        {
+            StartCoroutine(GoldenWindMechanic(4f));
+        }
+    }
+
+    private IEnumerator GoldenWindMechanic(float freezeDuration)
+    {
+        Vector2Int chosenTile = GridManager.Instance.SelectRandomPossible();
+        GridManager.Instance.ChangeTileColor(chosenTile, Color.yellow);
+
+        yield return new WaitForSeconds(2f);
+
+        if (entity.coords == chosenTile)
+        {
+            yield return StartCoroutine(FreezeGridRoutine(freezeDuration, chosenTile));
+        }
+        else
+        {
+            GridManager.Instance.ChangeTileColor(chosenTile, Color.white);
         }
     }
 
     private IEnumerator FreezeGridRoutine(float duration, Vector2Int tile)
     {
-        GridManager.Instance.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotation;
+        TippingLogic tipping = GridManager.Instance.GetComponent<TippingLogic>();
+
+        if (tipping != null) tipping.SetFreeze(true);
 
         yield return new WaitForSeconds(duration);
 
-        GridManager.Instance.GetComponent<Rigidbody>().freezeRotation = false;
+        if (tipping != null) tipping.SetFreeze(false);
         GridManager.Instance.ChangeTileColor(tile, Color.white);
-    }
-
-    private void GoldenWind2()
-    {
-        if (secondsActive % 7 == 0)
-        {
-            Vector2Int chosenTile = GridManager.Instance.SelectRandomPossible();
-            GridManager.Instance.ChangeTileColor(chosenTile, Color.yellow);
-
-            if (entity.coords == chosenTile)
-            {
-                StartCoroutine(FreezeGridRoutine(4f, chosenTile));
-            }
-        }
     }
     private void RageQuit()
     {
         if (AttackCounter >= 4)
         {
             AttackCounter = 0;
-            Vector3 spawnPos = transform.position + transform.forward * 1f;
-            GameObject shockWave = Instantiate(shockWavePrefab, spawnPos, transform.rotation);
+            Vector3 boardUp = GridManager.Instance.transform.up;
+
+            Vector3 spawnPos = transform.position + (transform.forward * 1f) + (boardUp * 0.5f);
+
+            GameObject shockWave = Instantiate(shockWavePrefab, spawnPos, transform.rotation, GridManager.Instance.transform);
         }
     }
 
@@ -176,8 +219,10 @@ public class PlayerUpgrades : MonoBehaviour
         if (AttackCounter >= 3)
         {
             AttackCounter = 0;
-            Vector3 spawnPos = transform.position + transform.forward * 1f;
-            GameObject shockWave = Instantiate(shockWavePrefab, spawnPos, transform.rotation);
+            Vector3 boardUp = GridManager.Instance.transform.up;
+            Vector3 spawnPos = transform.position + (transform.forward * 1f) + (boardUp * 0.5f);
+
+            GameObject shockWave = Instantiate(shockWavePrefab, spawnPos, transform.rotation, GridManager.Instance.transform);
             shockWave.GetComponent<Shockwave>().damage = 8;
             shockWave.GetComponent<Shockwave>().lifetime = 6;
         }
@@ -192,15 +237,34 @@ public class PlayerUpgrades : MonoBehaviour
         Instantiate(spinningBall);
         Instantiate(spinningBall);
     }
-    private void PillarMan1() { }
-    private void PillarMan2() { }
+    private void PillarMan1()
+    {
+        TippingLogic tipping = GridManager.Instance.GetComponent<TippingLogic>();
+
+        if (tipping != null)
+        {
+            tipping.ApplyPillarManBuff(1.5f, 0.8f);
+        }
+    }
+
+    private void PillarMan2()
+    {
+        TippingLogic tipping = GridManager.Instance.GetComponent<TippingLogic>();
+
+        if (tipping != null)
+        {
+            tipping.ApplyPillarManBuff(2.0f, 0.6f);
+        }
+    }
     private void Professional()
     {
         if (AttackCounter >= 3)
         {
             AttackCounter = 0;
-            Vector3 spawnPos = transform.position + transform.forward * 1f;
-            GameObject shockWave = Instantiate(shockWavePrefab, spawnPos, transform.rotation);
+            Vector3 boardUp = GridManager.Instance.transform.up;
+            Vector3 spawnPos = transform.position + (transform.forward * 1f) + (boardUp * 0.5f);
+
+            GameObject shockWave = Instantiate(shockWavePrefab, spawnPos, transform.rotation, GridManager.Instance.transform);
             shockWave.GetComponent<Shockwave>().damage = 10;
             shockWave.GetComponent<Shockwave>().lifetime = 6;
         }

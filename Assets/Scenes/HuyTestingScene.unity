@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: cc421da483ed06c49933077a621bff25, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -1367,7 +1367,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &921174815
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3009,13 +3009,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2435725570440873794, guid: f0d7a7dba6b7ac54db2db8d78d1b809b, type: 3}
-      propertyPath: m_Constraints
-      value: 114
+    - target: {fileID: 5893565407996569, guid: f0d7a7dba6b7ac54db2db8d78d1b809b, type: 3}
+      propertyPath: weight
+      value: 10
       objectReference: {fileID: 0}
-    - target: {fileID: 7413625820205238997, guid: f0d7a7dba6b7ac54db2db8d78d1b809b, type: 3}
-      propertyPath: damage
-      value: 5
+    - target: {fileID: 1309904002155684049, guid: f0d7a7dba6b7ac54db2db8d78d1b809b, type: 3}
+      propertyPath: Possess1
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1309904002155684049, guid: f0d7a7dba6b7ac54db2db8d78d1b809b, type: 3}
+      propertyPath: Possess2
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1309904002155684049, guid: f0d7a7dba6b7ac54db2db8d78d1b809b, type: 3}
+      propertyPath: shockWaveable
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7876006513180433605, guid: f0d7a7dba6b7ac54db2db8d78d1b809b, type: 3}
       propertyPath: m_Name

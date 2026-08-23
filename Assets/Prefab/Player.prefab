@@ -105,7 +105,6 @@ GameObject:
   - component: {fileID: 2435725570440873794}
   - component: {fileID: 2416887012953939688}
   - component: {fileID: 1309904002155684049}
-  - component: {fileID: 8862755209919740179}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -146,7 +145,7 @@ MonoBehaviour:
   coords: {x: 0, y: 0}
   currentHealth: 1
   maxHealth: 100
-  weight: 40
+  weight: 60
   bloodParticle: {fileID: 7243542710608240285, guid: 777701eed9e92b046afcbc5750b8fd03, type: 3}
 --- !u!114 &7413625820205238997
 MonoBehaviour:
@@ -163,12 +162,12 @@ MonoBehaviour:
   currentPosition: {x: 0, y: 0}
   angleTransTime: 15
   xRotationOffset: 0
-  damage: 1
+  damage: 5
   attackCooldown: 0.3
   hitboxRadius: 1
   animator: {fileID: 1920902819739611272}
-  BlockPrefab: {fileID: 0}
-  projectile: {fileID: 1497308509255535280, guid: 5348222ba638c674b858500fe1652f71, type: 3}
+  BlockPrefab: {fileID: 1696014419685673171, guid: b5ca5a7212fc94c49a041d5566b796a0, type: 3}
+  projectile: {fileID: 4741905443230284382, guid: dce14a49eb986974f8431f760037979f, type: 3}
   WRotation: 0
   SRotation: 180
   ARotation: -90
@@ -201,7 +200,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 122
+  m_Constraints: 114
   m_CollisionDetection: 0
 --- !u!65 &2416887012953939688
 BoxCollider:
@@ -239,8 +238,11 @@ MonoBehaviour:
   upgrades: []
   canShoot: 0
   canShoot2: 0
-  legoPrefab: {fileID: 0}
-  shockWavePrefab: {fileID: 0}
+  legoPrefab:
+  - {fileID: 7422115686499104053, guid: 42e10eb35263bef48a413d15386e05b1, type: 3}
+  - {fileID: 2113879849023138932, guid: e8fd68eaf9ea17047a919b2f9e284909, type: 3}
+  - {fileID: 394071838919246500, guid: 2637ad85bee166647aa81678f16ddd9b, type: 3}
+  shockWavePrefab: {fileID: 6892767067741490629, guid: b41bf39e6e03fca49abf1d8916639025, type: 3}
   AttackCounter: 0
   shockWaveable: 0
   CanReset: 0
@@ -253,37 +255,7 @@ MonoBehaviour:
   ProfessionalHater: 0
   foldUnderPressure: 0
   Omniboardtent: 0
-  spinningBall: {fileID: 0}
---- !u!114 &8862755209919740179
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7876006513180433605}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60e37893b3ebeb947adbbce7d2040c62, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerUpgrades
-  upgrades: []
-  canShoot: 0
-  canShoot2: 0
-  legoPrefab: {fileID: 0}
-  shockWavePrefab: {fileID: 0}
-  AttackCounter: 0
-  shockWaveable: 0
-  CanReset: 1
-  CanReset2: 0
-  CanBlock: 0
-  CanBlock2: 0
-  Possess1: 0
-  Possess2: 0
-  WeightLessNess: 0
-  ProfessionalHater: 0
-  foldUnderPressure: 0
-  Omniboardtent: 0
-  spinningBall: {fileID: 0}
+  spinningBall: {fileID: 3728475232393189797, guid: 874cc84e7c11a0a4c971283648e58836, type: 3}
 --- !u!1001 &3554013397012313572
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -8,8 +8,12 @@ public class Block : MonoBehaviour
     private Rigidbody rb;
     void Start()
     {
+        if (!isHeld)
+        {
+            transform.SetParent(GridManager.Instance.transform);
+
+        }
         rb = GetComponent<Rigidbody>();
-        transform.SetParent(GridManager.Instance.transform);
         GridManager.Instance.RegisterEntity(entity);
         GridManager.Instance.MoveEntity(entity, entity.coords);
     }

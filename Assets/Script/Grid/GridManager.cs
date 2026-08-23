@@ -18,7 +18,6 @@ public class GridManager : MonoBehaviour
     [Header("Grid Setttings")]
     [SerializeField] float tileSize;
     [SerializeField] private GameObject tilePrefab;
-    [SerializeField] private GameObject pivotPoint;
     [SerializeField] private float yMoveOffset = 0.5f;
     public float gridWeight = 5f;
     [Header("References")]
@@ -85,8 +84,6 @@ public class GridManager : MonoBehaviour
                 }
             }
         }
-
-        Instantiate(pivotPoint, new Vector3(centerX, -2, centerY), Quaternion.identity);
     }
 
 
