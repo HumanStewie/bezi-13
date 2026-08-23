@@ -14,9 +14,10 @@ public class Node : MonoBehaviour
 
     public void Start()
     {
-        startSprite = this.GetComponent<MeshFilter>().mesh;
-        tileRenderer = GetComponent<Renderer>();
-        filter = GetComponent<MeshFilter>();
+        filter = GetComponentInChildren<MeshFilter>();
+        startSprite = filter.mesh;
+        tileRenderer = GetComponentInChildren<Renderer>();
+        
 
         if (tileRenderer != null && tileRenderer.material != null)
         {
@@ -44,6 +45,6 @@ public class Node : MonoBehaviour
     }
     public void Highlight(Color newColor)
     {
-        tileRenderer.material.color = newColor;
+        tileRenderer.materials[2].color = newColor;
     }
 }
