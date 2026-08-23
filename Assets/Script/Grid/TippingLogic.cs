@@ -7,8 +7,10 @@ using UnityEngine.UI;
 
 public class TippingLogic : MonoBehaviour
 {
-    [Header("Physics Settings")]
-    [SerializeField] private float ticksPerSecond = 3f;
+    [Header("Physics Settings")] 
+    [SerializeField] private float secondsPerTick = 3f;
+
+    [SerializeField] private float fixedStep = 0.33f;
     [SerializeField] private float tiltAcceleration = 45f;
     [SerializeField] private float maxAngularVelocity = 30f;
     [SerializeField] private float damping = 0.95f;
@@ -20,7 +22,9 @@ public class TippingLogic : MonoBehaviour
     private GridManager gridManager;
     private float xTilt;
     private float zTilt;
-
+    private Vector3 centerOfMass;
+    private float totalEntityInertia;
+    private float totalWeight;
     private void Start()
     {
         currentAngularVelocity = Vector3.zero;
@@ -28,16 +32,26 @@ public class TippingLogic : MonoBehaviour
         tippingPoint.text = $"X-Axis Tilt: {xTilt}\nZ-Axis Tilt: {zTilt}";
         StartCoroutine(Rotate());
     }
-
+    
+    /// <summary>
+    /// IEnumerator but not necessary. Get Center of Mass, get torque from it, which is also acceleration, stripped out of magnitude
+    /// So we apply it again then add it together.
+    /// Then we can do some clamping and damping. Lastly just apply the rotation.
+    /// TargetRotation is actually angular velocity, made into quaternion with AngleAxis(). So its acting like a multiplier more.
+    ///
+    /// Basic unbalanced 2D pendulum
+    /// </summary>
+    /// <returns></returns>
     IEnumerator Rotate()
     {
         while (true)
         {
-            Vector3 centerOfMass = GetCenterOfMass();
+            centerOfMass = GetCenterOfMass();
             if (centerOfMass.magnitude > 0.005)
             {
-                Vector3 tiltAxis = Vector3.Cross(Vector3.up, centerOfMass).normalized;
-                Vector3 angularAcceleration = tiltAxis * (centerOfMass.magnitude * tiltAcceleration);
+                Vector3 tiltAxis = Vector3.Cross(Vector3.up, centerOfMass);
+                
+                Vector3 angularAcceleration = tiltAxis * tiltAcceleration;
                 currentAngularVelocity += angularAcceleration;
             }
             else
@@ -47,19 +61,28 @@ public class TippingLogic : MonoBehaviour
 
             currentAngularVelocity *= damping;
             currentAngularVelocity = Vector3.ClampMagnitude(currentAngularVelocity, maxAngularVelocity);
-            targetRotation = Quaternion.AngleAxis(currentAngularVelocity.magnitude * Time.deltaTime, currentAngularVelocity.normalized);
+            targetRotation = Quaternion.AngleAxis(currentAngularVelocity.magnitude * fixedStep, currentAngularVelocity.normalized);
+            
             transform.rotation = targetRotation * transform.rotation;
-            yield return new WaitForSeconds(ticksPerSecond);
+            xTilt = transform.rotation.x;
+            zTilt = transform.rotation.z;
+            yield return new WaitForSeconds(secondsPerTick);
         }
     }
-    
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.white;
+        Gizmos.DrawSphere(centerOfMass, 0.1f);
+    }
+
     /// <summary>
     /// Calculate weight of every entities on the board then output current center of mass
     /// </summary>
     /// <returns></returns>
     private Vector3 GetCenterOfMass()
     {
-        float totalWeight = gridManager.gridWeight;
+        totalWeight = gridManager.gridWeight;
         float xCM = 0f;
         float yCM = 0f;
         
@@ -68,12 +91,17 @@ public class TippingLogic : MonoBehaviour
             totalWeight += entity.weight;
             xCM += entity.coords.x * entity.weight;
             yCM += entity.coords.y * entity.weight;
+            totalEntityInertia += entity.weight * Mathf.Pow(gridManager.GetDistance(entity.coords, Vector2Int.zero), 2);
         }
         
         xCM /= totalWeight;
         yCM /= totalWeight;
-
-        return new Vector3(xCM, 0, yCM);
+        
+        return new Vector3(xCM, 2, yCM);
     }
 
+    private void Update()
+    {
+        tippingPoint.text = $"WS Tilt: {xTilt}\nAD Tilt: {zTilt}";
+    }
 }
