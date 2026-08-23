@@ -1,17 +1,23 @@
+using System;
 using UnityEngine;
 
 public class Block : MonoBehaviour
 {
     [SerializeField] private Entity entity;
-    [SerializeField] private Transform bottom;
-    public bool isHeld;
+    
+    private Rigidbody rb;
     void Start()
     {
+        rb = GetComponent<Rigidbody>();
         transform.SetParent(GridManager.Instance.transform);
         GridManager.Instance.RegisterEntity(entity);
         GridManager.Instance.MoveEntity(entity, entity.coords);
     }
 
+    private void FixedUpdate()
+    {
+        Mathf.Clamp(rb.linearVelocity.y, 0, 0.1f);
+    }
     // void FixedUpdate()
     // {
     //     if (!isHeld)

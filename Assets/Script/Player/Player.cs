@@ -81,20 +81,20 @@ public class Player : MonoBehaviour
         if (!GridManager.Instance.CheckTileExistence(targetPos)) return;
 
         
-        Collider[] colliders = Physics.OverlapBox(GridManager.Instance.CoordToWorldPos(targetPos), new Vector3(0.5f, 8f, 0.5f));
+        Collider[] colliders = Physics.OverlapBox(GridManager.Instance.CoordToWorldPos(targetPos), new Vector3(0.5f, 50f, 0.5f));
         if (colliders.Length > 0)
         {
             foreach (var col in colliders)
             {
                 if (col.TryGetComponent(out Entity e) && e.entityName is not "Block") return;
-                if (!col.TryGetComponent(out Block b)) continue;
+                if (!col.TryGetComponent(out Block _)) continue;
                 
-                Transform block = b.transform;
+                Transform block = e.transform;
                 block.SetParent(this.transform);
-                Blocks.Add(block.GetComponent<Entity>());
-                block.localPosition = new Vector3(0, 2, 0);
+                Blocks.Add(e);
                 
-                entity.weight += b.GetComponent<Entity>().weight;
+                block.localPosition = new Vector3(0, transform.position.y  + Blocks.Count * 2, 0);
+                entity.weight += e.weight;
             }
         }
 
@@ -246,14 +246,15 @@ public class Player : MonoBehaviour
         spawnPos += nodeToPlace.transform.up * 1.6f;
         if (Blocks.Count > 0)
         {
-            entity.weight -= Blocks[0].weight;
-            Blocks[0].transform.SetParent(GridManager.Instance.transform);
-            Blocks[0].coords = placeLocation;
-            Blocks[0].transform.rotation = nodeToPlace.transform.rotation;
-            Blocks[0].transform.position = spawnPos;
-            GridManager.Instance.RegisterEntity(Blocks[0]);
+            Entity lastBlock = Blocks[Blocks.Count - 1];
+            entity.weight -= lastBlock.weight;
+            lastBlock.transform.SetParent(GridManager.Instance.transform);
+            lastBlock.coords = placeLocation;
+            lastBlock.transform.rotation = nodeToPlace.transform.rotation;
+            lastBlock.transform.position = spawnPos;
+            GridManager.Instance.RegisterEntity(lastBlock);
             
-            Blocks.Remove(Blocks[0]);
+            Blocks.Remove(lastBlock);
         }
     }
 

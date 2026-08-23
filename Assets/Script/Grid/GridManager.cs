@@ -30,6 +30,10 @@ public class GridManager : MonoBehaviour
     [SerializeField] private LayerMask hitLayers = ~0;
     [SerializeField] private float maxDistance = 100f;
     [SerializeField] private bool snapToPixelGrid = false;
+
+    [Header("UI Settings")] 
+    [SerializeField] private Camera minimapCamera;
+    
     private RectTransform rawImageRect;
     private Camera uiCamera;
 
@@ -109,7 +113,7 @@ public class GridManager : MonoBehaviour
         node.Initialize(cords);
         grid.Add(cords, node);
     }
-    
+
     public int GetDistance(Vector2Int x, Vector2Int y)
     {
         return Mathf.Abs(x.x - y.x) + Mathf.Abs(x.y - y.y);
