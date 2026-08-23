@@ -82,9 +82,10 @@ public class ShootingHand : MonoBehaviour
 
         Destroy(bullet, 4f);
         
-        animator.SetBool("IsAttacking", false);
 
         yield return new WaitForSeconds(0.67f);
+        animator.SetBool("IsAttacking", false);
+        
         isAttacking = false;
     }
 }
