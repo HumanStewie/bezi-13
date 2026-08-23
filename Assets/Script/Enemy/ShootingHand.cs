@@ -74,15 +74,17 @@ public class ShootingHand : MonoBehaviour
         isAttacking = true;
         Vector3 targetPos = GameManager.instance.playerEntity.transform.position;
         this.transform.LookAt(targetPos);
-
+        List<Vector2Int> newList = new List<Vector2Int>() { GetComponent<Entity>().coords };
+        TargetingController.instance.ShowAttackWarning(newList, ChargingTime);
+        yield return new WaitForSeconds(ChargingTime);
         GameObject bullet = Instantiate(projectile, spawnPoint.transform.position, spawnPoint.transform.rotation);
         bullet.transform.SetParent(GridManager.Instance.transform, true);
-        yield return new WaitForSeconds(ChargingTime);
 
-        Destroy(bullet, 2f);
+        Destroy(bullet, 4f);
         
         animator.SetBool("IsAttacking", false);
 
+        yield return new WaitForSeconds(0.67f);
         isAttacking = false;
     }
 }

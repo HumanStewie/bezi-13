@@ -43,6 +43,8 @@ public class SimpleFollow : MonoBehaviour, IEnemy
     IEnumerator Attacking()
     {
         isAttacking = true;
+        GridManager.Instance.RotateEntityToTarget(entity, GameManager.instance.playerEntity.coords);
+
         animator.SetBool("IsAttacking", true);
         Vector2Int targetTile = GameManager.instance.playerEntity.coords;
         List<Vector2Int> dangerZone = new List<Vector2Int> { targetTile };
@@ -64,6 +66,9 @@ public class SimpleFollow : MonoBehaviour, IEnemy
             yield return null;
         }
         animator.SetBool("IsAttacking", false);
+
+        yield return new WaitForSeconds(0.5f);
+
         isAttacking = false;
     }
 }

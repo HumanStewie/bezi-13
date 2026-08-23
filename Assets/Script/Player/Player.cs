@@ -17,6 +17,7 @@ public class Player : MonoBehaviour
     private Quaternion targetRotation;
     private float initialCooldown;
     private bool canAttack = true;
+
     private Vector3 clickedVector;
 
     private Vector2Int latestLook = Vector2Int.zero;

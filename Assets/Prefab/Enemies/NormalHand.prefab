@@ -50,7 +50,7 @@ MonoBehaviour:
   entityName: NormalHand
   coords: {x: 3, y: 3}
   currentHealth: 0
-  maxHealth: 100
+  maxHealth: 14
   weight: 1
   bloodParticle: {fileID: 7243542710608240285, guid: 777701eed9e92b046afcbc5750b8fd03, type: 3}
 --- !u!114 &3066657023685343071

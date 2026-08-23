@@ -23,7 +23,6 @@ public class Node : MonoBehaviour
             originalColor = tileRenderer.material.color;
         }
     }
-
     public Node(Vector2Int cords)
     {
         this.cords = cords;

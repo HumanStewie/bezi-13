@@ -209,6 +209,10 @@ public class GridManager : MonoBehaviour
                     ChangeTileColor(node.cords, Color.red);
                     return node;
                 }
+                else if (rayHit.collider.TryGetComponent<Entity>(out Entity entity))
+                {
+                    return GetNodeBelowFeet(CoordToWorldPos(entity.coords));
+                }
             }
         }
 
