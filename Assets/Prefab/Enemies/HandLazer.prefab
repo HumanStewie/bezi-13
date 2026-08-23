@@ -221,6 +221,7 @@ MonoBehaviour:
   currentHealth: 0
   maxHealth: 100
   weight: 1
+  bloodParticle: {fileID: 7243542710608240285, guid: 777701eed9e92b046afcbc5750b8fd03, type: 3}
 --- !u!65 &7277715553953291959
 BoxCollider:
   m_ObjectHideFlags: 0

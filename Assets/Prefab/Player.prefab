@@ -105,6 +105,7 @@ GameObject:
   - component: {fileID: 2435725570440873794}
   - component: {fileID: 2416887012953939688}
   - component: {fileID: 1309904002155684049}
+  - component: {fileID: 8862755209919740179}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -142,9 +143,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Entity
   entityName: Player
   coords: {x: 0, y: 0}
-  currentHealth: 0
+  currentHealth: 1
   maxHealth: 100
   weight: 40
+  bloodParticle: {fileID: 7243542710608240285, guid: 777701eed9e92b046afcbc5750b8fd03, type: 3}
 --- !u!114 &7413625820205238997
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -161,14 +163,17 @@ MonoBehaviour:
   angleTransTime: 15
   xRotationOffset: 0
   damage: 1
-  attackCooldown: 1
+  attackCooldown: 0.3
   hitboxRadius: 1
   BlockPrefab: {fileID: 0}
-  projectile: {fileID: 0}
+  projectile: {fileID: 1497308509255535280, guid: 5348222ba638c674b858500fe1652f71, type: 3}
   WRotation: 0
   SRotation: 180
   ARotation: -90
   DRotation: 90
+  dirYOffset: 150
+  lungeTime: 0.1
+  xRot: 35
 --- !u!54 &2435725570440873794
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -237,6 +242,36 @@ MonoBehaviour:
   AttackCounter: 0
   shockWaveable: 0
   CanReset: 0
+  CanReset2: 0
+  CanBlock: 0
+  CanBlock2: 0
+  Possess1: 0
+  Possess2: 0
+  WeightLessNess: 0
+  ProfessionalHater: 0
+  foldUnderPressure: 0
+  Omniboardtent: 0
+  spinningBall: {fileID: 0}
+--- !u!114 &8862755209919740179
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7876006513180433605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60e37893b3ebeb947adbbce7d2040c62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerUpgrades
+  upgrades: []
+  canShoot: 0
+  canShoot2: 0
+  legoPrefab: {fileID: 0}
+  shockWavePrefab: {fileID: 0}
+  AttackCounter: 0
+  shockWaveable: 0
+  CanReset: 1
   CanReset2: 0
   CanBlock: 0
   CanBlock2: 0

@@ -8,6 +8,8 @@ public class Entity : MonoBehaviour
     public float currentHealth;
     public float maxHealth = 100;
     public float weight = 1;
+
+    [SerializeField] private GameObject bloodParticle;
     private void Start()
     {
         currentHealth = maxHealth;
@@ -24,6 +26,7 @@ public class Entity : MonoBehaviour
     public void TakeDamage(float damage)
     {
         this.currentHealth -= damage;
+        Instantiate(bloodParticle, transform.position, Quaternion.identity);
     }
     void Die()
     {

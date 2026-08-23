@@ -10,7 +10,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float angleTransTime = 15f;
     [SerializeField] private float xRotationOffset = 0f;
     public int damage = 1;
-    [SerializeField] private float attackCooldown = 1.0f;
+    [SerializeField] private float attackCooldown = 0.3f;
     [SerializeField] private float hitboxRadius = 1.0f;
     
     private Quaternion targetRotation;
@@ -31,7 +31,15 @@ public class Player : MonoBehaviour
     public float SRotation = 90f;
     public float ARotation = 180f;
     public float DRotation = 0f;
-    
+
+
+
+    [Header("Attack")]
+    public float dirYOffset = 150f;
+    public float lungeTime = 0.1f;
+    public float xRot = 35f;
+
+
     private void Start()
     {
         entity = GetComponent<Entity>();
@@ -126,8 +134,8 @@ public class Player : MonoBehaviour
         clickedVector = (nodeWorldPosition - transform.position).normalized * 2f;
         
         targetRotation = Quaternion.LookRotation(clickedVector, Vector3.up);
-
         Vector3 forwardDirection = clickedVector.normalized;
+        StartCoroutine(AttackLungeRoutine(forwardDirection));
 
         if (upgrades.canShoot)
         {
@@ -138,9 +146,9 @@ public class Player : MonoBehaviour
         {
             Shoot(-forwardDirection);
         }
+        
 
         Collider[]  colliders = Physics.OverlapSphere(clickedVector + Vector3.up * 2f + transform.position, hitboxRadius);
-        
         foreach (var col in colliders)
         {
             if (col.TryGetComponent(out Entity entity))
@@ -156,9 +164,63 @@ public class Player : MonoBehaviour
             }
         }
         attackCooldown = initialCooldown;
-        // TODO: Show particle
         upgrades.AttackCounter += 1;
         GetComponent<PlayerUpgrades>().OnGenericAction();
+
+    }
+
+    private IEnumerator AttackLungeRoutine(Vector3 direction)
+    {
+        Vector3 basePos = GridManager.Instance.CoordToWorldPos(GetComponent<Entity>().coords);
+
+
+        Quaternion baseRot = Quaternion.LookRotation(direction, Vector3.up);
+
+        float angleY = baseRot.eulerAngles.y;
+        if (angleY > 180f)
+        {
+            angleY -= 360f;
+        }
+
+        float distanceMultiplier = 1f;
+
+        if (angleY >= 0f && angleY <= 180f)
+        {
+            distanceMultiplier = 1f + (Mathf.Abs(angleY - 90f) / 90f) * 2f;
+        }
+        else 
+        {
+            distanceMultiplier = 1f + (Mathf.Abs(angleY + 90f) / 90f) * 2f;
+        }
+        Vector3 lungeTarget = basePos + (direction * distanceMultiplier) + (Vector3.up * 0.5f);
+
+        Quaternion tiltRot = baseRot * Quaternion.Euler(-xRot, direction.y - dirYOffset, 0);
+
+        float lungeSpeed = lungeTime;
+        float elapsed = 0f;
+
+        while (elapsed < lungeSpeed)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / lungeSpeed;
+            transform.position = Vector3.Lerp(basePos, lungeTarget, t);
+            transform.rotation = Quaternion.Slerp(baseRot, tiltRot, t);
+            yield return null;
+        }
+
+        elapsed = 0f;
+
+        while (elapsed < lungeSpeed)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / lungeSpeed;
+            transform.position = Vector3.Lerp(lungeTarget, basePos, t);
+            transform.rotation = Quaternion.Slerp(tiltRot, baseRot, t);
+            yield return null;
+        }
+
+        transform.position = basePos;
+        transform.rotation = baseRot;
     }
 
     void BlockPlacement()
@@ -178,8 +240,8 @@ public class Player : MonoBehaviour
             
             Blocks.Remove(Blocks[0]);
         }
-
     }
+
 
     private void OnDrawGizmos()
     {

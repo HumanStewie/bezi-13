@@ -45,9 +45,9 @@ public class SimpleFollow : MonoBehaviour, IEnemy
         Vector2Int targetTile = GameManager.instance.playerEntity.coords;
         List<Vector2Int> dangerZone = new List<Vector2Int> { targetTile };
         TargetingController.instance.ShowAttackWarning(dangerZone, 0.5f);
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1.5f);
 
-        float activeDuration = 0.6f;
+        float activeDuration = 0.3f;
         float timer = 0f;
         bool hasDealtDamage = false;
         GridManager.Instance.MoveEntity(entity, entity.coords, 1.5f);

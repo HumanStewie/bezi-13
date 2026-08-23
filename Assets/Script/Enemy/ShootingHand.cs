@@ -14,6 +14,8 @@ public class ShootingHand : MonoBehaviour
     public float hitRadius = 0.8f;
     public int distanceBeforeShoot = 4;
 
+    [SerializeField] private float ChargingTime = 2;
+
     public bool isAttacking = false;
     void Start()
     {
@@ -75,7 +77,7 @@ public class ShootingHand : MonoBehaviour
 
         GameObject bullet = Instantiate(projectile, spawnPoint.transform.position, spawnPoint.transform.rotation);
         bullet.transform.SetParent(GridManager.Instance.transform, true);
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(ChargingTime);
 
         Destroy(bullet, 2f);
         
