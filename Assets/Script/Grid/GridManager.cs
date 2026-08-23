@@ -523,8 +523,9 @@ public class GridManager : MonoBehaviour
                 lookAtTarget.y = transform.position.y + 1;
                 entity.transform.LookAt(lookAtTarget);
 
-                MoveEntity(entity, bestCoord);
+                MoveEntity(entity, bestCoord, 1.8f);
             }
+            RotateEntityToTargetWithY(entity.transform, CoordToWorldPos(bestCoord));
         }
     }
 }

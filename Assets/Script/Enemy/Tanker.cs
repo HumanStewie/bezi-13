@@ -5,8 +5,11 @@ using UnityEngine;
 public class Tanker : MonoBehaviour
 {
     private bool isAttacking = false;
+    private Entity entity;
     void Start()
     {
+        entity = this.GetComponent<Entity>();
+        GridManager.Instance.MoveEntity(entity, entity.coords, 1.8f);
         StartCoroutine(BehaviorLoop());
     }
 
