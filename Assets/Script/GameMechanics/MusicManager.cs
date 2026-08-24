@@ -1,5 +1,7 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MusicManager : MonoBehaviour
 {
@@ -9,9 +11,21 @@ public class MusicManager : MonoBehaviour
     [SerializeField] private AudioSource bgMusic;
     [SerializeField] private AudioSource soundEffectforUI;
 
+
+
+    [SerializeField] private Slider masterSlider;
+    [SerializeField] private Slider musicSlider;
+    [SerializeField] private Slider sfxSlider;
+
+    private float globalMasterVolume = 1f; 
+    private float masterMusicVolume = 1f;
+    private float masterSFXVolume = 1f;
+
+
+
     [Header("Global Music & Sounds")]
-    [SerializeField] private AudioClip music;
-    [SerializeField, Range(0f, 2f)] private float musicVolume = 0.5f;
+    [SerializeField] public AudioClip music;
+    [SerializeField, Range(0f, 2f)] public float musicVolume = 0.5f;
 
     [SerializeField] private AudioClip movement;
     [SerializeField, Range(0f, 2f)] private float movementVolume = 1f;
@@ -78,6 +92,7 @@ public class MusicManager : MonoBehaviour
     [SerializeField, Range(0f, 2f)] private float blockPlaceVolume = 1f;
 
 
+
     private void Awake()
     {
         Instance = this;
@@ -85,31 +100,75 @@ public class MusicManager : MonoBehaviour
 
     private void Start()
     {
-        if (music != null) playMusic(music, musicVolume);
+        globalMasterVolume = PlayerPrefs.GetFloat("GlobalMasterVolume", 1f); 
+        masterMusicVolume = PlayerPrefs.GetFloat("MusicVolume", 1f);
+        masterSFXVolume = PlayerPrefs.GetFloat("SFXVolume", 1f);
+
+        if (masterSlider != null)
+        {
+            masterSlider.value = globalMasterVolume;
+            masterSlider.onValueChanged.AddListener(SetMasterVolume);
+        }
+
+        if (musicSlider != null)
+        {
+            musicSlider.value = masterMusicVolume;
+            musicSlider.onValueChanged.AddListener(SetMusicVolume);
+        }
+
+        if (sfxSlider != null)
+        {
+            sfxSlider.value = masterSFXVolume;
+            sfxSlider.onValueChanged.AddListener(SetSFXVolume);
+        }
+        if (SceneManager.GetActiveScene().name == "MainMenu")
+        {
+            playMusic(music, musicVolume);
+        }
+    }
+
+    public void SetMasterVolume(float volume)
+    {
+        globalMasterVolume = volume;
+        if (bgMusic != null) bgMusic.volume = musicVolume * masterMusicVolume * globalMasterVolume;
+        PlayerPrefs.SetFloat("GlobalMasterVolume", volume);
+    }
+
+    public void SetMusicVolume(float volume)
+    {
+        masterMusicVolume = volume;
+        if (bgMusic != null) bgMusic.volume = musicVolume * masterMusicVolume * globalMasterVolume;
+        PlayerPrefs.SetFloat("MusicVolume", volume);
+    }
+
+    public void SetSFXVolume(float volume)
+    {
+        masterSFXVolume = volume;
+        PlayerPrefs.SetFloat("SFXVolume", volume);
     }
 
 
     public void playMusic(AudioClip clip, float volume = 1f)
     {
         bgMusic.clip = clip;
-        bgMusic.volume = volume;
+        bgMusic.volume = volume * masterMusicVolume * globalMasterVolume;
         bgMusic.loop = true;
         bgMusic.Play();
     }
 
     public void playUISound(AudioClip clip, float volume = 1f)
     {
-        if (clip != null) soundEffectforUI.PlayOneShot(clip, volume);
+        if (clip != null) soundEffectforUI.PlayOneShot(clip, volume * masterSFXVolume * globalMasterVolume);
     }
 
     public void PlaySFX(AudioClip clip, Vector3 position, float volume = 1f)
     {
-        if (clip != null) AudioSource.PlayClipAtPoint(clip, position, volume);
+        if (clip != null) AudioSource.PlayClipAtPoint(clip, position, volume * masterSFXVolume * globalMasterVolume);
     }
 
     public void PlayTrimmedAudio(AudioClip clip, Vector3 position, float duration, float volume = 1f)
     {
-        if (clip != null) StartCoroutine(TrimmedAudio(clip, position, duration, volume));
+        if (clip != null) StartCoroutine(TrimmedAudio(clip, position, duration, volume * masterSFXVolume * globalMasterVolume));
     }
 
     IEnumerator TrimmedAudio(AudioClip clip, Vector3 position, float duration, float volume = 1f)
@@ -126,6 +185,11 @@ public class MusicManager : MonoBehaviour
         yield return new WaitForSeconds(duration);
 
         Destroy(tempSound);
+    }
+
+    public void ChangeValue()
+    {
+
     }
 
 

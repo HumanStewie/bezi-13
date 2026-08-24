@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -140,7 +141,7 @@ public class GameManager : MonoBehaviour
             
             cinemachineCamera3.Follow = null;
             cinemachineCamera3.LookAt = null;
-
+            SceneManager.LoadScene("MainMenu");
             StartCoroutine(AnimateLoseText("YOU LOST", () =>{}));
             
             gameOver = true;
@@ -307,6 +308,7 @@ public class GameManager : MonoBehaviour
             started = true;
             checking = true;
             currentWave++;
+            MusicManager.Instance.playMusic(MusicManager.Instance.music, MusicManager.Instance.musicVolume);
 
             StartCoroutine(AnimateWaveText("WAVE " + currentWave, () =>
             {
@@ -391,12 +393,11 @@ public class GameManager : MonoBehaviour
         
         Material[] newMats = new Material[currentMats.Length + 1];
 
+        newMats[0] = extraMat;
         for (int i = 0; i < currentMats.Length; i++)
         {
-            newMats[i] = currentMats[i];
+            newMats[i+1] = currentMats[i];
         }
-
-        newMats[newMats.Length - 1] = extraMat;
 
         skinnedMeshRenderer.materials = newMats;
     }

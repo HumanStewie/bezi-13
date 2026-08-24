@@ -56,6 +56,8 @@ MonoBehaviour:
   weight: 4
   bloodParticle: {fileID: 7243542710608240285, guid: 777701eed9e92b046afcbc5750b8fd03, type: 3}
   PoofParticle: {fileID: 7820940365141394766, guid: fa26b780072f649488ba41c22d2af555, type: 3}
+  Filler: {fileID: 0}
+  indicators: []
 --- !u!114 &1602408428318419800
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -258,6 +260,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -1526964690268444965, guid: 6295f702f2112de45896568c927764c5, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -1526964690268444965, guid: 6295f702f2112de45896568c927764c5, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 7269af158601ba74ebf8f0369bf151ff, type: 2}
+    - target: {fileID: -1526964690268444965, guid: 6295f702f2112de45896568c927764c5, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: b4b3d93446e7266459b5080074c97096, type: 2}
+    - target: {fileID: -1526964690268444965, guid: 6295f702f2112de45896568c927764c5, type: 3}
+      propertyPath: 'm_Materials.Array.data[2]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 82500aee7c1e66948a7988a7937e62fb, type: 2}
     - target: {fileID: 919132149155446097, guid: 6295f702f2112de45896568c927764c5, type: 3}
       propertyPath: m_Name
       value: HandBlockOutline
