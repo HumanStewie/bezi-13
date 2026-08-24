@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -13,6 +15,7 @@ public class GameManager : MonoBehaviour
 
     public int currentWave = 0;
 
+    [SerializeField] private TextMeshProUGUI waveText;
 
     [SerializeField] private GameObject NormalHand;
     [SerializeField] private GameObject ShootingHand;
@@ -21,7 +24,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject Exploder;
     [SerializeField] private GameObject LaserShooter;
     [SerializeField] private GameObject Tanker;
-    [SerializeField] private GameObject TheFeet;
 
     int resetCount = 0;
     [SerializeField] private KeyCode ResetKeyCode;
@@ -57,6 +59,17 @@ public class GameManager : MonoBehaviour
                 Wave4(); break;
             case 5:
                 Wave5(); break;
+            case 6:
+                Wave6(); break;
+            case 7:
+                Wave7(); break;
+            case 8:
+                Wave8(); break;
+            case 9:
+                Wave9(); break;
+            case 10:
+                Wave10(); break;
+            default: Wave10(); break;
         }
     }
 
@@ -79,9 +92,12 @@ public class GameManager : MonoBehaviour
             if (!enemiesStillAlive)
             {
                 checking = true;
+                player.enabled = false; 
 
-                UpgradeGrantingLogic.instance.StartGrantingUpgrades();
-                player.enabled = false;
+                StartCoroutine(AnimateWaveText("WAVE CLEARED", () =>
+                {
+                    UpgradeGrantingLogic.instance.StartGrantingUpgrades();
+                }));
             }
         }
     }
@@ -89,38 +105,83 @@ public class GameManager : MonoBehaviour
 
     public void ProceedNextWave()
     {
-        checking = false;
         player.enabled = true;
-        StartWave(currentWave += 1);
 
-        
-        
-        
         player.ResetAllBlock();
-
         PossessEnemies();
-        if (playerUpgrades.CanBlock)
+
+        if (playerUpgrades.CanBlock) { player.SummonBlock(); }
+        if (playerUpgrades.CanReset) { resetCount = 1; }
+        else if (playerUpgrades.CanReset2) { resetCount = 2; }
+
+        currentWave++;
+        StartCoroutine(AnimateWaveText("WAVE " + currentWave, () =>
         {
-            player.SummonBlock();
+            StartWave(currentWave);
+            checking = false;
+        }));
+    }
+
+    private IEnumerator AnimateWaveText(string message, Action onAnimationComplete)
+    {
+        waveText.text = message;
+        waveText.gameObject.SetActive(true);
+
+        RectTransform rect = waveText.rectTransform;
+        Vector2 originalPos = Vector2.zero;
+
+        Color originalColor = waveText.color;
+        originalColor.a = 1f;
+        waveText.color = originalColor;
+
+        float duration = 2f;
+        float elapsed = 0f;
+        float shakeIntensity = 15f; 
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float percent = elapsed / duration;
+
+            float currentScale = Mathf.Lerp(0.5f, 2.5f, percent);
+            rect.localScale = new Vector3(currentScale, currentScale, 1f);
+
+            rect.anchoredPosition = originalPos + new Vector2(
+                UnityEngine.Random.Range(-1f, 1f),
+                UnityEngine.Random.Range(-1f, 1f)) * shakeIntensity;
+
+            if (percent > 0.5f)
+            {
+                float fadePercent = (percent - 0.5f) * 2f;
+                originalColor.a = Mathf.Lerp(1f, 0f, fadePercent);
+                waveText.color = originalColor;
+            }
+
+            yield return null; 
         }
 
-        if (playerUpgrades.CanReset)
-        {
-            resetCount = 1;
-        }
-        else if (playerUpgrades.CanReset2)
-        {
-            resetCount = 2;
-        }
+        waveText.gameObject.SetActive(false);
+        rect.anchoredPosition = originalPos;
+
+        onAnimationComplete?.Invoke(); 
     }
+
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.P) && !started)
         {
-            StartWave(currentWave += 1);
             started = true;
+            checking = true;
+            currentWave++;
+
+            StartCoroutine(AnimateWaveText("WAVE " + currentWave, () =>
+            {
+                StartWave(currentWave);
+                checking = false; 
+            }));
         }
+
         CheckIfWaveDone();
 
         if (Input.GetKeyDown(ResetKeyCode) && resetCount > 0)
@@ -208,138 +269,155 @@ public class GameManager : MonoBehaviour
 
     void Wave1()
     {
-        float valueCost = 3.5f;
-
-        while (valueCost > 0) {
-            int rand = UnityEngine.Random.Range(0, 3);
-            if (rand == 0 || rand == 1)
-            {
-                InstatiateEnemy(NormalHand);
-                valueCost -= 1f;
-            }
-            else
-            {
-                InstatiateEnemy(ShootingHand);
-                valueCost -= 1.5f;
-            }
+        float valueCost = 5f;
+        while (valueCost > 0)
+        {
+            int roll = UnityEngine.Random.Range(0, 100);
+            if (roll < 70) { InstatiateEnemy(NormalHand); valueCost -= 1f; }
+            else { InstatiateEnemy(ShootingHand); valueCost -= 1.5f; }
         }
     }
 
     void Wave2()
     {
-        float valueCost = 6f;
-        Instantiate(Exploder);
+        float valueCost = 8f;
         while (valueCost > 0)
         {
-            int rand = UnityEngine.Random.Range(0, 4);
-
-            if (rand == 0 || rand == 1)
-            {
-                InstatiateEnemy(NormalHand);
-                valueCost -= 1f;
-            }
-            else if (rand == 2)
-            {
-                InstatiateEnemy(ShootingHand);
-                valueCost -= 1.5f;
-            }
-            else
-            {
-                InstatiateEnemy(Exploder);
-                valueCost -= 1.5f;
-            }
+            int roll = UnityEngine.Random.Range(0, 100);
+            if (roll < 60) { InstatiateEnemy(NormalHand); valueCost -= 1f; }
+            else { InstatiateEnemy(ShootingHand); valueCost -= 1.5f; }
         }
     }
+
+
     void Wave3()
     {
-        float valueCost = 8f;
-        InstatiateEnemy(Placer);
+        float valueCost = 11f;
+        InstatiateEnemy(Exploder); 
+        valueCost -= 1.5f;
+
         while (valueCost > 0)
         {
-            int rand = UnityEngine.Random.Range(0, 4);
-
-            if (rand == 0 || rand == 1)
-            {
-                InstatiateEnemy(NormalHand);
-                valueCost -= 1f;
-            }
-            else if (rand == 2)
-            {
-                InstatiateEnemy(ShootingHand);
-                valueCost -= 1.5f;
-            }
-            else if (rand == 3)
-            {
-                InstatiateEnemy(Exploder);
-                valueCost -= 1.5f;
-            }
-            else if (rand == 4)
-            {
-                InstatiateEnemy(Placer);
-                valueCost -= 2f;
-            }
+            int roll = UnityEngine.Random.Range(0, 100);
+            if (roll < 50) { InstatiateEnemy(NormalHand); valueCost -= 1f; }
+            else if (roll < 80) { InstatiateEnemy(ShootingHand); valueCost -= 1.5f; }
+            else { InstatiateEnemy(Exploder); valueCost -= 1.5f; }
         }
     }
 
     void Wave4()
     {
-        float valueCost = 11f;
-        InstatiateEnemy(Placer);
+        float valueCost = 14f;
+        InstatiateEnemy(Placer); 
+        valueCost -= 2f;
+
         while (valueCost > 0)
         {
-            int rand = UnityEngine.Random.Range(0, 4);
-
-            if (rand == 0)
-            {
-                InstatiateEnemy(NormalHand);
-                valueCost -= 1f;
-            }
-            else if (rand == 1 || rand == 2)
-            {
-                InstatiateEnemy(ShootingHand);
-                valueCost -= 1.5f;
-            }
-            else if (rand == 3)
-            {
-                InstatiateEnemy(Exploder);
-                valueCost -= 1.5f;
-            }
-            else if (rand == 5 ||  rand == 4)
-            {
-                Instantiate(Placer);
-                valueCost -= 2f;
-            }
+            int roll = UnityEngine.Random.Range(0, 100);
+            if (roll < 40) { InstatiateEnemy(NormalHand); valueCost -= 1f; }
+            else if (roll < 65) { InstatiateEnemy(ShootingHand); valueCost -= 1.5f; }
+            else if (roll < 85) { InstatiateEnemy(Exploder); valueCost -= 1.5f; }
+            else { InstatiateEnemy(Placer); valueCost -= 2f; }
         }
     }
 
     void Wave5()
     {
-        float valueCost = 11f;
-        InstatiateEnemy(Placer);
+        float valueCost = 17f;
         while (valueCost > 0)
         {
-            int rand = UnityEngine.Random.Range(0, 4);
+            int roll = UnityEngine.Random.Range(0, 100);
+            if (roll < 35) { InstatiateEnemy(NormalHand); valueCost -= 1f; }
+            else if (roll < 60) { InstatiateEnemy(ShootingHand); valueCost -= 1.5f; }
+            else if (roll < 80) { InstatiateEnemy(Exploder); valueCost -= 1.5f; }
+            else { InstatiateEnemy(Placer); valueCost -= 2f; }
+        }
+    }
 
-            if (rand == 0)
-            {
-                InstatiateEnemy(NormalHand);
-                valueCost -= 1f;
-            }
-            else if (rand == 1 || rand == 2)
-            {
-                InstatiateEnemy(ShootingHand);
-                valueCost -= 1.5f;
-            }
-            else if (rand == 3)
-            {
-                InstatiateEnemy(Exploder);
-                valueCost -= 1.5f;
-            }
-            else if (rand == 5 || rand == 4)
-            {
-                InstatiateEnemy(Placer);
-                valueCost -= 2f;
-            }
+
+    void Wave6()
+    {
+        float valueCost = 20f;
+        InstatiateEnemy(LaserShooter);
+        valueCost -= 2.5f;
+
+        while (valueCost > 0)
+        {
+            int roll = UnityEngine.Random.Range(0, 100);
+            if (roll < 30) { InstatiateEnemy(NormalHand); valueCost -= 1f; }
+            else if (roll < 50) { InstatiateEnemy(ShootingHand); valueCost -= 1.5f; }
+            else if (roll < 70) { InstatiateEnemy(Exploder); valueCost -= 1.5f; }
+            else if (roll < 85) { InstatiateEnemy(Placer); valueCost -= 2f; }
+            else { InstatiateEnemy(LaserShooter); valueCost -= 2.5f; }
+        }
+    }
+
+    void Wave7()
+    {
+        float valueCost = 24f;
+        InstatiateEnemy(Tanker);
+        valueCost -= 5f;
+
+        while (valueCost > 0)
+        {
+            int roll = UnityEngine.Random.Range(0, 100);
+            if (roll < 25) { InstatiateEnemy(NormalHand); valueCost -= 1f; }
+            else if (roll < 45) { InstatiateEnemy(ShootingHand); valueCost -= 1.5f; }
+            else if (roll < 60) { InstatiateEnemy(Exploder); valueCost -= 1.5f; }
+            else if (roll < 80) { InstatiateEnemy(Placer); valueCost -= 2f; }
+            else if (roll < 95) { InstatiateEnemy(LaserShooter); valueCost -= 2.5f; }
+            else { InstatiateEnemy(Tanker); valueCost -= 5f; } 
+        }
+    }
+
+
+    void Wave8()
+    {
+        float valueCost = 28f;
+        while (valueCost > 0)
+        {
+            int roll = UnityEngine.Random.Range(0, 100);
+            if (roll < 15) { InstatiateEnemy(NormalHand); valueCost -= 1f; }
+            else if (roll < 30) { InstatiateEnemy(ShootingHand); valueCost -= 1.5f; }
+            else if (roll < 50) { InstatiateEnemy(Exploder); valueCost -= 1.5f; }
+            else if (roll < 70) { InstatiateEnemy(Placer); valueCost -= 2f; }
+            else if (roll < 90) { InstatiateEnemy(LaserShooter); valueCost -= 2.5f; }
+            else { InstatiateEnemy(Tanker); valueCost -= 5f; }
+        }
+    }
+
+    void Wave9()
+    {
+        float valueCost = 32f;
+        while (valueCost > 0)
+        {
+            int roll = UnityEngine.Random.Range(0, 100);
+            if (roll < 15) { InstatiateEnemy(NormalHand); valueCost -= 1f; }
+            else if (roll < 30) { InstatiateEnemy(ShootingHand); valueCost -= 1.5f; }
+            else if (roll < 50) { InstatiateEnemy(Exploder); valueCost -= 1.5f; }
+            else if (roll < 65) { InstatiateEnemy(Placer); valueCost -= 2f; }
+            else if (roll < 85) { InstatiateEnemy(LaserShooter); valueCost -= 2.5f; }
+            else { InstatiateEnemy(Tanker); valueCost -= 5f; }
+        }
+    }
+
+    void Wave10()
+    {
+        float valueCost = 38f;
+
+        InstatiateEnemy(Tanker);
+        InstatiateEnemy(Tanker);
+        valueCost -= 10f;
+
+        while (valueCost > 0)
+        {
+            int roll = UnityEngine.Random.Range(0, 100);
+            if (roll < 10) { InstatiateEnemy(NormalHand); valueCost -= 1f; }
+            else if (roll < 20) { InstatiateEnemy(ShootingHand); valueCost -= 1.5f; }
+            else if (roll < 40) { InstatiateEnemy(Exploder); valueCost -= 1.5f; }
+            else if (roll < 60) { InstatiateEnemy(Placer); valueCost -= 2f; }
+            else if (roll < 80) { InstatiateEnemy(LaserShooter); valueCost -= 2.5f; }
+            else { InstatiateEnemy(Tanker); valueCost -= 5f; }
         }
     }
 }

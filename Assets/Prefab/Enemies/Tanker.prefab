@@ -62,8 +62,8 @@ MonoBehaviour:
   entityName: Tanker
   coords: {x: 2, y: 2}
   currentHealth: 1
-  maxHealth: 100
-  weight: 1
+  maxHealth: 40
+  weight: 6
   bloodParticle: {fileID: 7243542710608240285, guid: 777701eed9e92b046afcbc5750b8fd03, type: 3}
 --- !u!65 &213405625405040083
 BoxCollider:

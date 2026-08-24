@@ -50,8 +50,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GridManager
   gridSize: {x: 20, y: 20}
   tileSize: 2
-  tilePrefab: {fileID: 7513120786703619173, guid: aa93652760aeda34395f1805eb4ed4e2, type: 3}
-  pivotPoint: {fileID: 1569130288128944212, guid: 20ba9fbf72e2113408db11118b70ea2b, type: 3}
+  tilePrefab: {fileID: 2765608812400039143, guid: e80ba1b2f5546c2468aeea6e0f8e3365, type: 3}
   yMoveOffset: 0
   gridWeight: 10
   gameCamera: {fileID: 0}
@@ -75,7 +74,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b0860befbf30404b85ac0b90392dd23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TargetingController
-  warningPrefab: {fileID: 0}
+  warningPrefab: {fileID: 614814539020569832, guid: 77a5fd2fb1e57034386bf7cc8ea0022d, type: 3}
   targetscale: 1
 --- !u!114 &7950982527963067029
 MonoBehaviour:
@@ -92,17 +91,18 @@ MonoBehaviour:
   fixedSecondRate: 1
   playerEntity: {fileID: 0}
   currentWave: 0
+  waveText: {fileID: 0}
   NormalHand: {fileID: 1022106986125710323, guid: aa6ee70c5d61bbf449b028e1cfe2707a, type: 3}
-  ShootingHand: {fileID: 0}
-  Block: {fileID: 0}
-  Placer: {fileID: 0}
-  Exploder: {fileID: 0}
-  LaserShooter: {fileID: 0}
-  Tanker: {fileID: 0}
-  TheFeet: {fileID: 0}
-  ResetKeyCode: 0
+  ShootingHand: {fileID: 8915065813042629455, guid: 904e4b1180bf0f54886c1c1aac1f4548, type: 3}
+  Block: {fileID: 5219621485388388985, guid: 9083295d8e651d54dbdc398fd8a76a87, type: 3}
+  Placer: {fileID: 3117999550218671621, guid: ebe3a624759b24c499c8df0842b59a61, type: 3}
+  Exploder: {fileID: 1022106986125710323, guid: aa6ee70c5d61bbf449b028e1cfe2707a, type: 3}
+  LaserShooter: {fileID: 1154371613314712141, guid: cab0648d504c49447a88f339ae8ee2bb, type: 3}
+  Tanker: {fileID: 404780936182618527, guid: 90d198fd5a2553449a2f2f2b69e65752, type: 3}
+  ResetKeyCode: 32
   started: 0
   checking: 0
+  weightLess: {fileID: 0}
   enemyKillCount: 0
 --- !u!114 &3386371047611388895
 MonoBehaviour:
@@ -116,9 +116,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3770a654b321b51409a43691576186b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TippingLogic
-  secondsPerTick: 2
+  secondsPerTick: 5
   fixedStep: 0.007
-  tiltAcceleration: 45
+  tiltAcceleration: 30
   maxAngularVelocity: 1000
   damping: 0.95
   tippingPoint: {fileID: 0}

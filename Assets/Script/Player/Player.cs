@@ -52,7 +52,6 @@ public class Player : MonoBehaviour
         transform.SetParent(GameManager.instance.transform);
         GridManager.Instance.RegisterEntity(entity);
         upgrades = GetComponent<PlayerUpgrades>();
-        SummonBlock();
     }
     void Update()
     {
@@ -312,6 +311,11 @@ public class Player : MonoBehaviour
         Vector3 spawnPos = transform.position + (boardUp * 0.5f) + (shootDirection * 0.5f);
 
         GameObject bullet = Instantiate(projectile, spawnPos, bulletRotation, GridManager.Instance.transform);
+
+        if (bullet.TryGetComponent(out Bullet bulletScript))
+        {
+            bulletScript.player = true;
+        }
     }
 
     private void ThrowBlock(Node node)

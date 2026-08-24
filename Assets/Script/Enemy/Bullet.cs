@@ -17,15 +17,26 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!player)
-        {
-            if (other.GetComponent<Entity>() != null) { if (other.GetComponent<Entity>().entityName == "Player") GameManager.instance.playerEntity.TakeDamage(damage); } 
+        Entity hitEntity = other.GetComponent<Entity>();
 
-        }
-        else
+        if (hitEntity != null)
         {
-            if (other.GetComponent<Entity>() != null) { other.GetComponent<Entity>().TakeDamage(damage); }
+            if (!player)
+            {
+                if (hitEntity.entityName == "Player")
+                {
+                    GameManager.instance.playerEntity.TakeDamage(damage);
+                    Destroy(gameObject);
+                }
+            }
+            else
+            {
+                if (hitEntity.entityName != "Player")
+                {
+                    hitEntity.TakeDamage(damage);
+                    Destroy(gameObject);
+                }
+            }
         }
-        Destroy(gameObject);
     }
 }
