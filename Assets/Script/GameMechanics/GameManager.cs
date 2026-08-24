@@ -40,6 +40,7 @@ public class GameManager : MonoBehaviour
     int resetCount = 0;
     [SerializeField] private KeyCode ResetKeyCode;
     [SerializeField] private bool started = false;
+    public bool GameStarted => started;
     [SerializeField] private bool checking = false;
     [SerializeField] private Material weightLess;
 

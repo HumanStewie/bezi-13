@@ -224,6 +224,7 @@ if (Input.GetKeyDown(KeyCode.W)) TryMove(wDir, WRotation);
         yield return new WaitForSeconds(0.07f);
     }
 
+    
     void Attack(Node node)
     {
         if (node.cords == currentPosition) return;
@@ -252,7 +253,7 @@ if (Input.GetKeyDown(KeyCode.W)) TryMove(wDir, WRotation);
         if (upgrades.canShoot) { Shoot(forwardDirection); }
         if (upgrades.canShoot2) { Shoot(-forwardDirection); }
 
-        Collider[] colliders = Physics.OverlapSphere(transform.position + (forwardDirection * 1f) + (boardUp * 1f), hitboxRadius);
+        Collider[] colliders = Physics.OverlapSphere(transform.position + (forwardDirection * 2f) + (boardUp * 0.1f), hitboxRadius);
         foreach (var col in colliders)
         {
             if (col.TryGetComponent(out Entity entity))
