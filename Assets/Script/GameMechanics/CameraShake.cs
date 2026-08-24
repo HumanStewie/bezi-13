@@ -1,11 +1,12 @@
 using UnityEngine;
-using Unity.Cinemachine; // Required for Cinemachine 3.x
+using Unity.Cinemachine;
+using System.Collections.Generic;
 
-public class CameraShakeManager : MonoBehaviour
+public class CameraShake : MonoBehaviour
 {
-    public static CameraShakeManager Instance { get; private set; }
+    public static CameraShake Instance { get; private set; }
 
-    private CinemachineBasicMultiChannelPerlin perlinNoise;
+    private List<CinemachineBasicMultiChannelPerlin> allNoises = new List<CinemachineBasicMultiChannelPerlin>();
 
     private float shakeTimer;
     private float shakeTimerTotal;
@@ -13,17 +14,32 @@ public class CameraShakeManager : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance == null) Instance = this;
 
-        perlinNoise = GetComponent<CinemachineBasicMultiChannelPerlin>();
+        CinemachineCamera[] allCams = FindObjectsByType<CinemachineCamera>(FindObjectsSortMode.None);
 
-        perlinNoise.AmplitudeGain = 0f;
+        foreach (var cam in allCams)
+        {
+            var noise = cam.GetComponent<CinemachineBasicMultiChannelPerlin>();
+
+            if (noise != null)
+            {
+                noise.AmplitudeGain = 0f; 
+                allNoises.Add(noise);   
+            }
+        }
     }
+
     public void ShakeCamera(float shakeIntensity, float duration)
     {
-            perlinNoise.AmplitudeGain = shakeIntensity;
-            startingIntensity = shakeIntensity;
-            shakeTimer = duration;
-            shakeTimerTotal = duration;
+        startingIntensity = shakeIntensity;
+        shakeTimer = duration;
+        shakeTimerTotal = duration;
+
+        foreach (var noise in allNoises)
+        {
+            if (noise != null) noise.AmplitudeGain = shakeIntensity;
+        }
     }
 
     private void Update()
@@ -32,9 +48,11 @@ public class CameraShakeManager : MonoBehaviour
         {
             shakeTimer -= Time.deltaTime;
 
-            if (perlinNoise != null)
+            float currentIntensity = Mathf.Lerp(startingIntensity, 0f, 1 - (shakeTimer / shakeTimerTotal));
+
+            foreach (var noise in allNoises)
             {
-                perlinNoise.AmplitudeGain = Mathf.Lerp(startingIntensity, 0f, 1 - (shakeTimer / shakeTimerTotal));
+                if (noise != null) noise.AmplitudeGain = currentIntensity;
             }
         }
     }

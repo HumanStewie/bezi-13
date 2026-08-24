@@ -22,8 +22,8 @@ public class Tanker : MonoBehaviour
     IEnumerator SpawnDropRoutine()
     {
         Vector3 groundedPos = transform.position;
-
         Vector3 skyPos = groundedPos + (GridManager.Instance.transform.up * 8f);
+
         transform.position = skyPos;
 
         float timer = 0f;
@@ -32,21 +32,18 @@ public class Tanker : MonoBehaviour
         while (timer < dropDuration)
         {
             timer += Time.deltaTime;
-
             float percent = timer / dropDuration;
-            float easeInSquare = percent * percent;
-
-            transform.position = Vector3.Lerp(skyPos, groundedPos, easeInSquare);
+            transform.position = Vector3.Lerp(skyPos, groundedPos, percent * percent);
             yield return null;
         }
 
         transform.position = groundedPos;
 
-        if (CameraShakeManager.Instance != null) CameraShakeManager.Instance.ShakeCamera(4f, 0.3f);
+        // Heavy impact polish
+        if (CameraShake.Instance != null) CameraShake.Instance.ShakeCamera(4f, 0.3f);
         if (MusicManager.Instance != null) MusicManager.Instance.PlayBlockPlaceSound(transform.position);
 
-        // The drop is finished, now start the chasing AI
-        StartCoroutine(BehaviorLoop());
+        StartCoroutine(BehaviorLoop()); 
     }
 
     IEnumerator BehaviorLoop()

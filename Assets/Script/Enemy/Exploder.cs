@@ -6,14 +6,44 @@ public class Exploder : MonoBehaviour
 {
     bool isAttacking = false;
     Entity entity;
-    [SerializeField] private float explosionTime;    
-    
+    [SerializeField] private float explosionTime;
+
+    bool isSpawning = true;
+
     void Start()
     {
         entity = GetComponent<Entity>();
-        StartCoroutine(BehaviourLoop());
+
+        transform.SetParent(GridManager.Instance.transform);
+
+        transform.localRotation = Quaternion.identity;
+
+        GridManager.Instance.MoveEntity(entity, entity.coords, 1.0f);
+
+        StartCoroutine(SpawnRiseRoutine());
     }
 
+    IEnumerator SpawnRiseRoutine()
+    {
+        Vector3 finalScale = transform.localScale;
+        transform.localScale = Vector3.zero;
+
+        float timer = 0f;
+        float duration = 0.5f;
+
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+            float percent = Mathf.SmoothStep(0f, 1f, timer / duration);
+            transform.localScale = finalScale * percent;
+            yield return null;
+        }
+
+        transform.localScale = finalScale;
+
+        isSpawning = false;
+        StartCoroutine(BehaviourLoop());
+    }
 
     IEnumerator BehaviourLoop()
     {
@@ -30,7 +60,7 @@ public class Exploder : MonoBehaviour
     void FollowLogic()
     {
         GridManager.Instance.FollowLogic(entity);
-        if (GridManager.Instance.GetDistance(entity.coords, GameManager.instance.playerEntity.GetComponent<Entity>().coords) <= 2)
+        if (GridManager.Instance.GetDistance(entity.coords, GameManager.instance.playerEntity.GetComponent<Entity>().coords) <= 2 && !isSpawning)
         {
             StartCoroutine(Attacking());
         }
@@ -79,6 +109,7 @@ public class Exploder : MonoBehaviour
         }
         yield return null;
         MusicManager.Instance.PlayExplosionSound(transform.position);
+        CameraShake.Instance.ShakeCamera(10f, 0.3f);
         this.GetComponent<Entity>().Die();
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Entity : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class Entity : MonoBehaviour
     [SerializeField] private GameObject bloodParticle;
     [SerializeField] private GameObject PoofParticle;
 
+
+    [SerializeField] private Image Filler;
     public Rigidbody Rigidbody => rb;
     private Rigidbody rb;
 
@@ -35,6 +38,9 @@ public class Entity : MonoBehaviour
         if (currentHealth <= 0)
         {
             Die();
+        }
+        if (Filler != null) {
+            Filler.fillAmount = currentHealth / maxHealth;
         }
     }
     public void TakeDamage(float damage)
