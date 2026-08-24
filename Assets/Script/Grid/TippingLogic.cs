@@ -25,7 +25,6 @@ public class TippingLogic : MonoBehaviour
     private float xTilt;
     private float zTilt;
     private Vector3 centerOfMass;
-    private float totalEntityInertia;
     private float totalWeight;
     private void Start()
     {
@@ -46,7 +45,7 @@ public class TippingLogic : MonoBehaviour
     /// <returns></returns>
     IEnumerator Rotate()
     {
-        while (true)
+        while (!GameManager.instance.gameOver)
         {
             if (!isFrozen)
             {
@@ -91,7 +90,6 @@ public class TippingLogic : MonoBehaviour
             totalWeight += entity.weight;
             xCM += entity.coords.x * entity.weight;
             yCM += entity.coords.y * entity.weight;
-            totalEntityInertia += entity.weight * Mathf.Pow(gridManager.GetDistance(entity.coords, Vector2Int.zero), 2);
         }
         
         xCM /= totalWeight;

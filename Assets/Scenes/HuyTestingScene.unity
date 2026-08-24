@@ -3268,6 +3268,10 @@ PrefabInstance:
       propertyPath: tippingPoint
       value: 
       objectReference: {fileID: 1192773443}
+    - target: {fileID: 3386371047611388895, guid: 6462bfda5ec6dc24f97545ab40456218, type: 3}
+      propertyPath: secondsPerTick
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 7950982527963067029, guid: 6462bfda5ec6dc24f97545ab40456218, type: 3}
       propertyPath: waveText
       value: 

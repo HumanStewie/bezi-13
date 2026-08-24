@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -38,7 +39,8 @@ public class GridManager : MonoBehaviour
     Dictionary<Vector2Int, Node> grid = new Dictionary<Vector2Int, Node>();
     
     public Dictionary<Vector2Int, HashSet<Entity>> entities = new Dictionary<Vector2Int, HashSet<Entity>>();
-    
+    public Rigidbody Rigidbody => rb;
+    private Rigidbody rb;
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -47,20 +49,16 @@ public class GridManager : MonoBehaviour
         // If Canvas is Screen Space - Overlay, uiCamera must be null
         uiCamera = canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera;
     }
-    private void Update()
+
+    private void Start()
     {
-        float currentTilt = Vector3.Angle(Vector3.up, transform.up);
+        rb = GetComponent<Rigidbody>();
+        rb.isKinematic = true;
+    }
 
-        if (currentTilt >= 45f)
-        {
-            transform.rotation = Quaternion.identity;
-            GameObject.FindWithTag("Player").transform.position = new Vector3(0, 1, 0);
-        }
-
-        if (currentTilt > 0) // if tilting, rotate the moving plane
-        {
-            
-        }
+    public float GetCurrentTilt()
+    {
+        return Vector3.Angle(Vector3.up, transform.up);
     }
     private void GenerateGrid()
     {
@@ -86,6 +84,27 @@ public class GridManager : MonoBehaviour
         }
     }
 
+    public void ApplyRandomForceToAllEntities()
+    {
+        foreach (var entity in FindObjectsByType<Entity>(FindObjectsSortMode.None))
+        {
+            Vector3 randomForce = new Vector3(UnityEngine.Random.Range(-5f, 5f), UnityEngine.Random.Range(-5f, 5f), UnityEngine.Random.Range(-5f, 5f));
+            if (entity.entityName == "Player")
+            {
+                entity.Rigidbody.isKinematic = false;
+                entity.Rigidbody.constraints = RigidbodyConstraints.None;
+                entity.Rigidbody.AddTorque(new Vector3(-3f, 3f, 5f), ForceMode.Impulse);
+                entity.Rigidbody.AddForce(Vector3.down, ForceMode.Impulse);
+            }
+
+            entity.Rigidbody.constraints = RigidbodyConstraints.None;
+            entity.Rigidbody.detectCollisions = true;
+            entity.Rigidbody.isKinematic = false;
+            entity.Rigidbody.AddForce(randomForce, ForceMode.Impulse);
+            entity.Rigidbody.AddTorque(randomForce, ForceMode.Impulse);
+            
+        }
+    }
 
     private void GenerateNode(int x, int y)
     {

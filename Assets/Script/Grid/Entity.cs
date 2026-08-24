@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Entity : MonoBehaviour
@@ -10,8 +11,21 @@ public class Entity : MonoBehaviour
     public float weight = 1;
 
     [SerializeField] private GameObject bloodParticle;
+
+    public Rigidbody Rigidbody => rb;
+    private Rigidbody rb;
+
+
+
     private void Start()
     {
+        rb = GetComponent<Rigidbody>();
+
+        if (entityName is not ("Player" or "Block"))
+        {
+            rb.isKinematic = true;
+            rb.detectCollisions = false;
+        }
         currentHealth = maxHealth;
         coords = GridManager.Instance.WorldToCoord(this.transform.position);
         transform.SetParent(GridManager.Instance.transform);

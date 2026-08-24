@@ -43,9 +43,13 @@ public class Player : MonoBehaviour
     public float lungeTime = 0.1f;
     public float xRot = 35f;
 
+    public Rigidbody Rigidbody => rb;
+    private Rigidbody rb;
 
     private void Start()
     {
+        rb = GetComponent<Rigidbody>();
+        rb.isKinematic = false;
         entity = GetComponent<Entity>();
         initialCooldown = attackCooldown;
         targetRotation = transform.rotation;
@@ -55,6 +59,7 @@ public class Player : MonoBehaviour
     }
     void Update()
     {
+        if (GameManager.instance.gameOver) return;
         if (!canAttack)
             attackCooldown -= Time.deltaTime;
         if (attackCooldown <= 0) canAttack = true;
