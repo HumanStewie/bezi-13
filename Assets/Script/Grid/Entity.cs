@@ -25,7 +25,6 @@ public class Entity : MonoBehaviour
         if (entityName is not ("Player" or "Block"))
         {
             rb.isKinematic = true;
-            rb.detectCollisions = false;
         }
         currentHealth = maxHealth;
         coords = GridManager.Instance.WorldToCoord(this.transform.position);
