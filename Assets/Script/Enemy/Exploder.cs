@@ -80,7 +80,6 @@ public class Exploder : MonoBehaviour
             }
         }
         yield return null;
-        GridManager.Instance.UnregisterEntity(this.GetComponent<Entity>());
         MusicManager.Instance.PlayExplosionSound(transform.position);
         Destroy(this.gameObject);
     }

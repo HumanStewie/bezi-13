@@ -9,7 +9,6 @@ public class Tanker : MonoBehaviour
     void Start()
     {
         entity = this.GetComponent<Entity>();
-        GridManager.Instance.RegisterEntity(entity);
         transform.parent = GridManager.Instance.transform;
         GridManager.Instance.MoveEntity(entity, entity.coords, 1.8f);
         StartCoroutine(BehaviorLoop());

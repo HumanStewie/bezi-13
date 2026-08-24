@@ -15,7 +15,6 @@ public class BlockPlacer : MonoBehaviour
     void Start()
     {
         entity = GetComponent<Entity>();
-        GridManager.Instance.RegisterEntity(entity);
         StartCoroutine(BehaviourLoop());
     }
 

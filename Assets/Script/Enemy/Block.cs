@@ -14,7 +14,6 @@ public class Block : MonoBehaviour
 
         }
         rb = GetComponent<Rigidbody>();
-        GridManager.Instance.RegisterEntity(entity);
         GridManager.Instance.MoveEntity(entity, entity.coords);
     }
 
