@@ -111,7 +111,7 @@ MonoBehaviour:
   ResetKeyCode: 32
   started: 0
   checking: 0
-  weightLess: {fileID: 0}
+  weightLess: {fileID: 2100000, guid: 3d463cdfaf5d1814bb667ffe6182a369, type: 2}
   enemyKillCount: 0
   gameOver: 0
 --- !u!114 &3386371047611388895

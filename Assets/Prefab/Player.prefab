@@ -166,7 +166,7 @@ MonoBehaviour:
   xRotationOffset: 0
   damage: 5
   attackCooldown: 0.3
-  hitboxRadius: 1
+  hitboxRadius: 2
   animator: {fileID: 1920902819739611272}
   BlockPrefab: {fileID: 1696014419685673171, guid: b5ca5a7212fc94c49a041d5566b796a0, type: 3}
   projectile: {fileID: 4741905443230284382, guid: dce14a49eb986974f8431f760037979f, type: 3}
