@@ -38,11 +38,8 @@ public class Tanker : MonoBehaviour
         }
 
         transform.position = groundedPos;
-
-        // Heavy impact polish
         if (CameraShake.Instance != null) CameraShake.Instance.ShakeCamera(4f, 0.3f);
         if (MusicManager.Instance != null) MusicManager.Instance.PlayBlockPlaceSound(transform.position);
-
         StartCoroutine(BehaviorLoop()); 
     }
 

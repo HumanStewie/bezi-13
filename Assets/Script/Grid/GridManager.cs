@@ -509,8 +509,7 @@ public class GridManager : MonoBehaviour
 
                 Vector3 lookAtTarget = CoordToWorldPos(bestCoord);
                 lookAtTarget.y = transform.position.y + 1;
-                entity.transform.LookAt(lookAtTarget);
-
+                entity.transform.rotation = Quaternion.identity;
                 MoveEntity(entity, bestCoord, 1.8f);
             }
             RotateEntityToTargetWithY(entity.transform, CoordToWorldPos(bestCoord));

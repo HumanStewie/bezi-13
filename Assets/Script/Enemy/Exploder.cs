@@ -60,6 +60,7 @@ public class Exploder : MonoBehaviour
     void FollowLogic()
     {
         GridManager.Instance.FollowLogic(entity);
+        transform.rotation= Quaternion.identity;
         if (GridManager.Instance.GetDistance(entity.coords, GameManager.instance.playerEntity.GetComponent<Entity>().coords) <= 2 && !isSpawning)
         {
             StartCoroutine(Attacking());

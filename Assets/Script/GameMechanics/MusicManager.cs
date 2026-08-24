@@ -141,7 +141,7 @@ public class MusicManager : MonoBehaviour
     public void PlayGenericButtonSound() => playUISound(Buttons, ButtonsVolume);
     public void PlayAbilitiesSound(Vector3 position, float duration) => PlayTrimmedAudio(Abilities, position, duration, AbilitiesVolume);
     public void PlayGoldenWindSound(Vector3 position) => PlaySFX(GoldenWind, position, GoldenWindVolume);
-
+    public void PlayWaveTransitionSound() => playUISound(waveTransition, waveTransitionVolume);
     public void PlayHandPokeSound(Vector3 position) => PlaySFX(HandPoke, position, HandPokeVolume);
     public void PlayHandShootSound(Vector3 position) => PlaySFX(HandShoot, position, HandShootVolume);
     public void PlayHandLazerSound(Vector3 position) => PlaySFX(HandLazer, position, HandLazerVolume);

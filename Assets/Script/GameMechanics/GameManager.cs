@@ -109,7 +109,7 @@ public class GameManager : MonoBehaviour
                 TippingLogic tipping = GridManager.Instance.GetComponent<TippingLogic>();
                 if (tipping != null) tipping.SetFreeze(true);
 
-                MusicManager.Instance.PlayTrimmedAudio(MusicManager.Instance.waveTransition, transform.position, 2f, MusicManager.Instance.waveTransitionVolume);
+                MusicManager.Instance.PlayWaveTransitionSound();
 
                 StartCoroutine(AnimateWaveText("WAVE CLEARED", () =>
                 {
@@ -140,7 +140,7 @@ public class GameManager : MonoBehaviour
 
     public void ProceedNextWave()
     {
-        MusicManager.Instance.PlayTrimmedAudio(MusicManager.Instance.waveTransition, transform.position, 2f, MusicManager.Instance.waveTransitionVolume);
+        MusicManager.Instance.PlayWaveTransitionSound();
 
         player.enabled = true;
 
@@ -378,7 +378,7 @@ public class GameManager : MonoBehaviour
         if (skinnedMeshRenderer == null || extraMat == null) return;
 
         Material[] currentMats = skinnedMeshRenderer.materials;
-
+        
         Material[] newMats = new Material[currentMats.Length + 1];
 
         for (int i = 0; i < currentMats.Length; i++)
