@@ -22,7 +22,6 @@ public class ShootingLaser : MonoBehaviour
     void Start()
     {
         entity = GetComponent<Entity>();
-        GridManager.Instance.RegisterEntity(entity);
 
         laserLine = GetComponent<LineRenderer>();
         laserLine.enabled = false;
