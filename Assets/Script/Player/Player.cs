@@ -207,7 +207,6 @@ public class Player : MonoBehaviour
 
         Vector3 flatDirection = Vector3.ProjectOnPlane(clickedVector, boardUp);
         if (flatDirection != Vector3.zero)
-        if (flatDirection != Vector3.zero)
         {
             targetRotation = Quaternion.LookRotation(flatDirection, boardUp);
 
@@ -241,12 +240,6 @@ public class Player : MonoBehaviour
         upgrades.AttackCounter += 1;
         GetComponent<PlayerUpgrades>().OnGenericAction();
         animator.SetBool("IsAttacking", false);
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawSphere(clickedVector + Vector3.up * 1f + transform.position, 1.0f);
     }
 
     private IEnumerator AttackLungeRoutine(Vector3 direction)

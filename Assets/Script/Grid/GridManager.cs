@@ -438,13 +438,6 @@ public class GridManager : MonoBehaviour
         return grid.GetValueOrDefault(WorldToCoord(targetPosition));
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.green;
-        Gizmos.DrawSphere(rayStartPoint, 1);
-        Gizmos.color = Color.red;
-        Gizmos.DrawRay(rayStartPoint, Vector3.down * 100f);
-    }
 
     public Vector2Int SelectRandomPossible()
     {
