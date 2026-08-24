@@ -1,2 +1,32 @@
 fileFormatVersion: 2
 guid: 37edd8790fcb9024c9a8ad3fa7b7ba6a
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - bgMusic: {instanceID: 0}
+  - soundEffectforUI: {instanceID: 0}
+  - music: {instanceID: 0}
+  - movement: {fileID: 8300000, guid: 8b90fb8e0b242df4bb54def3ae71ebf0, type: 3}
+  - headbutt: {fileID: 8300000, guid: ae2e6365ca5453b44868d887aa574afd, type: 3}
+  - boardtilting: {fileID: 8300000, guid: 3bb28e5b9d6fb35429f6b330b3024416, type: 3}
+  - enemySpawn: {instanceID: 0}
+  - TakingDamage: {instanceID: 0}
+  - EnemyDie: {fileID: 8300000, guid: 3b5f63de5c861504cba5c5a644da83a3, type: 3}
+  - GameOver: {instanceID: 0}
+  - UpgradeButton: {fileID: 8300000, guid: a9a3ee844e1fd2241924346539640a75, type: 3}
+  - Buttons: {instanceID: 0}
+  - waveTransition: {instanceID: 0}
+  - Abilities: {fileID: 8300000, guid: 4f47a5b6f021ece49a6570c6c0e08b2c, type: 3}
+  - GoldenWind: {fileID: 8300000, guid: 41c62c42cb8c8654392ad955ec65322b, type: 3}
+  - HandPoke: {fileID: 8300000, guid: 8bcb3ea1e84866b48a1fabdee05a8693, type: 3}
+  - HandShoot: {fileID: 8300000, guid: 3fa913b704bc42d43b8b2d29899cf12d, type: 3}
+  - HandLazer: {fileID: 8300000, guid: 84e65105ef95f274f8972b6671df3597, type: 3}
+  - explosion: {fileID: 8300000, guid: 407cd078a3dbc6547ada137965ab52b7, type: 3}
+  - blocktoss: {fileID: 8300000, guid: d7f03181a64fe894eb9a2b729c881e0b, type: 3}
+  - blockPlace: {fileID: 8300000, guid: 5af5c331c7020f646894db0494dc401d, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

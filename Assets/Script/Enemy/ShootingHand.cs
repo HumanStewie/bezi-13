@@ -78,6 +78,7 @@ public class ShootingHand : MonoBehaviour
         TargetingController.instance.ShowAttackWarning(newList, ChargingTime);
         yield return new WaitForSeconds(ChargingTime);
         GameObject bullet = Instantiate(projectile, spawnPoint.transform.position, spawnPoint.transform.rotation);
+        MusicManager.Instance.PlayHandShootSound(transform.position);
         bullet.transform.SetParent(GridManager.Instance.transform, true);
 
         Destroy(bullet, 4f);

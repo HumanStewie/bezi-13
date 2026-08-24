@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Entity : MonoBehaviour
@@ -10,8 +11,22 @@ public class Entity : MonoBehaviour
     public float weight = 1;
 
     [SerializeField] private GameObject bloodParticle;
+    [SerializeField] private GameObject PoofParticle;
+
+    public Rigidbody Rigidbody => rb;
+    private Rigidbody rb;
+
+
+
     private void Start()
     {
+        rb = GetComponent<Rigidbody>();
+
+        if (entityName is not ("Player" or "Block"))
+        {
+            rb.isKinematic = true;
+            rb.detectCollisions = false;
+        }
         currentHealth = maxHealth;
         coords = GridManager.Instance.WorldToCoord(this.transform.position);
         transform.SetParent(GridManager.Instance.transform);
@@ -27,6 +42,8 @@ public class Entity : MonoBehaviour
     {
         this.currentHealth -= damage;
         Instantiate(bloodParticle, transform.position, Quaternion.identity);
+        if (entityName == "Player") MusicManager.Instance.PlayTakingDamageSound(transform.position);
+
     }
     void Die()
     {
@@ -34,7 +51,8 @@ public class Entity : MonoBehaviour
         if (entityName != "Player")
         {
             GameManager.instance.enemyKillCount++;
-        } 
+        }
+        MusicManager.Instance.PlayEnemyDieSound(transform.position);
         Destroy(gameObject);
     }
 }

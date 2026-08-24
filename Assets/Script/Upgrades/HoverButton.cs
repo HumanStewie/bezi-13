@@ -39,6 +39,7 @@ public class HoverOscillator : MonoBehaviour, IPointerEnterHandler, IPointerExit
     public void OnPointerEnter(PointerEventData eventData)
     {
         isHovered = true;
+        MusicManager.Instance.PlayHoverSound();
     }
 
     public void OnPointerExit(PointerEventData eventData)

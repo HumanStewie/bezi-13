@@ -43,9 +43,13 @@ public class Player : MonoBehaviour
     public float lungeTime = 0.1f;
     public float xRot = 35f;
 
+    public Rigidbody Rigidbody => rb;
+    private Rigidbody rb;
 
     private void Start()
     {
+        rb = GetComponent<Rigidbody>();
+        rb.isKinematic = false;
         entity = GetComponent<Entity>();
         initialCooldown = attackCooldown;
         targetRotation = transform.rotation;
@@ -55,6 +59,7 @@ public class Player : MonoBehaviour
     }
     void Update()
     {
+        if (GameManager.instance.gameOver) return;
         if (!canAttack)
             attackCooldown -= Time.deltaTime;
         if (attackCooldown <= 0) canAttack = true;
@@ -111,8 +116,15 @@ public class Player : MonoBehaviour
             }
         }
 
+
+
+
         upgrades.OnPlayerMoved(this.entity.coords);
         GridManager.Instance.MoveEntity(this.entity, targetPos);
+        MusicManager.Instance.PlayMovementSound(transform.position);
+
+
+
         if (Blocks.Count > 0)
         {
             foreach (var b in Blocks)
@@ -142,6 +154,7 @@ public class Player : MonoBehaviour
             lastBlock.transform.position = spawnPos;
             lastBlock.GetComponent<Block>().isHeld = false;
             GridManager.Instance.RegisterEntity(lastBlock);
+            MusicManager.Instance.PlayBlockPlaceSound(lastBlock.transform.position);
             
             Blocks.Remove(lastBlock);
         }
@@ -243,6 +256,7 @@ public class Player : MonoBehaviour
         float elapsed = 0f;
         animator.SetBool("IsAttacking", isAttacking);
         animator.Play("DominoAttack");
+        MusicManager.Instance.PlayHeadbuttSound(transform.position);
         while (elapsed < lungeSpeed * 2)
         {
             elapsed += Time.deltaTime;
@@ -353,8 +367,8 @@ public class Player : MonoBehaviour
         }
 
         Vector3 startPos = transform.position + (boardUp * 2f); 
-        Vector3 endPos = node.transform.position + (boardUp * 1f); 
-
+        Vector3 endPos = node.transform.position + (boardUp * 1f);
+        MusicManager.Instance.PlayBlockTossSound(transform.position);
         while (timed < throwDuration)
         {
             if (blockObj == null) yield break;
@@ -389,7 +403,7 @@ public class Player : MonoBehaviour
         {
             blockObj.transform.position = endPos;
             blockObj.transform.rotation = node.transform.rotation;
-
+            MusicManager.Instance.PlayBlockPlaceSound(endPos);
             thrownBlockEntity.coords = node.cords;
             thrownBlockEntity.GetComponent<Block>().isHeld = false;
             GridManager.Instance.RegisterEntity(thrownBlockEntity);

@@ -102,7 +102,7 @@ public class UpgradeGrantingLogic : MonoBehaviour
         }
 
         CheckForCombined();
-
+        MusicManager.Instance.PlayUpgradeButtonSound();
         upgradeSelectionPanel.SetActive(false);
         ProceedToNextWave();
     }

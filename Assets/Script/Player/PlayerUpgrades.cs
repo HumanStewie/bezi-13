@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class PlayerUpgrades : MonoBehaviour
@@ -178,28 +179,23 @@ public class PlayerUpgrades : MonoBehaviour
         Vector2Int chosenTile = GridManager.Instance.SelectRandomPossible();
         GridManager.Instance.ChangeTileColor(chosenTile, Color.yellow);
 
-        yield return new WaitForSeconds(2f);
-
-        if (entity.coords == chosenTile)
-        {
-            yield return StartCoroutine(FreezeGridRoutine(freezeDuration, chosenTile));
-        }
-        else
-        {
-            GridManager.Instance.ChangeTileColor(chosenTile, Color.white);
-        }
-    }
-
-    private IEnumerator FreezeGridRoutine(float duration, Vector2Int tile)
-    {
         TippingLogic tipping = GridManager.Instance.GetComponent<TippingLogic>();
 
-        if (tipping != null) tipping.SetFreeze(true);
-
-        yield return new WaitForSeconds(duration);
-
-        if (tipping != null) tipping.SetFreeze(false);
-        GridManager.Instance.ChangeTileColor(tile, Color.white);
+        float timer = 0;
+        while (timer < freezeDuration)
+        {
+            timer += Time.deltaTime;
+            if (GameManager.instance.playerEntity.coords == chosenTile)
+            {
+                if (tipping != null) tipping.SetFreeze(true);
+            }
+            else
+            {
+                if (tipping != null) tipping.SetFreeze(false);
+            }
+            yield return null;
+        }
+        GridManager.Instance.ChangeTileColor(chosenTile, Color.white);
     }
     private void RageQuit()
     {

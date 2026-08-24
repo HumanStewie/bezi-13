@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4705015335422670749}
   - component: {fileID: 7950982527963067029}
   - component: {fileID: 3386371047611388895}
+  - component: {fileID: 6352959944591125128}
   m_Layer: 0
   m_Name: GridManager
   m_TagString: Untagged
@@ -50,7 +51,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GridManager
   gridSize: {x: 20, y: 20}
   tileSize: 2
-  tilePrefab: {fileID: 2765608812400039143, guid: e80ba1b2f5546c2468aeea6e0f8e3365, type: 3}
+  tilePrefab: {fileID: 7513120786703619173, guid: aa93652760aeda34395f1805eb4ed4e2, type: 3}
   yMoveOffset: 0
   gridWeight: 10
   gameCamera: {fileID: 0}
@@ -88,10 +89,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a12d26d724662b44a806bdb79efac94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  fixedSecondRate: 1
   playerEntity: {fileID: 0}
-  currentWave: 0
   waveText: {fileID: 0}
+  cinemachineCamera: {fileID: 0}
+  currentWave: 0
+  fixedSecondRate: 1
+  tiltLimit: 50
+  flingForce: 50
+  fader: {fileID: 0}
+  fadeDuration: 0.5
   NormalHand: {fileID: 1022106986125710323, guid: aa6ee70c5d61bbf449b028e1cfe2707a, type: 3}
   ShootingHand: {fileID: 8915065813042629455, guid: 904e4b1180bf0f54886c1c1aac1f4548, type: 3}
   Block: {fileID: 5219621485388388985, guid: 9083295d8e651d54dbdc398fd8a76a87, type: 3}
@@ -104,6 +110,7 @@ MonoBehaviour:
   checking: 0
   weightLess: {fileID: 0}
   enemyKillCount: 0
+  gameOver: 0
 --- !u!114 &3386371047611388895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -116,12 +123,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3770a654b321b51409a43691576186b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TippingLogic
-  secondsPerTick: 5
+  secondsPerTick: 0.1
   fixedStep: 0.007
   tiltAcceleration: 30
   maxAngularVelocity: 1000
   damping: 0.95
   tippingPoint: {fileID: 0}
+--- !u!54 &6352959944591125128
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2507550359631764306}
+  serializedVersion: 5
+  m_Mass: 200
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &6697574484225830472
 GameObject:
   m_ObjectHideFlags: 0

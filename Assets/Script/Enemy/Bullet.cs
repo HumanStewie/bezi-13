@@ -10,9 +10,26 @@ public class Bullet : MonoBehaviour
     public int damage = 5;
     public bool player = false;
 
+
+    public LayerMask layermask;
+
     private void Update()
     {
         transform.Translate( speed * Time.deltaTime * Vector3.forward, Space.Self);
+        if (player) {
+            Collider[] colliders = Physics.OverlapSphere(transform.position, hitRadius, layermask);
+            foreach (var col in colliders)
+            {
+                if (col.TryGetComponent(out Entity entity))
+                {
+                    if (entity.name != "Player")
+                    {
+                        entity.TakeDamage(damage);
+                    }
+                }
+            }
+
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -26,14 +43,6 @@ public class Bullet : MonoBehaviour
                 if (hitEntity.entityName == "Player")
                 {
                     GameManager.instance.playerEntity.TakeDamage(damage);
-                    Destroy(gameObject);
-                }
-            }
-            else
-            {
-                if (hitEntity.entityName != "Player")
-                {
-                    hitEntity.TakeDamage(damage);
                     Destroy(gameObject);
                 }
             }

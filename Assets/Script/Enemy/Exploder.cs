@@ -1,4 +1,3 @@
-using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,17 +6,14 @@ public class Exploder : MonoBehaviour
 {
     bool isAttacking = false;
     Entity entity;
+    [SerializeField] private float explosionTime;    
+    
     void Start()
     {
         entity = GetComponent<Entity>();
         StartCoroutine(BehaviourLoop());
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     IEnumerator BehaviourLoop()
     {
@@ -52,7 +48,7 @@ public class Exploder : MonoBehaviour
         float pulseSpeed = 25f;
         float pulseAmount = 0.3f;
 
-        while (timer <= 0.7f)
+        while (timer <= explosionTime)
         {
             float scaleMultiplier = 1f + (Mathf.Sin(timer * pulseSpeed) * pulseAmount);
             transform.localScale = originalScale * scaleMultiplier;
@@ -67,7 +63,7 @@ public class Exploder : MonoBehaviour
         Vector3 explodingScale = originalScale * 2f;
         while (timer < 0.3f)
         {
-            float percentComplete = timer / 0.1f;
+            float percentComplete = timer / 0.3f;
             transform.localScale = Vector3.Lerp(currentScale, explodingScale, percentComplete);
 
             timer += Time.deltaTime;
@@ -84,6 +80,8 @@ public class Exploder : MonoBehaviour
             }
         }
         yield return null;
+        GridManager.Instance.UnregisterEntity(this.GetComponent<Entity>());
+        MusicManager.Instance.PlayExplosionSound(transform.position);
         Destroy(this.gameObject);
     }
 }
