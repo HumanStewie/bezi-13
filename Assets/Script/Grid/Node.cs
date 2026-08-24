@@ -12,12 +12,14 @@ public class Node : MonoBehaviour
     private MeshFilter filter;
     private Renderer iconRenderer;
 
+    private Color initColor;
     public void Start()
     {
         filter = GetComponentInChildren<MeshFilter>();
         startSprite = filter.mesh;
         tileRenderer = GetComponentInChildren<MeshRenderer>();
         iconRenderer = GetComponentInChildren<SpriteRenderer>();
+        initColor = iconRenderer.material.color;
     }
     public Node(Vector2Int cords)
     {
@@ -37,9 +39,13 @@ public class Node : MonoBehaviour
         filter.mesh = startSprite;
         Debug.Log($"Tile {this.name} reset");
     }
+
+    public void HighlightNode(Color color)
+    {
+        iconRenderer.material.color = color;
+    }
     public void Highlight(Color lightColor, Color darkColor)
     {
-        iconRenderer.material.color = darkColor;
         // Color Light
         tileRenderer.materials[2].SetColor("Color_9bbf2ad544ff418eb92f2bc07389403b", lightColor);
         

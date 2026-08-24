@@ -322,9 +322,13 @@ public class GridManager : MonoBehaviour
         }
         return false;
     }
-    
 
 
+    public void ChangeIconColor(Vector2Int coord, Color color)
+    {
+        if (grid.TryGetValue(coord, out Node node))
+            node.HighlightNode(color);
+    }
     public void ChangeTileColor(Vector2Int coord, Color color, Color darkColor)
     {
         if (grid.TryGetValue(coord, out Node node))

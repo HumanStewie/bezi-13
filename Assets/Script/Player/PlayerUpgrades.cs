@@ -178,6 +178,7 @@ public class PlayerUpgrades : MonoBehaviour
     {
         Vector2Int chosenTile = GridManager.Instance.SelectRandomPossible();
         GridManager.Instance.ChangeTileColor(chosenTile, Color.goldenRod, Color.yellow);
+        GridManager.Instance.ChangeIconColor(chosenTile, Color.yellow);
 
         TippingLogic tipping = GridManager.Instance.GetComponent<TippingLogic>();
 
@@ -202,6 +203,8 @@ public class PlayerUpgrades : MonoBehaviour
         MusicManager.Instance.AudioExisted = false;
         Destroy(MusicManager.Instance.ExistedAudio);
         GridManager.Instance.ChangeTileColor(chosenTile, new Color(0, 0, 0.35f, 0), new Color(0, 0, 0.643f, 0));
+        GridManager.Instance.ChangeIconColor(chosenTile, Color.white);
+
     }
     private void RageQuit()
     {
@@ -236,6 +239,7 @@ public class PlayerUpgrades : MonoBehaviour
     }
     private void SpinningBall2()
     {
+        Instantiate(spinningBall);
         Instantiate(spinningBall);
         Instantiate(spinningBall);
     }
