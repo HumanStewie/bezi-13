@@ -8,7 +8,6 @@ public class Node : MonoBehaviour
 
     private Mesh startSprite;
 
-    private Color originalColor;
     private Renderer tileRenderer;
     private MeshFilter filter;
     private Renderer iconRenderer;
@@ -19,11 +18,6 @@ public class Node : MonoBehaviour
         startSprite = filter.mesh;
         tileRenderer = GetComponentInChildren<MeshRenderer>();
         iconRenderer = GetComponentInChildren<SpriteRenderer>();
-
-        if (tileRenderer != null && tileRenderer.material != null)
-        {
-            originalColor = tileRenderer.material.color;
-        }
     }
     public Node(Vector2Int cords)
     {
@@ -41,7 +35,6 @@ public class Node : MonoBehaviour
     public void ResetVisuals()
     {
         filter.mesh = startSprite;
-        tileRenderer.material.color = originalColor;
         Debug.Log($"Tile {this.name} reset");
     }
     public void Highlight(Color lightColor, Color darkColor)

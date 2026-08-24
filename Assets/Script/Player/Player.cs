@@ -256,6 +256,10 @@ if (Input.GetKeyDown(KeyCode.W)) TryMove(wDir, WRotation);
         {
             if (col.TryGetComponent(out Entity hitEntity))
             {
+                if (hitEntity.entityName == "Block")
+                {
+                    if (hitEntity.GetComponent<Block>().isHeld) continue;
+                }
                 if (hitEntity.entityName != "Player")
                 {
                     bool isHeldByUs = Blocks.Contains(hitEntity);

@@ -208,7 +208,7 @@ public class GameManager : MonoBehaviour
             if (entities[i].entityName == "Block") { 
                 Destroy(entities[i].gameObject);
             }
-         }
+        }
     }
 
     private IEnumerator AnimateWaveText(string message, Action onAnimationComplete)
