@@ -19,7 +19,6 @@ public class ShootingHand : MonoBehaviour
     public bool isAttacking = false;
     void Start()
     {
-        GridManager.Instance.RegisterEntity(entity);
         GridManager.Instance.MoveEntity(entity, entity.coords, 1.5f);
         StartCoroutine(BehaviourLoop());
     }

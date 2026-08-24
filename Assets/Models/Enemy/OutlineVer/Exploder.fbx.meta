@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 606da61308929c64c9aa643d71d97d0c
+guid: bbf36ad1a82381640931838e671f9801
 ModelImporter:
   serializedVersion: 24300
   internalIDToNameTable: []
@@ -7,18 +7,18 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: GlowingBattery
-    second: {fileID: 2100000, guid: 65ecd160b2930894d95e9833a3c49b47, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: GlowingFront
-    second: {fileID: 2100000, guid: e754f3ce0e4d8c84a922a5eb5c35e9e8, type: 2}
+      name: LightCore
+    second: {fileID: 2100000, guid: a40a8a5a4d0177f4b8b7cf402fe19441, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Material
-    second: {fileID: 2100000, guid: 9a7d325ecd609b34485dc20a5733fb74, type: 2}
+    second: {fileID: 2100000, guid: 23b06c5bcb37a5842b00b65519ae10f8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Outline
+    second: {fileID: 2100000, guid: 699e6cf7b31912d499e37ba7610c246e, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

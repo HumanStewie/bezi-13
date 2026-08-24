@@ -55,6 +55,7 @@ MonoBehaviour:
   maxHealth: 100
   weight: 4
   bloodParticle: {fileID: 7243542710608240285, guid: 777701eed9e92b046afcbc5750b8fd03, type: 3}
+  PoofParticle: {fileID: 0}
 --- !u!114 &2265183086560247030
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -133,7 +134,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6849579442069248618
 Transform:
   m_ObjectHideFlags: 0

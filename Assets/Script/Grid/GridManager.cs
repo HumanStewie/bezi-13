@@ -37,7 +37,6 @@ public class GridManager : MonoBehaviour
     public Dictionary<Vector2Int, Node> Grid { get { return grid; } }
     Dictionary<Vector2Int, Node> grid = new Dictionary<Vector2Int, Node>();
     
-    public Dictionary<Vector2Int, HashSet<Entity>> entities = new Dictionary<Vector2Int, HashSet<Entity>>();
     public Rigidbody Rigidbody => rb;
     private Rigidbody rb;
     private void Awake()
@@ -351,23 +350,6 @@ public class GridManager : MonoBehaviour
         int y = Mathf.RoundToInt(local.z / tileSize);
         return new Vector2Int(x, y);
     }
-
-    public void RegisterEntity(Entity entity)
-    {
-        if (!entities.TryGetValue(entity.coords, out var set))
-        {
-            set = new HashSet<Entity>();
-            entities.Add(entity.coords, set);
-        }
-        set.Add(entity);
-    }
-
-    public void UnregisterEntity(Entity entity)
-    {
-        if (!entities.TryGetValue(entity.coords, out var set)) return;
-        set.Remove(entity);
-        if (set.Count == 0) entities.Remove(entity.coords);
-    }
     
     public void MoveEntity(Entity entity, Vector2Int targetCoord, float yOffset = 1.0f)
     {
@@ -377,13 +359,11 @@ public class GridManager : MonoBehaviour
             return;
         }
         // if (entities.TryGetValue(targetCoord, out var set) && set.Count > 0) return; // If there's someone there already, stop
-        UnregisterEntity(entity);
         Node nodeToMove = grid.GetValueOrDefault(targetCoord);
         Vector3 newPos = nodeToMove.transform.position;
         newPos += nodeToMove.transform.up * yOffset;
         entity.transform.position = newPos;
         entity.coords = targetCoord;
-        RegisterEntity(entity);
     }
     
     /// <summary>
@@ -438,13 +418,6 @@ public class GridManager : MonoBehaviour
         return grid.GetValueOrDefault(WorldToCoord(targetPosition));
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.green;
-        Gizmos.DrawSphere(rayStartPoint, 1);
-        Gizmos.color = Color.red;
-        Gizmos.DrawRay(rayStartPoint, Vector3.down * 100f);
-    }
 
     public Vector2Int SelectRandomPossible()
     {

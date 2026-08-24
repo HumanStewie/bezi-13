@@ -46,7 +46,6 @@ public class Entity : MonoBehaviour
     }
     void Die()
     {
-        GridManager.Instance.UnregisterEntity(this);
         if (entityName != "Player")
         {
             GameManager.instance.enemyKillCount++;

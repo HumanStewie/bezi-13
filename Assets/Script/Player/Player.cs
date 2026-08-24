@@ -54,7 +54,6 @@ public class Player : MonoBehaviour
         initialCooldown = attackCooldown;
         targetRotation = transform.rotation;
         transform.SetParent(GameManager.instance.transform);
-        GridManager.Instance.RegisterEntity(entity);
         upgrades = GetComponent<PlayerUpgrades>();
     }
     void Update()
@@ -153,7 +152,6 @@ public class Player : MonoBehaviour
             lastBlock.transform.rotation = nodeToPlace.transform.rotation;
             lastBlock.transform.position = spawnPos;
             lastBlock.GetComponent<Block>().isHeld = false;
-            GridManager.Instance.RegisterEntity(lastBlock);
             MusicManager.Instance.PlayBlockPlaceSound(lastBlock.transform.position);
             
             Blocks.Remove(lastBlock);
@@ -207,7 +205,6 @@ public class Player : MonoBehaviour
 
         Vector3 flatDirection = Vector3.ProjectOnPlane(clickedVector, boardUp);
         if (flatDirection != Vector3.zero)
-        if (flatDirection != Vector3.zero)
         {
             targetRotation = Quaternion.LookRotation(flatDirection, boardUp);
 
@@ -241,12 +238,6 @@ public class Player : MonoBehaviour
         upgrades.AttackCounter += 1;
         GetComponent<PlayerUpgrades>().OnGenericAction();
         animator.SetBool("IsAttacking", false);
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawSphere(clickedVector + Vector3.up * 1f + transform.position, 1.0f);
     }
 
     private IEnumerator AttackLungeRoutine(Vector3 direction)
@@ -406,7 +397,6 @@ public class Player : MonoBehaviour
             MusicManager.Instance.PlayBlockPlaceSound(endPos);
             thrownBlockEntity.coords = node.cords;
             thrownBlockEntity.GetComponent<Block>().isHeld = false;
-            GridManager.Instance.RegisterEntity(thrownBlockEntity);
         }
     }
 }
