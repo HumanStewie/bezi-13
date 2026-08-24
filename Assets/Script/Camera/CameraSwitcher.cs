@@ -24,17 +24,19 @@ public class CameraSwitcher : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            currentCamera--;
-            if (currentCamera < 0)
-                currentCamera = cameras.Length - 1;
+            currentCamera++;
+            if (currentCamera >= cameras.Length)
+                currentCamera = 0;
+           
             SetCamera(currentCamera);
         }
 
         if (Input.GetKeyDown(KeyCode.E))
         {
-            currentCamera++;
-            if (currentCamera >= cameras.Length)
-                currentCamera = 0;
+          
+            currentCamera--;
+            if (currentCamera < 0)
+                currentCamera = cameras.Length - 1;
             SetCamera(currentCamera);
         }
     }
