@@ -50,7 +50,12 @@ public class GameManager : MonoBehaviour
     public bool gameOver;
 
     public GameObject HealthBar;
-    
+
+    public int EndlessModeUnlocked = 1;
+
+    public int addedDifficulty = 32;
+
+    public bool justDonewave10 = false;
     private void Awake()
     {
         instance = this;
@@ -85,7 +90,7 @@ public class GameManager : MonoBehaviour
                 Wave9(); break;
             case 10:
                 Wave10(); break;
-            default: Wave10(); break;
+            default: WaveEndless(); break;
         }
     }
 
@@ -168,6 +173,18 @@ public class GameManager : MonoBehaviour
         else if (playerUpgrades.CanReset2) { resetCount = 2; }
 
         currentWave++;
+
+        if (!justDonewave10)
+        {
+            if (MainMenuEndless.Instance.isEndlessing) {
+                justDonewave10 = true;
+            }
+            else
+            {
+                SceneManager.LoadScene("MainMenu");
+            }
+        }
+
         StartCoroutine(AnimateWaveText("WAVE " + currentWave, () =>
         {
             StartWave(currentWave);
@@ -259,7 +276,6 @@ public class GameManager : MonoBehaviour
         float startAlpha = fader.alpha;
         float elapsed = 0f;
 
-        // Block raycasts during fade so player can't click through it
         fader.blocksRaycasts = true;
 
         while (elapsed < fadeDuration)
@@ -512,7 +528,7 @@ public class GameManager : MonoBehaviour
 
     void Wave7()
     {
-        float valueCost = 24f;
+        float valueCost = 23f;
         InstatiateEnemy(Tanker);
         valueCost -= 5f;
 
@@ -531,7 +547,7 @@ public class GameManager : MonoBehaviour
 
     void Wave8()
     {
-        float valueCost = 28f;
+        float valueCost = 26f;
         while (valueCost > 0)
         {
             int roll = UnityEngine.Random.Range(0, 100);
@@ -546,7 +562,7 @@ public class GameManager : MonoBehaviour
 
     void Wave9()
     {
-        float valueCost = 32f;
+        float valueCost = 29f;
         while (valueCost > 0)
         {
             int roll = UnityEngine.Random.Range(0, 100);
@@ -561,12 +577,12 @@ public class GameManager : MonoBehaviour
 
     void Wave10()
     {
-        float valueCost = 38f;
+        float valueCost = 31f;
 
         InstatiateEnemy(Tanker);
         InstatiateEnemy(Tanker);
         valueCost -= 10f;
-
+        PlayerPrefs.SetInt("EndlessModeUnlocked", 2);
         while (valueCost > 0)
         {
             int roll = UnityEngine.Random.Range(0, 100);
@@ -576,6 +592,21 @@ public class GameManager : MonoBehaviour
             else if (roll < 60) { InstatiateEnemy(Placer); valueCost -= 2f; }
             else if (roll < 80) { InstatiateEnemy(LaserShooter); valueCost -= 2.5f; }
             else { InstatiateEnemy(Tanker); valueCost -= 5f; }
+        }
+    }
+    void WaveEndless()
+    {
+        float valueCost = addedDifficulty;
+        addedDifficulty += 5;
+        while (valueCost > 0)
+        {
+            int roll = UnityEngine.Random.Range(0, 100);
+            if (roll < 10) { InstatiateEnemy(NormalHand); valueCost -= 1f; }
+            else if (roll < 20) { InstatiateEnemy(ShootingHand); valueCost -= 1.5f; }
+            else if (roll < 40) { InstatiateEnemy(Exploder); valueCost -= 1.5f; }
+            else if (roll < 60) { InstatiateEnemy(Placer); valueCost -= 2f; }
+            else if (roll < 80) { InstatiateEnemy(LaserShooter); valueCost -= 2.5f; }
+            else { InstatiateEnemy(Tanker); valueCost -= 4f; }
         }
     }
 }
