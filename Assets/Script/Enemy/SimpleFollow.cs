@@ -51,6 +51,9 @@ public class SimpleFollow : MonoBehaviour, IEnemy
         TargetingController.instance.ShowAttackWarning(dangerZone, 1.5f);
         yield return new WaitForSeconds(1.5f);
 
+
+        MusicManager.Instance.PlayHandPokeSound(transform.position);
+
         float activeDuration = 0.3f;
         float timer = 0f;
         bool hasDealtDamage = false;
@@ -66,7 +69,6 @@ public class SimpleFollow : MonoBehaviour, IEnemy
             yield return null;
         }
         animator.SetBool("IsAttacking", false);
-
         yield return new WaitForSeconds(0.5f);
 
         isAttacking = false;

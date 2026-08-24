@@ -225,6 +225,7 @@ MonoBehaviour:
   maxHealth: 16
   weight: 4
   bloodParticle: {fileID: 7243542710608240285, guid: 777701eed9e92b046afcbc5750b8fd03, type: 3}
+  PoofParticle: {fileID: 7820940365141394766, guid: fa26b780072f649488ba41c22d2af555, type: 3}
 --- !u!65 &7277715553953291959
 BoxCollider:
   m_ObjectHideFlags: 0

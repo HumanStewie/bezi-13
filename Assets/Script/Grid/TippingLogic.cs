@@ -68,6 +68,7 @@ public class TippingLogic : MonoBehaviour
                 transform.rotation = targetRotation * transform.rotation;
                 xTilt = transform.rotation.x;
                 zTilt = transform.rotation.z;
+                MusicManager.Instance.PlayBoardTiltingSound(transform.position);
             }
 
             yield return new WaitForSeconds(secondsPerTick);

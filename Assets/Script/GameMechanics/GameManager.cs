@@ -101,7 +101,8 @@ public class GameManager : MonoBehaviour
             if (!enemiesStillAlive)
             {
                 checking = true;
-                player.enabled = false; 
+                player.enabled = false;
+                MusicManager.Instance.PlayTrimmedAudio(MusicManager.Instance.waveTransition, transform.position, 2f, MusicManager.Instance.waveTransitionVolume);
 
                 StartCoroutine(AnimateWaveText("WAVE CLEARED", () =>
                 {
@@ -131,6 +132,8 @@ public class GameManager : MonoBehaviour
 
     public void ProceedNextWave()
     {
+        MusicManager.Instance.PlayTrimmedAudio(MusicManager.Instance.waveTransition, transform.position, 2f, MusicManager.Instance.waveTransitionVolume);
+
         player.enabled = true;
 
         player.ResetAllBlock();
@@ -377,6 +380,8 @@ public class GameManager : MonoBehaviour
     {
         var choosenCoord = GridManager.Instance.SelectRandomPossible();
         Instantiate(enemy, GridManager.Instance.CoordToWorldPos(choosenCoord), Quaternion.identity);
+        MusicManager.Instance.PlayEnemySpawnSound(GridManager.Instance.CoordToWorldPos(choosenCoord));
+
     }
 
     void Wave1()

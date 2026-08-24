@@ -87,6 +87,7 @@ public class BlockPlacer : MonoBehaviour
         Vector3 spawnPos = node.transform.position;
         spawnPos += node.transform.up;
         var block = Instantiate(blockPrefab, spawnPos, node.transform.rotation, GridManager.Instance.transform);
+        MusicManager.Instance.PlayBlockPlaceSound(spawnPos);
         transform.LookAt(block.transform);
 
         animator.SetBool("IsAttacking", false);

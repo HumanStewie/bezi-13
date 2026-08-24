@@ -43,6 +43,7 @@ public class ShootingLaser : MonoBehaviour
                 if (myPos.x == playerPos.x || myPos.y == playerPos.y)
                 {
                     yield return StartCoroutine(AttackSequence(playerPos));
+                    MusicManager.Instance.PlayHandLazerSound(transform.position);
                 }
                 else
                 {

@@ -12,6 +12,7 @@ public class Shockwave : MonoBehaviour
     void Start()
     {
         Destroy(gameObject, lifetime);
+        MusicManager.Instance.PlayAbilitiesSound(transform.position, lifetime);
     }
 
     void Update()
