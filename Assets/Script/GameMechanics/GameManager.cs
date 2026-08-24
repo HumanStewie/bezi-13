@@ -45,6 +45,9 @@ public class GameManager : MonoBehaviour
     public bool GameStarted => started;
     [SerializeField] private bool checking = false;
     [SerializeField] private Material weightLess;
+    [SerializeField] private float winDuration = 3f;
+    public GameObject background;
+
 
     public int enemyKillCount = 0;
 
@@ -164,8 +167,14 @@ public class GameManager : MonoBehaviour
 
     public void ProceedNextWave()
     {
-        MusicManager.Instance.PlayWaveTransitionSound();
-
+        if (currentWave == 10 && !MainMenuEndless.Instance.isEndlessing)
+        {
+            MusicManager.Instance.PlayGameWinSound();
+        }
+        else
+        {
+            MusicManager.Instance.PlayWaveTransitionSound();
+        }
         player.enabled = true;
 
         TippingLogic tipping = GridManager.Instance.GetComponent<TippingLogic>();
@@ -178,17 +187,20 @@ public class GameManager : MonoBehaviour
         if (playerUpgrades.CanReset) { resetCount = 1; }
         else if (playerUpgrades.CanReset2) { resetCount = 2; }
 
+        if (currentWave == 10) justDonewave10 = true;
         currentWave++;
+        
 
         if (justDonewave10)
         {
             if (MainMenuEndless.Instance.isEndlessing) {
+                
                 justDonewave10 = true;
             }
             else
             {
-                winningPannel.SetActive(true);
-                SceneManager.LoadScene("MainMenu");
+                StartCoroutine(WinGame());
+                return;
             }
         }
 
@@ -198,6 +210,24 @@ public class GameManager : MonoBehaviour
             PossessEnemies();
             checking = false;
         }));
+    }
+
+    private IEnumerator WinGame()
+    {
+        StartCoroutine(FadeIn());
+        winningPannel.SetActive(true);
+        yield return new WaitForSeconds(winDuration);
+        SceneManager.LoadScene("MainMenu");
+    }
+    private IEnumerator FadeIn()
+    {
+        float elapsed = 0f;
+        while (elapsed < 1)
+        {
+            elapsed += Time.unscaledDeltaTime; // unscaledDeltaTime allows fading while paused
+            background.GetComponent<CanvasGroup>().alpha = Mathf.Lerp(0f, 1f, elapsed / 0.4f);
+            yield return null;
+        }
     }
 
     public void DeleteAllBlock()

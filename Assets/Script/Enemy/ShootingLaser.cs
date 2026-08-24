@@ -27,6 +27,7 @@ public class ShootingLaser : MonoBehaviour
         laserLine.enabled = false;
         laserLine.useWorldSpace = true;
         animator.SetBool("IsAttacking", isAttacking);
+        GridManager.Instance.MoveEntity(entity, entity.coords, 1.5f);
         StartCoroutine(BehaviorLoop());
     }
 

@@ -48,6 +48,9 @@ public class MusicManager : MonoBehaviour
 
     [SerializeField] private AudioClip GameOver;
     [SerializeField, Range(0f, 2f)] private float GameOverVolume = 1f;
+    
+    [SerializeField] private AudioClip GameWin;
+    [SerializeField, Range(0f, 2f)] private float GameWinVolume = 1f;
 
 
     [Header("Upgrades & UI")]
@@ -212,6 +215,7 @@ public class MusicManager : MonoBehaviour
     public void PlayEnemySpawnSound(Vector3 position) => PlaySFX(enemySpawn, position, enemySpawnVolume);
     public void PlayEnemyDieSound(Vector3 position) => PlaySFX(EnemyDie, position, EnemyDieVolume);
     public void PlayGameOverSound() => playUISound(GameOver, GameOverVolume); 
+    public void PlayGameWinSound() => playUISound(GameWin, GameWinVolume);
 
     public void PlayUpgradeButtonSound() => playUISound(UpgradeButton, UpgradeButtonVolume);
     public void PlayHoverSound() => playUISound(HoverSound, HoverSoundVolume);

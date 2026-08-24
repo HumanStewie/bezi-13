@@ -8,7 +8,6 @@ using Random = UnityEngine.Random;
 public class UpgradeGrantingLogic : MonoBehaviour
 {
     public static UpgradeGrantingLogic instance;
-
     [Header("UI Panels")]
     public GameObject categorySelectionPanel; 
     public GameObject upgradeSelectionPanel;
@@ -33,6 +32,11 @@ public class UpgradeGrantingLogic : MonoBehaviour
 
     public void StartGrantingUpgrades()
     {
+        if (GameManager.instance.currentWave == 10 && !MainMenuEndless.Instance.isEndlessing)
+        {
+            ProceedToNextWave();
+            return;
+        }
         upgradeSelectionPanel.SetActive(false);
         categorySelectionPanel.SetActive(true);
         categoryAnimator.SetTrigger("Open");
