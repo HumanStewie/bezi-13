@@ -23,7 +23,7 @@ public class CameraSwitcher : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.Q) && !GameManager.instance.checking)
         {
             currentCamera++;
             if (currentCamera >= cameras.Length)
@@ -32,7 +32,7 @@ public class CameraSwitcher : MonoBehaviour
             SetCamera(currentCamera);
         }
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E) && !GameManager.instance.checking)
         {
           
             currentCamera--;

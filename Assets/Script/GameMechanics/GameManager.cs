@@ -43,7 +43,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private KeyCode ResetKeyCode;
     [SerializeField] private bool started = false;
     public bool GameStarted => started;
-    [SerializeField] private bool checking = false;
+    [SerializeField] public bool checking = false;
     [SerializeField] private Material weightLess;
     [SerializeField] private float winDuration = 3f;
     public GameObject background;

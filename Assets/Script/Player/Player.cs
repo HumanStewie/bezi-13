@@ -63,8 +63,8 @@ public class Player : MonoBehaviour
     {
         if (GameManager.instance.gameOver) return;
 
-        if (Input.GetKeyDown(KeyCode.Q)) RotateMappingQ();
-        if (Input.GetKeyDown(KeyCode.E)) RotateMappingE();
+        if (Input.GetKeyDown(KeyCode.Q) && !GameManager.instance.checking) RotateMappingQ();
+        if (Input.GetKeyDown(KeyCode.E) && !GameManager.instance.checking) RotateMappingE();
 
         if (!canAttack)
             attackCooldown -= Time.deltaTime;
