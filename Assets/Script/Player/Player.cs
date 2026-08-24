@@ -36,7 +36,10 @@ public class Player : MonoBehaviour
     public float ARotation = 180f;
     public float DRotation = 0f;
 
-
+    private Vector2Int wDir = new Vector2Int(0, 1);
+    private Vector2Int sDir = new Vector2Int(0, -1);
+    private Vector2Int aDir = new Vector2Int(-1, 0);
+    private Vector2Int dDir = new Vector2Int(1, 0);
 
     [Header("Attack")]
     public float dirYOffset = 150f;
@@ -59,6 +62,10 @@ public class Player : MonoBehaviour
     void Update()
     {
         if (GameManager.instance.gameOver) return;
+
+        if (Input.GetKeyDown(KeyCode.Q)) RotateMappingQ();
+        if (Input.GetKeyDown(KeyCode.E)) RotateMappingE();
+
         if (!canAttack)
             attackCooldown -= Time.deltaTime;
         if (attackCooldown <= 0) canAttack = true;
@@ -176,17 +183,44 @@ public class Player : MonoBehaviour
             }
         }
     }
+    private void RotateMappingQ()
+    {
 
+        Vector2Int tempDir = wDir;
+        wDir = dDir;
+        dDir = sDir;
+        sDir = aDir;
+        aDir = tempDir;
+
+        float tempRot = WRotation;
+        WRotation = DRotation;
+        DRotation = SRotation;
+        SRotation = ARotation;
+        ARotation = tempRot;
+    }
+
+    private void RotateMappingE()
+    {
+
+        Vector2Int tempDir = wDir;
+        wDir = aDir;
+        aDir = sDir;
+        sDir = dDir;
+        dDir = tempDir;
+
+        float tempRot = WRotation;
+        WRotation = ARotation;
+        ARotation = SRotation;
+        SRotation = DRotation;
+        DRotation = tempRot;
+    }
 
     IEnumerator MovementDelay()
     {
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            TryMove(new Vector2Int(0, 1), WRotation);
-        }
-        else if (Input.GetKeyDown(KeyCode.S)) TryMove(new Vector2Int(0, -1), SRotation);
-        else if (Input.GetKeyDown(KeyCode.D)) TryMove(new Vector2Int(1, 0), DRotation);
-        else if (Input.GetKeyDown(KeyCode.A)) TryMove(new Vector2Int(-1, 0), ARotation);
+if (Input.GetKeyDown(KeyCode.W)) TryMove(wDir, WRotation);
+        else if (Input.GetKeyDown(KeyCode.S)) TryMove(sDir, SRotation);
+        else if (Input.GetKeyDown(KeyCode.D)) TryMove(dDir, DRotation);
+        else if (Input.GetKeyDown(KeyCode.A)) TryMove(aDir, ARotation);
         yield return new WaitForSeconds(0.07f);
     }
 

@@ -1,4 +1,4 @@
-using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,6 +18,8 @@ public class Entity : MonoBehaviour
     [SerializeField] private Image Filler;
     public Rigidbody Rigidbody => rb;
     private Rigidbody rb;
+
+    public List<GameObject> indicators;
 
 
 
@@ -62,7 +64,10 @@ public class Entity : MonoBehaviour
             MusicManager.Instance.PlayGameOverSound();
         }
             MusicManager.Instance.PlayEnemyDieSound(transform.position);
-        
+        for (int i = 0; i < indicators.Count; i++) {
+            Destroy(indicators[i]);
+        }
+        indicators.Clear();
         Destroy(gameObject);
     }
 }

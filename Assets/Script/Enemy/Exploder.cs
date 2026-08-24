@@ -71,7 +71,7 @@ public class Exploder : MonoBehaviour
         isAttacking = true;
         List<Vector2Int> targetTiles = GridManager.Instance.GetTilesInRange(entity.coords, 3);
         targetTiles.Add(entity.coords);
-        TargetingController.instance.ShowAttackWarning(targetTiles, explosionTime + 0.2f);
+        TargetingController.instance.ShowAttackWarning(GetComponent<Entity>(), targetTiles, explosionTime + 0.2f);
 
         Vector3 originalScale = this.transform.localScale;
 

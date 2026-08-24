@@ -74,7 +74,7 @@ public class ShootingHand : MonoBehaviour
         Vector3 targetPos = GameManager.instance.playerEntity.transform.position;
         this.transform.LookAt(targetPos);
         List<Vector2Int> newList = new List<Vector2Int>() { GetComponent<Entity>().coords };
-        TargetingController.instance.ShowAttackWarning(newList, ChargingTime);
+        TargetingController.instance.ShowAttackWarning(entity, newList, ChargingTime);
         yield return new WaitForSeconds(ChargingTime);
         GameObject bullet = Instantiate(projectile, spawnPoint.transform.position, spawnPoint.transform.rotation);
         MusicManager.Instance.PlayHandShootSound(transform.position);
