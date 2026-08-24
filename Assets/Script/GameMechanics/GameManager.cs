@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.Cinemachine;
+using UnityEditor.Analytics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -56,6 +57,8 @@ public class GameManager : MonoBehaviour
     public int addedDifficulty = 32;
 
     public bool justDonewave10 = false;
+
+    public GameObject winningPannel;
     private void Awake()
     {
         instance = this;
@@ -181,6 +184,7 @@ public class GameManager : MonoBehaviour
             }
             else
             {
+                winningPannel.SetActive(true);
                 SceneManager.LoadScene("MainMenu");
             }
         }
