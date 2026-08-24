@@ -392,6 +392,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1777280091}
     - target: {fileID: 7950982527963067029, guid: 6462bfda5ec6dc24f97545ab40456218, type: 3}
+      propertyPath: Exploder
+      value: 
+      objectReference: {fileID: 5936963902533171348, guid: 152cfd7f19e4c2345ad5b29f9cfd30c2, type: 3}
+    - target: {fileID: 7950982527963067029, guid: 6462bfda5ec6dc24f97545ab40456218, type: 3}
       propertyPath: waveText
       value: 
       objectReference: {fileID: 1352523456}

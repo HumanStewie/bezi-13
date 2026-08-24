@@ -177,7 +177,7 @@ public class GameManager : MonoBehaviour
 
         currentWave++;
 
-        if (!justDonewave10)
+        if (justDonewave10)
         {
             if (MainMenuEndless.Instance.isEndlessing) {
                 justDonewave10 = true;

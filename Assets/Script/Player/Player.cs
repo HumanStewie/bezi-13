@@ -256,14 +256,20 @@ if (Input.GetKeyDown(KeyCode.W)) TryMove(wDir, WRotation);
         Collider[] colliders = Physics.OverlapSphere(transform.position + (forwardDirection * 2f) + (boardUp * 0.1f), hitboxRadius);
         foreach (var col in colliders)
         {
-            if (col.TryGetComponent(out Entity entity))
+            if (col.TryGetComponent(out Entity hitEntity))
             {
-                if (entity.name != "Player")
+                if (hitEntity.entityName != "Player")
                 {
-                    entity.TakeDamage(damage);
-                    if (upgrades.WeightLessNess)
+                    bool isHeldByUs = Blocks.Contains(hitEntity);
+
+                    if (!isHeldByUs)
                     {
-                        entity.weight = 0;
+                        hitEntity.TakeDamage(damage);
+
+                        if (upgrades.WeightLessNess)
+                        {
+                            hitEntity.weight = 0;
+                        }
                     }
                 }
             }
