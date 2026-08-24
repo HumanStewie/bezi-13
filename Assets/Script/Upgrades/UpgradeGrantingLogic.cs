@@ -45,7 +45,7 @@ public class UpgradeGrantingLogic : MonoBehaviour
         while (elapsed < 1)
         {
             elapsed += Time.unscaledDeltaTime; // unscaledDeltaTime allows fading while paused
-            background.GetComponent<CanvasGroup>().alpha = Mathf.Lerp(0f, 1f, elapsed / 1);
+            background.GetComponent<CanvasGroup>().alpha = Mathf.Lerp(0f, 1f, elapsed / 0.4f);
             yield return null;
         }
     }
@@ -143,7 +143,7 @@ public class UpgradeGrantingLogic : MonoBehaviour
         while (elapsed < 1)
         {
             elapsed += Time.unscaledDeltaTime; // unscaledDeltaTime allows fading while paused
-            background.GetComponent<CanvasGroup>().alpha = Mathf.Lerp(1f, 0f, elapsed / 0.5f);
+            background.GetComponent<CanvasGroup>().alpha = Mathf.Lerp(1f, 0f, elapsed / 0.4f);
             yield return null;
         }
     }

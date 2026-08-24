@@ -151,8 +151,11 @@ public class GameManager : MonoBehaviour
             
             cinemachineCamera3.Follow = null;
             cinemachineCamera3.LookAt = null;
-            SceneManager.LoadScene("MainMenu");
-            StartCoroutine(AnimateLoseText("YOU LOST", () =>{}));
+            MusicManager.Instance.PlayGameOverSound();
+            StartCoroutine(AnimateLoseText("YOU LOST", () =>
+            {
+                SceneManager.LoadScene("MainMenu");
+            }));
             
             gameOver = true;
         }

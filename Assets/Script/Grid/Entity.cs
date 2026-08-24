@@ -52,22 +52,33 @@ public class Entity : MonoBehaviour
         if (entityName == "Player") MusicManager.Instance.PlayTakingDamageSound(transform.position);
 
     }
+
+    private bool isDead = false;
     public void Die()
     {
         if (entityName != "Player")
         {
             GameManager.instance.enemyKillCount++;
             Instantiate(PoofParticle, transform.position, Quaternion.identity);
+            MusicManager.Instance.PlayEnemyDieSound(transform.position);
+            for (int i = 0; i < indicators.Count; i++) {
+                Destroy(indicators[i]);
+            }
+            indicators.Clear();
+            Destroy(gameObject);
         }
         else
         {
-            MusicManager.Instance.PlayGameOverSound();
+            if (!isDead)
+            {
+                isDead = true;
+                MusicManager.Instance.PlayGameOverSound();
+                rb.isKinematic = false;
+                rb.constraints = RigidbodyConstraints.None;
+                rb.AddTorque(new Vector3(-8f, 10f, 10f), ForceMode.Impulse);
+                rb.AddForce(transform.forward, ForceMode.Impulse);
+            }
         }
-            MusicManager.Instance.PlayEnemyDieSound(transform.position);
-        for (int i = 0; i < indicators.Count; i++) {
-            Destroy(indicators[i]);
-        }
-        indicators.Clear();
-        Destroy(gameObject);
+        
     }
 }

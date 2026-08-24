@@ -17,7 +17,6 @@ public class Node : MonoBehaviour
         filter = GetComponentInChildren<MeshFilter>();
         startSprite = filter.mesh;
         tileRenderer = GetComponentInChildren<Renderer>();
-        Debug.Log(tileRenderer.materials[2].shader.name);
         
 
         if (tileRenderer != null && tileRenderer.material != null)

@@ -18,6 +18,8 @@ public class TippingLogic : MonoBehaviour
     [Header("UI References")]
     [SerializeField] private TextMeshProUGUI tippingPoint;
 
+    [SerializeField] private Camera mainCamera;
+
     private Quaternion targetRotation;
     private Vector3 currentAngularVelocity;
     private GridManager gridManager;
@@ -30,7 +32,7 @@ public class TippingLogic : MonoBehaviour
     {
         currentAngularVelocity = Vector3.zero;
         gridManager = GridManager.Instance;
-        tippingPoint.text = $"X-Axis Tilt: {xTilt}\nZ-Axis Tilt: {zTilt}";
+        tippingPoint.text = $"NEUTRAL";
         StartCoroutine(Rotate());
     }
 
@@ -63,6 +65,26 @@ public class TippingLogic : MonoBehaviour
                 xTilt = transform.rotation.x;
                 zTilt = transform.rotation.z;
 
+                if (xTilt > 0.1f || xTilt < -0.1f || zTilt > 0.1f || zTilt < -0.1f)
+                {
+                    Vector3 flatCameraDir = Vector3.ProjectOnPlane(mainCamera.transform.forward, Vector3.up).normalized;
+                    float dotBetween = Vector3.Dot(flatCameraDir, currentAngularVelocity);
+                    if (dotBetween < 0f)
+                    {
+                        if (dotBetween < 0.5f)
+                            tippingPoint.text = "GO FORWARD";
+                        else
+                            tippingPoint.text = "GO LEFT";
+                    }
+                    else
+                    {
+                        if (dotBetween < 0.5f)
+                            tippingPoint.text = "GO BACKWARD";
+                        else
+                            tippingPoint.text = "GO RIGHT";
+                    }
+                }
+                
                 if (currentAngularVelocity.magnitude > 1.5f && MusicManager.Instance != null)
                 {
                     MusicManager.Instance.PlayBoardTiltingSound(transform.position);
@@ -71,6 +93,15 @@ public class TippingLogic : MonoBehaviour
 
             yield return new WaitForSeconds(secondsPerTick);
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(Vector3.zero, currentAngularVelocity);
+        
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(Vector3.ProjectOnPlane(mainCamera.transform.forward, Vector3.up), Vector3.zero);
     }
 
     private Vector3 GetCenterOfMass()
@@ -102,9 +133,7 @@ public class TippingLogic : MonoBehaviour
     }
 
     private void Update()
-    {
-        tippingPoint.text = $"WS Tilt: {xTilt}\nAD Tilt: {zTilt}";
-    }
+    { }
 
 
     public void SetFreeze(bool frozen)

@@ -15,7 +15,7 @@ public class BlinkingText : MonoBehaviour
 
     private IEnumerator Blink()
     {
-        while (true)
+        while (!GameManager.instance.GameStarted || !GameManager.instance.gameOver)
         {
             visible = !visible;
             textMesh.enabled = visible;
@@ -25,11 +25,12 @@ public class BlinkingText : MonoBehaviour
 
     private void Update()
     {
-        if (GameManager.instance.GameStarted)
+        if (GameManager.instance.GameStarted || GameManager.instance.gameOver)
         {
             StopCoroutine(Blink());
             visible = false;
             textMesh.enabled = visible;
+            Destroy(gameObject);
         }
 
     }
