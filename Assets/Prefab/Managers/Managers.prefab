@@ -2515,7 +2515,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MusicManager
   bgMusic: {fileID: 4620085498120384029}
   soundEffectforUI: {fileID: 3264333842330939658}
-  music: {fileID: 0}
+  masterSlider: {fileID: 0}
+  musicSlider: {fileID: 0}
+  sfxSlider: {fileID: 0}
+  AudioExisted: 0
+  ExistedAudio: {fileID: 0}
+  music: {fileID: 8300000, guid: 2c28338531dc755408b7608582c08b77, type: 3}
   musicVolume: 0.541
   movement: {fileID: 8300000, guid: 8b90fb8e0b242df4bb54def3ae71ebf0, type: 3}
   movementVolume: 1
@@ -2541,7 +2546,7 @@ MonoBehaviour:
   waveTransitionVolume: 2
   Abilities: {fileID: 8300000, guid: 4f47a5b6f021ece49a6570c6c0e08b2c, type: 3}
   AbilitiesVolume: 1
-  GoldenWind: {fileID: 8300000, guid: 41c62c42cb8c8654392ad955ec65322b, type: 3}
+  GoldenWind: {fileID: 8300000, guid: a8a3e3f0ad8abcd4f8f6ae52108248db, type: 3}
   GoldenWindVolume: 1
   HandPoke: {fileID: 8300000, guid: 8bcb3ea1e84866b48a1fabdee05a8693, type: 3}
   HandPokeVolume: 1
@@ -2549,6 +2554,8 @@ MonoBehaviour:
   HandShootVolume: 1
   HandLazer: {fileID: 8300000, guid: 84e65105ef95f274f8972b6671df3597, type: 3}
   HandLazerVolume: 1
+  HandLazer2: {fileID: 0}
+  HandLazerVolume2: 1
   explosion: {fileID: 8300000, guid: 407cd078a3dbc6547ada137965ab52b7, type: 3}
   explosionVolume: 1
   blocktoss: {fileID: 8300000, guid: d7f03181a64fe894eb9a2b729c881e0b, type: 3}

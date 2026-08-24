@@ -422,7 +422,18 @@ if (Input.GetKeyDown(KeyCode.W)) TryMove(wDir, WRotation);
                     }
                 }
             }
-            yield return null;
+            else
+            {
+                Collider[] hitColliders = Physics.OverlapBox(currentPos, new Vector3(0.75f, 0.75f, 0.75f), GridManager.Instance.transform.rotation);
+                foreach (var col in hitColliders)
+                {
+                    if (col.TryGetComponent(out Entity enemy) && enemy.entityName != "Player" && enemy.entityName != "Block")
+                    {
+                        enemy.TakeDamage(10);
+                    }
+                }
+            }
+                yield return null;
         }
 
         if (blockObj != null)

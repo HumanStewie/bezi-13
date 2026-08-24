@@ -48,6 +48,8 @@ public class GameManager : MonoBehaviour
     public int enemyKillCount = 0;
 
     public bool gameOver;
+
+    public GameObject HealthBar;
     
     private void Awake()
     {
@@ -159,7 +161,7 @@ public class GameManager : MonoBehaviour
         if (tipping != null) tipping.SetFreeze(false);
 
         player.ResetAllBlock();
-        PossessEnemies();
+        DeleteAllBlock();
 
         if (playerUpgrades.CanBlock) { player.SummonBlock(); }
         if (playerUpgrades.CanReset) { resetCount = 1; }
@@ -169,8 +171,20 @@ public class GameManager : MonoBehaviour
         StartCoroutine(AnimateWaveText("WAVE " + currentWave, () =>
         {
             StartWave(currentWave);
+            PossessEnemies();
             checking = false;
         }));
+    }
+
+    public void DeleteAllBlock()
+    {
+        Entity[] entities = FindObjectsByType<Entity>(FindObjectsSortMode.None);
+        for (int i = 0; i < entities.Length; i++)
+        {
+            if (entities[i].entityName == "Block") { 
+                Destroy(entities[i].gameObject);
+            }
+         }
     }
 
     private IEnumerator AnimateWaveText(string message, Action onAnimationComplete)
@@ -309,7 +323,8 @@ public class GameManager : MonoBehaviour
             checking = true;
             currentWave++;
             MusicManager.Instance.playMusic(MusicManager.Instance.music, MusicManager.Instance.musicVolume);
-
+            MusicManager.Instance.PlayWaveTransitionSound();
+            HealthBar.SetActive(true);
             StartCoroutine(AnimateWaveText("WAVE " + currentWave, () =>
             {
                 StartWave(currentWave);

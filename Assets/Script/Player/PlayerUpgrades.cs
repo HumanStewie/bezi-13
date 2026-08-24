@@ -188,13 +188,19 @@ public class PlayerUpgrades : MonoBehaviour
             if (GameManager.instance.playerEntity.coords == chosenTile)
             {
                 if (tipping != null) tipping.SetFreeze(true);
+                MusicManager.Instance.PlayCanBeDestroyedAudio(MusicManager.Instance.GoldenWind, transform.position, MusicManager.Instance.GoldenWindVolume);
             }
             else
             {
+                Destroy(MusicManager.Instance.ExistedAudio);
+                MusicManager.Instance.AudioExisted = false;
                 if (tipping != null) tipping.SetFreeze(false);
             }
             yield return null;
         }
+        MusicManager.Instance.AudioExisted = false;
+        MusicManager.Instance.AudioExisted = false;
+        Destroy(MusicManager.Instance.ExistedAudio);
         GridManager.Instance.ChangeTileColor(chosenTile, new Color(0, 0, 0.35f, 0), new Color(0, 0, 0.643f, 0));
     }
     private void RageQuit()

@@ -21,8 +21,9 @@ public class MusicManager : MonoBehaviour
     private float masterMusicVolume = 1f;
     private float masterSFXVolume = 1f;
 
-
-
+    public bool AudioExisted = false;
+    public GameObject ExistedAudio;
+    
     [Header("Global Music & Sounds")]
     [SerializeField] public AudioClip music;
     [SerializeField, Range(0f, 2f)] public float musicVolume = 0.5f;
@@ -65,8 +66,8 @@ public class MusicManager : MonoBehaviour
     [SerializeField] private AudioClip Abilities;
     [SerializeField, Range(0f, 2f)] private float AbilitiesVolume = 1f;
 
-    [SerializeField] private AudioClip GoldenWind;
-    [SerializeField, Range(0f, 2f)] private float GoldenWindVolume = 1f;
+    [SerializeField] public AudioClip GoldenWind;
+    [SerializeField, Range(0f, 2f)] public float GoldenWindVolume = 1f;
 
 
     [Header("Enemies")]
@@ -186,10 +187,20 @@ public class MusicManager : MonoBehaviour
 
         Destroy(tempSound);
     }
-
-    public void ChangeValue()
+    public GameObject PlayCanBeDestroyedAudio(AudioClip clip, Vector3 position, float volume = 1f)
     {
+        var tempSound = new GameObject("TempSound");
+        tempSound.transform.position = position;
 
+        var audioSource = tempSound.AddComponent<AudioSource>();
+        audioSource.clip = clip;
+        audioSource.volume = volume;
+        audioSource.spatialBlend = 1f;
+
+        audioSource.Play();
+        AudioExisted = true;
+        ExistedAudio = tempSound;
+        return tempSound;
     }
 
 
