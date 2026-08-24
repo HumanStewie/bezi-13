@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
+    [SerializeField] private GameObject quitGameButton;
+
     public void PlayGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
@@ -15,16 +17,12 @@ public class MainMenu : MonoBehaviour
         Debug.Log("Quit game");
         Application.Quit();
     }
-     
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
     void Start()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        {
+            quitGameButton.SetActive(false);
+        }
     }
 }

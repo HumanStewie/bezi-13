@@ -370,6 +370,10 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            SceneManager.LoadScene("MainMenu");
+        }
         if (Input.GetKeyDown(KeyCode.P) && !started)
         {
             started = true;
