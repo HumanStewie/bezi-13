@@ -25,6 +25,7 @@ public class Bullet : MonoBehaviour
                     if (entity.name != "Player")
                     {
                         entity.TakeDamage(damage);
+                        Destroy(gameObject);
                     }
                 }
             }

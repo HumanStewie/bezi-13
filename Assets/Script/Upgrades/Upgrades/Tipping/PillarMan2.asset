@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: PillarMan2
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
   IDName: PillarMan2
-  Description: The platform is more secured
-  unlockable: 0
-  unlocked: 0
+  isAttack: 0
+  Description: The platform is even more secured
+  nextTier: {fileID: 0}

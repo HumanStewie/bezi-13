@@ -44,13 +44,19 @@ public class Entity : MonoBehaviour
         if (entityName == "Player") MusicManager.Instance.PlayTakingDamageSound(transform.position);
 
     }
-    void Die()
+    public void Die()
     {
         if (entityName != "Player")
         {
             GameManager.instance.enemyKillCount++;
+            Instantiate(PoofParticle, transform.position, Quaternion.identity);
         }
-        MusicManager.Instance.PlayEnemyDieSound(transform.position);
+        else
+        {
+            MusicManager.Instance.PlayGameOverSound();
+        }
+            MusicManager.Instance.PlayEnemyDieSound(transform.position);
+        
         Destroy(gameObject);
     }
 }

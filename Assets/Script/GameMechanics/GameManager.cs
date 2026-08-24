@@ -105,6 +105,10 @@ public class GameManager : MonoBehaviour
             {
                 checking = true;
                 player.enabled = false;
+
+                TippingLogic tipping = GridManager.Instance.GetComponent<TippingLogic>();
+                if (tipping != null) tipping.SetFreeze(true);
+
                 MusicManager.Instance.PlayTrimmedAudio(MusicManager.Instance.waveTransition, transform.position, 2f, MusicManager.Instance.waveTransitionVolume);
 
                 StartCoroutine(AnimateWaveText("WAVE CLEARED", () =>
@@ -139,6 +143,9 @@ public class GameManager : MonoBehaviour
         MusicManager.Instance.PlayTrimmedAudio(MusicManager.Instance.waveTransition, transform.position, 2f, MusicManager.Instance.waveTransitionVolume);
 
         player.enabled = true;
+
+        TippingLogic tipping = GridManager.Instance.GetComponent<TippingLogic>();
+        if (tipping != null) tipping.SetFreeze(false);
 
         player.ResetAllBlock();
         PossessEnemies();
@@ -320,7 +327,11 @@ public class GameManager : MonoBehaviour
         GridManager.Instance.transform.rotation = Quaternion.identity;
 
         TippingLogic tipping = GridManager.Instance.GetComponent<TippingLogic>();
-        if (tipping != null) tipping.ForceResetTilt();
+        if (tipping != null)
+        {
+            tipping.SetFreeze(true);
+            tipping.SetFreeze(false);
+        }
     }
 
     private void PossessEnemies()

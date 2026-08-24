@@ -40,7 +40,7 @@ public class Exploder : MonoBehaviour
         isAttacking = true;
         List<Vector2Int> targetTiles = GridManager.Instance.GetTilesInRange(entity.coords, 3);
         targetTiles.Add(entity.coords);
-        TargetingController.instance.ShowAttackWarning(targetTiles, 1f);
+        TargetingController.instance.ShowAttackWarning(targetTiles, explosionTime + 0.2f);
 
         Vector3 originalScale = this.transform.localScale;
 
@@ -61,16 +61,14 @@ public class Exploder : MonoBehaviour
         timer = 0f;
         Vector3 currentScale = transform.localScale;
         Vector3 explodingScale = originalScale * 2f;
-        while (timer < 0.3f)
+        while (timer < 0.2f)
         {
-            float percentComplete = timer / 0.3f;
+            float percentComplete = timer / 0.2f;
             transform.localScale = Vector3.Lerp(currentScale, explodingScale, percentComplete);
 
             timer += Time.deltaTime;
             yield return null;
         }
-
-        yield return new WaitForSeconds(0.5f);
 
         foreach (var tile in targetTiles) {
             var Newentity = GridManager.Instance.GetEntityAtPosition(tile);
@@ -81,6 +79,6 @@ public class Exploder : MonoBehaviour
         }
         yield return null;
         MusicManager.Instance.PlayExplosionSound(transform.position);
-        Destroy(this.gameObject);
+        this.GetComponent<Entity>().Die();
     }
 }

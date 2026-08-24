@@ -115,7 +115,7 @@ MonoBehaviour:
   maxHealth: 100
   weight: 1
   bloodParticle: {fileID: 7243542710608240285, guid: 777701eed9e92b046afcbc5750b8fd03, type: 3}
-  PoofParticle: {fileID: 0}
+  PoofParticle: {fileID: 3192898620222058802, guid: 73aaae7ee3ca0f943823b911c4f148f7, type: 3}
 --- !u!1001 &2390370752847860998
 PrefabInstance:
   m_ObjectHideFlags: 0

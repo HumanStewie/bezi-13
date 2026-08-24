@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d74de23ba62dc754c96bbf1c456c3a43, type: 3}
   m_Name: FoldUnderPressure
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
-  IDName: 
+  IDName: FoldUnderPressure
   isAttack: 0
-  Description: 
+  Description: Lego now explose after 3s
   nextTier: {fileID: 0}

@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: OmniBoardtent
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
   IDName: OmniBoardtent
-  Description: Killing 3 enemies reset board
-  unlockable: 0
-  unlocked: 0
+  isAttack: 0
+  Description: Killing 5 enemies reset board
+  nextTier: {fileID: 0}

@@ -14,6 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
   IDName: FriendsInNeed2
   isAttack: 1
-  Description: Summoning Ghost Lego that possess 3 random enemy every wave, making
-    them weightless
+  Description: Make 3 random enemies weightless each wave
   nextTier: {fileID: 0}

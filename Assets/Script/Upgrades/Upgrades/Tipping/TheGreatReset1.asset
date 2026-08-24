@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
   IDName: TheGreatReset
   isAttack: 0
-  Description: Reset the board 1 time
+  Description: Press space to reset board 1 time each wave
   nextTier: {fileID: 11400000, guid: 557c01cc32989b64197aea0615875a3f, type: 2}

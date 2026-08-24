@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
   IDName: PillarMan
   isAttack: 0
-  Description: There are 2 pillar at two side of the platform
+  Description: Make platform more secured
   nextTier: {fileID: 11400000, guid: e615dedb3260300478bd55fa950a511c, type: 2}

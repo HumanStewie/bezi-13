@@ -14,6 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
   IDName: RageQuit
   isAttack: 1
-  Description: For every 4 attacks, create a wall of shockwave that deals 5 damages
-    to all enemies in its path
+  Description: Create wall of shockwave every 4 attacks for 5 damages
   nextTier: {fileID: 11400000, guid: 3ade1f8a09fbac249b23780d9f48b822, type: 2}

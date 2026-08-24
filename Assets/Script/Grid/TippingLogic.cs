@@ -1,15 +1,13 @@
 using System;
 using System.Collections;
 using TMPro;
-using Unity.IntegerTime;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class TippingLogic : MonoBehaviour
 {
-    [Header("Physics Settings")] 
+    [Header("Physics Settings")]
     [SerializeField] private float secondsPerTick = 3f;
-
     [SerializeField] private float fixedStep = 0.33f;
     [SerializeField] private float tiltAcceleration = 45f;
     [SerializeField] private float maxAngularVelocity = 30f;
@@ -19,6 +17,7 @@ public class TippingLogic : MonoBehaviour
 
     [Header("UI References")]
     [SerializeField] private TextMeshProUGUI tippingPoint;
+
     private Quaternion targetRotation;
     private Vector3 currentAngularVelocity;
     private GridManager gridManager;
@@ -26,6 +25,7 @@ public class TippingLogic : MonoBehaviour
     private float zTilt;
     private Vector3 centerOfMass;
     private float totalWeight;
+
     private void Start()
     {
         currentAngularVelocity = Vector3.zero;
@@ -34,23 +34,16 @@ public class TippingLogic : MonoBehaviour
         StartCoroutine(Rotate());
     }
 
-    /// <summary>
-    /// IEnumerator but not necessary. Get Center of Mass, get torque from it, which is also acceleration, stripped out of magnitude
-    /// So we apply it again then add it together.
-    /// Then we can do some clamping and damping. Lastly just apply the rotation.
-    /// TargetRotation is actually angular velocity, made into quaternion with AngleAxis(). So its acting like a multiplier more.
-    ///
-    /// Basic unbalanced 2D pendulum
-    /// </summary>
-    /// <returns></returns>
     IEnumerator Rotate()
     {
-        while (!GameManager.instance.gameOver)
+        while (true)
         {
+            if (GameManager.instance != null && GameManager.instance.gameOver) yield break;
+
             if (!isFrozen)
             {
                 centerOfMass = GetCenterOfMass();
-                if (centerOfMass.magnitude > 0.005)
+                if (centerOfMass.magnitude > 0.005f)
                 {
                     Vector3 tiltAxis = Vector3.Cross(Vector3.up, centerOfMass);
                     Vector3 angularAcceleration = tiltAxis * tiltAcceleration;
@@ -63,55 +56,56 @@ public class TippingLogic : MonoBehaviour
 
                 currentAngularVelocity *= damping;
                 currentAngularVelocity = Vector3.ClampMagnitude(currentAngularVelocity, maxAngularVelocity);
+
                 targetRotation = Quaternion.AngleAxis(currentAngularVelocity.magnitude * fixedStep, currentAngularVelocity.normalized);
 
                 transform.rotation = targetRotation * transform.rotation;
                 xTilt = transform.rotation.x;
                 zTilt = transform.rotation.z;
-                MusicManager.Instance.PlayBoardTiltingSound(transform.position);
+
+                if (currentAngularVelocity.magnitude > 1.5f && MusicManager.Instance != null)
+                {
+                    MusicManager.Instance.PlayBoardTiltingSound(transform.position);
+                }
             }
 
             yield return new WaitForSeconds(secondsPerTick);
         }
     }
 
-
-    /// <summary>
-    /// Calculate weight of every entities on the board then output current center of mass
-    /// </summary>
-    /// <returns></returns>
     private Vector3 GetCenterOfMass()
     {
         totalWeight = gridManager.gridWeight;
         float xCM = 0f;
         float yCM = 0f;
-        
+
         foreach (Entity entity in FindObjectsByType<Entity>(FindObjectsSortMode.None))
-        {   
+        {
             totalWeight += entity.weight;
             xCM += entity.coords.x * entity.weight;
             yCM += entity.coords.y * entity.weight;
         }
-        
+
         xCM /= totalWeight;
         yCM /= totalWeight;
-        
+
         return new Vector3(xCM, 2, yCM);
     }
+
     public void ApplyPillarManBuff(float weightMultiplier, float accelerationMultiplier)
     {
         if (gridManager != null)
         {
             gridManager.gridWeight *= weightMultiplier;
         }
-
         tiltAcceleration *= accelerationMultiplier;
-
     }
+
     private void Update()
     {
         tippingPoint.text = $"WS Tilt: {xTilt}\nAD Tilt: {zTilt}";
     }
+
 
     public void SetFreeze(bool frozen)
     {
@@ -119,11 +113,35 @@ public class TippingLogic : MonoBehaviour
         if (frozen)
         {
             currentAngularVelocity = Vector3.zero;
+
+            StartCoroutine(SmoothLevelRoutine());
+
+            if (MusicManager.Instance != null) MusicManager.Instance.PlayGoldenWindSound(transform.position);
         }
     }
-    public void ForceResetTilt()
+
+    private IEnumerator SmoothLevelRoutine()
     {
-        currentAngularVelocity = Vector3.zero;
+        Quaternion startRotation = transform.rotation;
+        float elapsedTime = 0f;
+        float duration = 1.5f;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+
+            float percentComplete = elapsedTime / duration;
+            float smoothPercent = Mathf.SmoothStep(0f, 1f, percentComplete);
+
+            transform.rotation = Quaternion.Slerp(startRotation, Quaternion.identity, smoothPercent);
+
+            xTilt = transform.rotation.x;
+            zTilt = transform.rotation.z;
+
+            yield return null; 
+        }
+
+        transform.rotation = Quaternion.identity;
         xTilt = 0f;
         zTilt = 0f;
     }

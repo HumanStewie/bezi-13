@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: TheGreatReset2
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
   IDName: TheGreatReset2
-  Description: Reset the board 2 time
-  unlockable: 0
-  unlocked: 0
+  isAttack: 0
+  Description: Press space to reset board 2 time each wave
+  nextTier: {fileID: 0}

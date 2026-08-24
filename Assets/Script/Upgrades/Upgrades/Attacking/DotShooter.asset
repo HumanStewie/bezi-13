@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
   IDName: DotShooter
   isAttack: 1
-  Description: Fire in the front
+  Description: Fire front 3 damages
   nextTier: {fileID: 11400000, guid: e49286ea6ef09e14da03e0d1851ff4da, type: 2}

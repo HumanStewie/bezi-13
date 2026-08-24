@@ -14,6 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
   IDName: GoldenWind
   isAttack: 0
-  Description: Random tile on the board turn to gold for 5s, when in the tile, the
-    board cannot tip. Reset every 10 seconds
+  Description: every 10s, make a random tile golden for 5s(freeze board when on it)
   nextTier: {fileID: 11400000, guid: ab5032e329c8af34ab188a0a26eb07ba, type: 2}
