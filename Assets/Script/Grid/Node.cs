@@ -17,6 +17,7 @@ public class Node : MonoBehaviour
         filter = GetComponentInChildren<MeshFilter>();
         startSprite = filter.mesh;
         tileRenderer = GetComponentInChildren<Renderer>();
+        Debug.Log(tileRenderer.materials[2].shader.name);
         
 
         if (tileRenderer != null && tileRenderer.material != null)
@@ -43,8 +44,12 @@ public class Node : MonoBehaviour
         tileRenderer.material.color = originalColor;
         Debug.Log($"Tile {this.name} reset");
     }
-    public void Highlight(Color newColor)
+    public void Highlight(Color lightColor, Color darkColor)
     {
-        tileRenderer.materials[2].color = newColor;
+        // Color Light
+        tileRenderer.materials[2].SetColor("Color_9bbf2ad544ff418eb92f2bc07389403b", lightColor);
+        
+        // Color Dark
+        tileRenderer.materials[2].SetColor("Color_f45cb926e67e4d7887dae7cc6dbcffb2", darkColor);
     }
 }

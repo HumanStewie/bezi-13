@@ -325,10 +325,10 @@ public class GridManager : MonoBehaviour
     
 
 
-    public void ChangeTileColor(Vector2Int coord, Color color)
+    public void ChangeTileColor(Vector2Int coord, Color color, Color darkColor)
     {
         if (grid.TryGetValue(coord, out Node node))
-            node.Highlight(color);
+            node.Highlight(color, darkColor);
     }
 
     public void ResetAllTiles()

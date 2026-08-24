@@ -177,7 +177,7 @@ public class PlayerUpgrades : MonoBehaviour
     private IEnumerator GoldenWindMechanic(float freezeDuration)
     {
         Vector2Int chosenTile = GridManager.Instance.SelectRandomPossible();
-        GridManager.Instance.ChangeTileColor(chosenTile, Color.yellow);
+        GridManager.Instance.ChangeTileColor(chosenTile, Color.goldenRod, Color.yellow);
 
         TippingLogic tipping = GridManager.Instance.GetComponent<TippingLogic>();
 
@@ -195,7 +195,7 @@ public class PlayerUpgrades : MonoBehaviour
             }
             yield return null;
         }
-        GridManager.Instance.ChangeTileColor(chosenTile, Color.white);
+        GridManager.Instance.ChangeTileColor(chosenTile, new Color(0, 0, 0.35f, 0), new Color(0, 0, 0.643f, 0));
     }
     private void RageQuit()
     {

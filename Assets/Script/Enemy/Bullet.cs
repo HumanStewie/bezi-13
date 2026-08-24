@@ -16,21 +16,7 @@ public class Bullet : MonoBehaviour
     private void Update()
     {
         transform.Translate( speed * Time.deltaTime * Vector3.forward, Space.Self);
-        if (player) {
-            Collider[] colliders = Physics.OverlapSphere(transform.position, hitRadius, layermask);
-            foreach (var col in colliders)
-            {
-                if (col.TryGetComponent(out Entity entity))
-                {
-                    if (entity.name != "Player")
-                    {
-                        entity.TakeDamage(damage);
-                        Destroy(gameObject);
-                    }
-                }
-            }
-
-        }
+        
     }
 
     private void OnTriggerEnter(Collider other)
@@ -45,6 +31,15 @@ public class Bullet : MonoBehaviour
                 {
                     GameManager.instance.playerEntity.TakeDamage(damage);
                     Destroy(gameObject);
+                }
+            }
+            if (player) {
+                if (other.TryGetComponent(out Entity entity))
+                {
+                    if (entity.name != "Player")
+                    {
+                        entity.TakeDamage(damage);
+                    }
                 }
             }
         }

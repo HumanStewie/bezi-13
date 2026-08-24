@@ -7,7 +7,7 @@ public class HoverOscillator : MonoBehaviour, IPointerEnterHandler, IPointerExit
     [SerializeField] private float moveSpeed = 10f;     
     [SerializeField] private float moveDistance = 15f;  
     [SerializeField] private Vector2 moveDirection = new Vector2(-1, 0);
-
+    [SerializeField] private Animator animator;
     private RectTransform rectTransform;
     private Vector2 originalPosition;
     private bool isHovered = false;
@@ -24,22 +24,23 @@ public class HoverOscillator : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     private void Update()
     {
-        if (isHovered)
-        {
-            float offset = Mathf.Abs(Mathf.Sin(Time.time * moveSpeed)) * moveDistance;
-
-            rectTransform.anchoredPosition = originalPosition + (moveDirection.normalized * offset);
-        }
-        else
-        {
-            rectTransform.anchoredPosition = Vector2.Lerp(rectTransform.anchoredPosition, originalPosition, Time.deltaTime * 15f);
-        }
+        // if (isHovered)
+        // {
+        //     float offset = Mathf.Abs(Mathf.Sin(Time.time * moveSpeed)) * moveDistance;
+        //
+        //     rectTransform.anchoredPosition = originalPosition + (moveDirection.normalized * offset);
+        // }
+        // else
+        // {
+        //     rectTransform.anchoredPosition = Vector2.Lerp(rectTransform.anchoredPosition, originalPosition, Time.deltaTime * 15f);
+        // }
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
         isHovered = true;
         MusicManager.Instance.PlayHoverSound();
+        animator.SetInteger("State", 1);
     }
 
     public void OnPointerExit(PointerEventData eventData)
