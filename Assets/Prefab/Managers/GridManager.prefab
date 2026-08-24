@@ -111,6 +111,8 @@ MonoBehaviour:
   started: 0
   checking: 0
   weightLess: {fileID: 2100000, guid: 3d463cdfaf5d1814bb667ffe6182a369, type: 2}
+  winDuration: 8
+  background: {fileID: 0}
   enemyKillCount: 0
   gameOver: 0
   HealthBar: {fileID: 0}

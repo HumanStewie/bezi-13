@@ -478,14 +478,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1584839972}
     - target: {fileID: 7950982527963067029, guid: 6462bfda5ec6dc24f97545ab40456218, type: 3}
-      propertyPath: currentWave
-      value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 7950982527963067029, guid: 6462bfda5ec6dc24f97545ab40456218, type: 3}
-      propertyPath: winDuration
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 7950982527963067029, guid: 6462bfda5ec6dc24f97545ab40456218, type: 3}
       propertyPath: playerEntity
       value: 
       objectReference: {fileID: 2147393471}
