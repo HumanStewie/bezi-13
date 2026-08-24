@@ -9,7 +9,7 @@ public class TargetingController : MonoBehaviour
 
     public GameObject warningPrefab;
 
-    public float targetscale = 1f;
+    private float targetscale = 2f;
 
     private void Awake()
     {
@@ -20,12 +20,12 @@ public class TargetingController : MonoBehaviour
     {
         gridManager = GridManager.Instance;
     }
-    public void ShowAttackWarning(List<Vector2Int> dangerZone, float duration)
+    public void ShowAttackWarning(Entity entity, List<Vector2Int> dangerZone, float duration)
     {
-        StartCoroutine(ExpandWarningRoutine(dangerZone, duration));
+        StartCoroutine(ExpandWarningRoutine(entity, dangerZone, duration));
     }
 
-    private IEnumerator ExpandWarningRoutine(List<Vector2Int> dangerZone, float duration)
+    private IEnumerator ExpandWarningRoutine(Entity entity, List<Vector2Int> dangerZone, float duration)
     {
         List<GameObject> activeDecals = new List<GameObject>();
 
@@ -34,13 +34,14 @@ public class TargetingController : MonoBehaviour
             if (gridManager.Grid.TryGetValue(coord, out Node node))
             {
                 Vector3 spawnPos = node.transform.position + (node.transform.up * 1.01f);
-
+                
                 GameObject decal = Instantiate(warningPrefab, spawnPos, Quaternion.identity, node.transform);
-
+                
                 decal.transform.localScale = Vector3.one * 0.1f;
                 decal.transform.localRotation = Quaternion.Euler(90, 0, 0);
 
                 activeDecals.Add(decal);
+                entity.indicators.Add(decal);
             }
         }
 
@@ -66,5 +67,6 @@ public class TargetingController : MonoBehaviour
         {
             Destroy(decal);
         }
+        entity.indicators.Clear();
     }
 }

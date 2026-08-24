@@ -60,6 +60,7 @@ public class Exploder : MonoBehaviour
     void FollowLogic()
     {
         GridManager.Instance.FollowLogic(entity);
+        transform.rotation= Quaternion.identity;
         if (GridManager.Instance.GetDistance(entity.coords, GameManager.instance.playerEntity.GetComponent<Entity>().coords) <= 2 && !isSpawning)
         {
             StartCoroutine(Attacking());
@@ -70,7 +71,7 @@ public class Exploder : MonoBehaviour
         isAttacking = true;
         List<Vector2Int> targetTiles = GridManager.Instance.GetTilesInRange(entity.coords, 3);
         targetTiles.Add(entity.coords);
-        TargetingController.instance.ShowAttackWarning(targetTiles, explosionTime + 0.2f);
+        TargetingController.instance.ShowAttackWarning(GetComponent<Entity>(), targetTiles, explosionTime + 0.2f);
 
         Vector3 originalScale = this.transform.localScale;
 

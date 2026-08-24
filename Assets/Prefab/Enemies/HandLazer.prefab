@@ -96,7 +96,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: a816c0819013e08448e1e52c7d7743b4, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -129,8 +129,8 @@ LineRenderer:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 0.055553436
-        value: 0.7337265
+        time: 0.0015792847
+        value: 0.59921265
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -226,6 +226,7 @@ MonoBehaviour:
   weight: 4
   bloodParticle: {fileID: 7243542710608240285, guid: 777701eed9e92b046afcbc5750b8fd03, type: 3}
   PoofParticle: {fileID: 7820940365141394766, guid: fa26b780072f649488ba41c22d2af555, type: 3}
+  Filler: {fileID: 0}
 --- !u!65 &7277715553953291959
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -92,6 +92,9 @@ MonoBehaviour:
   playerEntity: {fileID: 0}
   waveText: {fileID: 0}
   cinemachineCamera: {fileID: 0}
+  cinemachineCamera1: {fileID: 0}
+  cinemachineCamera2: {fileID: 0}
+  cinemachineCamera3: {fileID: 0}
   currentWave: 0
   fixedSecondRate: 1
   tiltLimit: 50
@@ -108,7 +111,7 @@ MonoBehaviour:
   ResetKeyCode: 32
   started: 0
   checking: 0
-  weightLess: {fileID: 0}
+  weightLess: {fileID: 2100000, guid: 3d463cdfaf5d1814bb667ffe6182a369, type: 2}
   enemyKillCount: 0
   gameOver: 0
 --- !u!114 &3386371047611388895
@@ -123,7 +126,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3770a654b321b51409a43691576186b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TippingLogic
-  secondsPerTick: 0.1
+  secondsPerTick: 1
   fixedStep: 0.007
   tiltAcceleration: 30
   maxAngularVelocity: 1000

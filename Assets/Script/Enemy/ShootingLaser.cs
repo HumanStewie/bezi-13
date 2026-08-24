@@ -42,7 +42,6 @@ public class ShootingLaser : MonoBehaviour
                 if (myPos.x == playerPos.x || myPos.y == playerPos.y)
                 {
                     yield return StartCoroutine(AttackSequence(playerPos));
-                    MusicManager.Instance.PlayHandLazerSound(transform.position);
                 }
                 else
                 {
@@ -113,11 +112,12 @@ public class ShootingLaser : MonoBehaviour
         }
 
         firezone = dangerZone;
-        TargetingController.instance.ShowAttackWarning(dangerZone, chargeTime);
+        MusicManager.Instance.PlayHandLazerSound(transform.position);
+        TargetingController.instance.ShowAttackWarning(entity, dangerZone, chargeTime);
         yield return new WaitForSeconds(chargeTime);
 
         laserLine.enabled = true;
-
+        MusicManager.Instance.PlayHandLazerSoundDuring(transform.position);
         float attackTimer = 0f;
         float damageTickTimer = 0f;
 

@@ -65,6 +65,9 @@ public class MusicManager : MonoBehaviour
     [SerializeField] private AudioClip HandLazer;
     [SerializeField, Range(0f, 2f)] private float HandLazerVolume = 1f;
 
+    [SerializeField] private AudioClip HandLazer2;
+    [SerializeField, Range(0f, 2f)] private float HandLazerVolume2 = 1f;
+
     [SerializeField] private AudioClip explosion;
     [SerializeField, Range(0f, 2f)] private float explosionVolume = 1f;
 
@@ -141,10 +144,12 @@ public class MusicManager : MonoBehaviour
     public void PlayGenericButtonSound() => playUISound(Buttons, ButtonsVolume);
     public void PlayAbilitiesSound(Vector3 position, float duration) => PlayTrimmedAudio(Abilities, position, duration, AbilitiesVolume);
     public void PlayGoldenWindSound(Vector3 position) => PlaySFX(GoldenWind, position, GoldenWindVolume);
-
+    public void PlayWaveTransitionSound() => playUISound(waveTransition, waveTransitionVolume);
     public void PlayHandPokeSound(Vector3 position) => PlaySFX(HandPoke, position, HandPokeVolume);
     public void PlayHandShootSound(Vector3 position) => PlaySFX(HandShoot, position, HandShootVolume);
     public void PlayHandLazerSound(Vector3 position) => PlaySFX(HandLazer, position, HandLazerVolume);
+    public void PlayHandLazerSoundDuring(Vector3 position) => PlaySFX(HandLazer2, position, HandLazerVolume2);
+
     public void PlayExplosionSound(Vector3 position) => PlaySFX(explosion, position, explosionVolume);
     public void PlayBlockTossSound(Vector3 position) => PlaySFX(blocktoss, position, blocktossVolume);
     public void PlayBlockPlaceSound(Vector3 position) => PlaySFX(blockPlace, position, blockPlaceVolume);

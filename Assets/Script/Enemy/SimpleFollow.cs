@@ -47,7 +47,7 @@ public class SimpleFollow : MonoBehaviour, IEnemy
         animator.SetBool("IsAttacking", true);
         Vector2Int targetTile = GameManager.instance.playerEntity.coords;
         List<Vector2Int> dangerZone = new List<Vector2Int> { targetTile };
-        TargetingController.instance.ShowAttackWarning(dangerZone, 1.5f);
+        TargetingController.instance.ShowAttackWarning(GetComponent<Entity>(), dangerZone, 1.5f);
         yield return new WaitForSeconds(1.5f);
 
 
