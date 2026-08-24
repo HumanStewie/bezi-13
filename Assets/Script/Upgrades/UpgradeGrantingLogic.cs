@@ -1,6 +1,9 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class UpgradeGrantingLogic : MonoBehaviour
 {
@@ -9,6 +12,9 @@ public class UpgradeGrantingLogic : MonoBehaviour
     [Header("UI Panels")]
     public GameObject categorySelectionPanel; 
     public GameObject upgradeSelectionPanel;
+    public GameObject background;
+    public Animator categoryAnimator;
+    public Animator upgradeAnimator;
 
     [Header("Upgrade Pools")]
     public List<UpgradeData> unlockedTippingSkills = new();
@@ -27,24 +33,42 @@ public class UpgradeGrantingLogic : MonoBehaviour
 
     public void StartGrantingUpgrades()
     {
-        Time.timeScale = 0f;
         upgradeSelectionPanel.SetActive(false);
-        categorySelectionPanel.SetActive(true); 
+        categorySelectionPanel.SetActive(true);
+        categoryAnimator.SetTrigger("Open");
+        StartCoroutine(FadeIn());
+    }
+
+    private IEnumerator FadeIn()
+    {
+        float elapsed = 0f;
+        while (elapsed < 1)
+        {
+            elapsed += Time.unscaledDeltaTime; // unscaledDeltaTime allows fading while paused
+            background.GetComponent<CanvasGroup>().alpha = Mathf.Lerp(0f, 1f, elapsed / 1);
+            yield return null;
+        }
     }
 
     public void ChoosenAttack()
     {
-        upgradeSelectionPanel.SetActive(true);
-        categorySelectionPanel.SetActive(false);
         SkillRandomizer(unlockedAttackingSkills);
-    
+        StartCoroutine(CloseCategory());
     }
 
     public void ChoosenTipping()
     {
-        upgradeSelectionPanel.SetActive(true);
-        categorySelectionPanel.SetActive(false);
         SkillRandomizer(unlockedTippingSkills);
+        StartCoroutine(CloseCategory());
+    }    
+    IEnumerator CloseCategory()
+    {
+        categoryAnimator.SetTrigger("Close");
+        
+        yield return new WaitForSecondsRealtime(0.30f);
+        upgradeSelectionPanel.SetActive(true);
+        upgradeAnimator.SetTrigger("Open");
+        categorySelectionPanel.SetActive(false);
     }
 
     void SkillRandomizer(List<UpgradeData> datas)
@@ -103,8 +127,25 @@ public class UpgradeGrantingLogic : MonoBehaviour
 
         CheckForCombined();
         MusicManager.Instance.PlayUpgradeButtonSound();
+        StartCoroutine(CloseUpgrade());
+        StartCoroutine(FadeOut());
+    }
+    IEnumerator CloseUpgrade()
+    {
+        upgradeAnimator.SetTrigger("Close");
+        yield return new WaitForSecondsRealtime(0.3f);
         upgradeSelectionPanel.SetActive(false);
         ProceedToNextWave();
+    }
+    private IEnumerator FadeOut()
+    {
+        float elapsed = 0f;
+        while (elapsed < 1)
+        {
+            elapsed += Time.unscaledDeltaTime; // unscaledDeltaTime allows fading while paused
+            background.GetComponent<CanvasGroup>().alpha = Mathf.Lerp(1f, 0f, elapsed / 0.5f);
+            yield return null;
+        }
     }
 
     void CheckForCombined()
