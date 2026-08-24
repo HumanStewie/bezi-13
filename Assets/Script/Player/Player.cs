@@ -140,7 +140,6 @@ public class Player : MonoBehaviour
         }
         targetRotation = Quaternion.Euler(xRotationOffset, yRotation, 0);
         latestLook = direction;
-        Debug.Log(Blocks.Count);
     }
     
     void BlockPlacement()
@@ -163,7 +162,6 @@ public class Player : MonoBehaviour
             
             Blocks.Remove(lastBlock);
         }
-        Debug.Log(Blocks.Count);
     }
     
 

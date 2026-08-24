@@ -1,8 +1,11 @@
 using System;
 using System.Collections;
+using System.Numerics;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Quaternion = UnityEngine.Quaternion;
+using Vector3 = UnityEngine.Vector3;
 
 public class TippingLogic : MonoBehaviour
 {
@@ -19,6 +22,8 @@ public class TippingLogic : MonoBehaviour
     [SerializeField] private TextMeshProUGUI tippingPoint;
 
     [SerializeField] private Camera mainCamera;
+    [SerializeField] private CameraSwitcher switcher;
+    [SerializeField] private Arrow arrow;
 
     private Quaternion targetRotation;
     private Vector3 currentAngularVelocity;
@@ -64,26 +69,8 @@ public class TippingLogic : MonoBehaviour
                 transform.rotation = targetRotation * transform.rotation;
                 xTilt = transform.rotation.x;
                 zTilt = transform.rotation.z;
-
-                if (xTilt > 0.1f || xTilt < -0.1f || zTilt > 0.1f || zTilt < -0.1f)
-                {
-                    Vector3 flatCameraDir = Vector3.ProjectOnPlane(mainCamera.transform.forward, Vector3.up).normalized;
-                    float dotBetween = Vector3.Dot(flatCameraDir, currentAngularVelocity);
-                    if (dotBetween < 0f)
-                    {
-                        if (dotBetween < 0.5f)
-                            tippingPoint.text = "GO FORWARD";
-                        else
-                            tippingPoint.text = "GO LEFT";
-                    }
-                    else
-                    {
-                        if (dotBetween < 0.5f)
-                            tippingPoint.text = "GO BACKWARD";
-                        else
-                            tippingPoint.text = "GO RIGHT";
-                    }
-                }
+                
+                
                 
                 if (currentAngularVelocity.magnitude > 1.5f && MusicManager.Instance != null)
                 {
@@ -95,13 +82,92 @@ public class TippingLogic : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if (xTilt > 0.02f || xTilt < -0.02f || zTilt > 0.02f || zTilt < -0.02f)
+        {
+            arrow.gameObject.SetActive(true);
+            Vector3 flatCameraDir = Vector3.ProjectOnPlane(mainCamera.transform.forward, Vector3.up).normalized;
+            Vector3 flatNormal = Vector3.ProjectOnPlane(transform.up, Vector3.up).normalized;
+            Vector3 directionToPointTo = Vector3.ProjectOnPlane(-flatNormal, transform.up).normalized + Vector3.up;
+            arrow.transform.LookAt(directionToPointTo + GameManager.instance.playerEntity.transform.position);
+            float dotBetween = Vector3.Dot(flatCameraDir, flatNormal);
+            float angleBetween = Vector3.Angle(flatCameraDir, flatNormal);
+
+            int temp = 0;
+            bool corner = false;
+    
+            if (dotBetween < 0f)
+            {
+                if (angleBetween <= 135 && flatNormal.z < 0)
+                    temp = 0; //"GO FORWARD";
+                else
+                    temp = 3; //"GO RIGHT"; 
+            }
+            else
+            {
+                if (angleBetween < 45 && flatNormal.x > 0)
+                    temp = 1; //"GO LEFT";
+                else
+                    temp = 2; //"GO BACKWARD";
+            }
+
+            temp = (temp + switcher.currentCamera)%4;
+    
+            if (temp == 0) tippingPoint.text = "GO FORWARD";
+            else if (temp == 1) tippingPoint.text = "GO LEFT";
+            else if (temp == 2) tippingPoint.text = "GO BACKWARD";
+            else if (temp == 3) tippingPoint.text = "GO RIGHT";
+
+            // corners
+            temp = 0;
+
+            if (flatNormal.z < 0 && flatNormal.x < 0)
+            {
+                temp = 0; //"GO FORWARD & RIGHT";
+                corner = true;
+            }
+            if (flatNormal.z < 0 && flatNormal.x > 0)
+            {
+                temp = 1; //"GO FORWARD & LEFT";
+                corner = true;
+            }
+
+            if (flatNormal.z > 0 && flatNormal.x > 0)
+            {
+                temp = 2; //"GO BACKWARD & LEFT"; 
+                corner = true;
+            }
+
+            if (flatNormal.z > 0 && flatNormal.x < 0)
+            {
+                temp = 3; //"GO BACKWARD & RIGHT";
+                corner = true;
+            }
+
+            if (corner)
+            {
+                temp = (temp + switcher.currentCamera)%4;
+                if (temp == 0) tippingPoint.text = "GO FORWARD & RIGHT";
+                else if (temp == 1) tippingPoint.text = "GO FORWARD & LEFT";
+                else if (temp == 2) tippingPoint.text = "GO BACKWARD & LEFT";
+                else if (temp == 3) tippingPoint.text = "GO BACKWARD & RIGHT";
+            }
+    
+        }
+        else
+        {
+            arrow.TurnOff();
+        }
+    }
+
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawLine(Vector3.zero, currentAngularVelocity);
+        Gizmos.DrawLine(Vector3.zero, Vector3.ProjectOnPlane(transform.up, Vector3.up).normalized);
         
         Gizmos.color = Color.green;
-        Gizmos.DrawLine(Vector3.ProjectOnPlane(mainCamera.transform.forward, Vector3.up), Vector3.zero);
+        Gizmos.DrawLine(Vector3.ProjectOnPlane(mainCamera.transform.forward, Vector3.up).normalized, Vector3.zero);
     }
 
     private Vector3 GetCenterOfMass()
@@ -131,10 +197,6 @@ public class TippingLogic : MonoBehaviour
         }
         tiltAcceleration *= accelerationMultiplier;
     }
-
-    private void Update()
-    { }
-
 
     public void SetFreeze(bool frozen)
     {

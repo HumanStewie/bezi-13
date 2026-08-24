@@ -243,7 +243,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -9.69}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -49.232117, y: -203}
+  m_AnchoredPosition: {x: -49.232178, y: -203}
   m_SizeDelta: {x: 98.464, y: 55.338}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1086776762213638365
@@ -2782,7 +2782,7 @@ MonoBehaviour:
   Abilities: {fileID: 8300000, guid: 4f47a5b6f021ece49a6570c6c0e08b2c, type: 3}
   AbilitiesVolume: 1
   GoldenWind: {fileID: 8300000, guid: a8a3e3f0ad8abcd4f8f6ae52108248db, type: 3}
-  GoldenWindVolume: 1
+  GoldenWindVolume: 0.4
   HandPoke: {fileID: 8300000, guid: 8bcb3ea1e84866b48a1fabdee05a8693, type: 3}
   HandPokeVolume: 1
   HandShoot: {fileID: 8300000, guid: 3fa913b704bc42d43b8b2d29899cf12d, type: 3}

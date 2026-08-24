@@ -104,7 +104,7 @@ MonoBehaviour:
   ShootingHand: {fileID: 8915065813042629455, guid: 904e4b1180bf0f54886c1c1aac1f4548, type: 3}
   Block: {fileID: 5219621485388388985, guid: 9083295d8e651d54dbdc398fd8a76a87, type: 3}
   Placer: {fileID: 3117999550218671621, guid: ebe3a624759b24c499c8df0842b59a61, type: 3}
-  Exploder: {fileID: 1022106986125710323, guid: aa6ee70c5d61bbf449b028e1cfe2707a, type: 3}
+  Exploder: {fileID: 5936963902533171348, guid: 152cfd7f19e4c2345ad5b29f9cfd30c2, type: 3}
   LaserShooter: {fileID: 1154371613314712141, guid: cab0648d504c49447a88f339ae8ee2bb, type: 3}
   Tanker: {fileID: 404780936182618527, guid: 90d198fd5a2553449a2f2f2b69e65752, type: 3}
   ResetKeyCode: 32
@@ -114,6 +114,10 @@ MonoBehaviour:
   enemyKillCount: 0
   gameOver: 0
   HealthBar: {fileID: 0}
+  EndlessModeUnlocked: 1
+  addedDifficulty: 32
+  justDonewave10: 0
+  winningPannel: {fileID: 0}
 --- !u!114 &3386371047611388895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -132,6 +136,9 @@ MonoBehaviour:
   maxAngularVelocity: 1000
   damping: 0.95
   tippingPoint: {fileID: 0}
+  mainCamera: {fileID: 0}
+  switcher: {fileID: 0}
+  arrow: {fileID: 0}
 --- !u!54 &6352959944591125128
 Rigidbody:
   m_ObjectHideFlags: 0

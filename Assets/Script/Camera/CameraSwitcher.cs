@@ -4,7 +4,7 @@ using Unity.Cinemachine;
 public class CameraSwitcher : MonoBehaviour
 {
     private CinemachineCamera[] cameras;
-    private int currentCamera = 0;
+    public int currentCamera = 0;
 
 
     void SetCamera(int index)

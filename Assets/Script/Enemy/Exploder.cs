@@ -7,6 +7,8 @@ public class Exploder : MonoBehaviour
     bool isAttacking = false;
     Entity entity;
     [SerializeField] private float explosionTime;
+    [SerializeField] private float explosionIntensity;
+    [SerializeField] private float shakeDuration;
 
     bool isSpawning = true;
 
@@ -18,7 +20,7 @@ public class Exploder : MonoBehaviour
 
         transform.localRotation = Quaternion.identity;
 
-        GridManager.Instance.MoveEntity(entity, entity.coords, 1.0f);
+        GridManager.Instance.MoveEntity(entity, entity.coords, 1.5f);
 
         StartCoroutine(SpawnRiseRoutine());
     }
@@ -110,7 +112,7 @@ public class Exploder : MonoBehaviour
         }
         yield return null;
         MusicManager.Instance.PlayExplosionSound(transform.position);
-        CameraShake.Instance.ShakeCamera(10f, 0.3f);
+        CameraShake.Instance.ShakeCamera(explosionIntensity, shakeDuration);
         this.GetComponent<Entity>().Die();
     }
 }

@@ -11,13 +11,14 @@ public class Node : MonoBehaviour
     private Color originalColor;
     private Renderer tileRenderer;
     private MeshFilter filter;
+    private Renderer iconRenderer;
 
     public void Start()
     {
         filter = GetComponentInChildren<MeshFilter>();
         startSprite = filter.mesh;
-        tileRenderer = GetComponentInChildren<Renderer>();
-        
+        tileRenderer = GetComponentInChildren<MeshRenderer>();
+        iconRenderer = GetComponentInChildren<SpriteRenderer>();
 
         if (tileRenderer != null && tileRenderer.material != null)
         {
@@ -45,6 +46,7 @@ public class Node : MonoBehaviour
     }
     public void Highlight(Color lightColor, Color darkColor)
     {
+        iconRenderer.material.color = darkColor;
         // Color Light
         tileRenderer.materials[2].SetColor("Color_9bbf2ad544ff418eb92f2bc07389403b", lightColor);
         

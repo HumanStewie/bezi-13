@@ -49,6 +49,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Exploder
   explosionTime: 2
+  explosionIntensity: 20
+  shakeDuration: 1
 --- !u!54 &3705570981636213797
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -116,6 +118,8 @@ MonoBehaviour:
   weight: 1
   bloodParticle: {fileID: 7243542710608240285, guid: 777701eed9e92b046afcbc5750b8fd03, type: 3}
   PoofParticle: {fileID: 3192898620222058802, guid: 73aaae7ee3ca0f943823b911c4f148f7, type: 3}
+  Filler: {fileID: 0}
+  indicators: []
 --- !u!1001 &2390370752847860998
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -142,7 +146,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: bbf36ad1a82381640931838e671f9801, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: bbf36ad1a82381640931838e671f9801, type: 3}
       propertyPath: m_LocalPosition.z
