@@ -130,6 +130,15 @@ public class GameManager : MonoBehaviour
             
             cinemachineCamera.Follow = null;
             cinemachineCamera.LookAt = null;
+            
+            cinemachineCamera1.Follow = null;
+            cinemachineCamera1.LookAt = null;
+            
+            cinemachineCamera2.Follow = null;
+            cinemachineCamera2.LookAt = null;
+            
+            cinemachineCamera3.Follow = null;
+            cinemachineCamera3.LookAt = null;
 
             StartCoroutine(AnimateLoseText("YOU LOST", () =>{}));
             
