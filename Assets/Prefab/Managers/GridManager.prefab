@@ -76,7 +76,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TargetingController
   warningPrefab: {fileID: 614814539020569832, guid: 77a5fd2fb1e57034386bf7cc8ea0022d, type: 3}
-  targetscale: 1
 --- !u!114 &7950982527963067029
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -114,6 +113,7 @@ MonoBehaviour:
   weightLess: {fileID: 2100000, guid: 3d463cdfaf5d1814bb667ffe6182a369, type: 2}
   enemyKillCount: 0
   gameOver: 0
+  HealthBar: {fileID: 0}
 --- !u!114 &3386371047611388895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -126,9 +126,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3770a654b321b51409a43691576186b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TippingLogic
-  secondsPerTick: 1
+  secondsPerTick: 2
   fixedStep: 0.007
-  tiltAcceleration: 30
+  tiltAcceleration: 35
   maxAngularVelocity: 1000
   damping: 0.95
   tippingPoint: {fileID: 0}
