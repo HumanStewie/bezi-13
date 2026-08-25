@@ -69,9 +69,6 @@ public class MusicManager : MonoBehaviour
     [SerializeField] private AudioClip Abilities;
     [SerializeField, Range(0f, 2f)] private float AbilitiesVolume = 1f;
 
-    [SerializeField] public AudioClip GoldenWind;
-    [SerializeField, Range(0f, 2f)] public float GoldenWindVolume = 1f;
-
 
     [Header("Enemies")]
     [SerializeField] private AudioClip HandPoke;
@@ -222,7 +219,6 @@ public class MusicManager : MonoBehaviour
 
     public void PlayGenericButtonSound() => playUISound(Buttons, ButtonsVolume);
     public void PlayAbilitiesSound(Vector3 position, float duration) => PlayTrimmedAudio(Abilities, position, duration, AbilitiesVolume);
-    public void PlayGoldenWindSound(Vector3 position) => PlaySFX(GoldenWind, position, GoldenWindVolume);
     public void PlayWaveTransitionSound() => playUISound(waveTransition, waveTransitionVolume);
     public void PlayHandPokeSound(Vector3 position) => PlaySFX(HandPoke, position, HandPokeVolume);
     public void PlayHandShootSound(Vector3 position) => PlaySFX(HandShoot, position, HandShootVolume);

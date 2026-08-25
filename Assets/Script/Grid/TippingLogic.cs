@@ -206,8 +206,6 @@ public class TippingLogic : MonoBehaviour
             currentAngularVelocity = Vector3.zero;
 
             StartCoroutine(SmoothLevelRoutine());
-
-            if (MusicManager.Instance != null) MusicManager.Instance.PlayGoldenWindSound(transform.position);
         }
     }
 
