@@ -36,7 +36,7 @@ public class SpinningBall : MonoBehaviour
     {
         if (other.TryGetComponent(out Entity entity))
         {
-            if (entity.name != "Player")
+            if (entity.name != "Player" && entity.entityName != "Block")
             {
                 entity.TakeDamage(damage);
                 Debug.Log("Spinning Ball dealt 3 damage!");

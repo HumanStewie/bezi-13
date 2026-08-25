@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
     public float fixedSecondRate;
     [SerializeField] private float tiltLimit;
     [SerializeField] private float flingForce;
+    [SerializeField] private float scrollSpeed;
     private Player player;
     private PlayerUpgrades playerUpgrades;
     
@@ -71,7 +72,7 @@ public class GameManager : MonoBehaviour
         playerUpgrades = playerEntity.GetComponent<PlayerUpgrades>();
         player = playerEntity.GetComponent<Player>();   
     }
-
+    
     void StartWave(int wave)
     {
         switch(wave)
@@ -370,6 +371,26 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        float scroll = Input.GetAxis("Mouse ScrollWheel");
+        Debug.Log(scroll);
+        if (scroll > 0f)
+        {
+            cinemachineCamera.Lens.OrthographicSize -= scrollSpeed;
+            cinemachineCamera1.Lens.OrthographicSize -= scrollSpeed;
+            cinemachineCamera2.Lens.OrthographicSize -= scrollSpeed;
+            cinemachineCamera3.Lens.OrthographicSize -= scrollSpeed;
+        }
+        else if (scroll < 0f)
+        {
+            cinemachineCamera.Lens.OrthographicSize += scrollSpeed;
+            cinemachineCamera1.Lens.OrthographicSize += scrollSpeed;
+            cinemachineCamera2.Lens.OrthographicSize += scrollSpeed;
+            cinemachineCamera3.Lens.OrthographicSize += scrollSpeed;
+        }
+        cinemachineCamera.Lens.OrthographicSize = Mathf.Clamp(cinemachineCamera.Lens.OrthographicSize, 8f, 15f);
+        cinemachineCamera1.Lens.OrthographicSize = Mathf.Clamp(cinemachineCamera1.Lens.OrthographicSize, 8f, 15f);
+        cinemachineCamera2.Lens.OrthographicSize = Mathf.Clamp(cinemachineCamera2.Lens.OrthographicSize, 8f, 15f);
+        cinemachineCamera3.Lens.OrthographicSize = Mathf.Clamp(cinemachineCamera3.Lens.OrthographicSize, 8f, 15f);
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             SceneManager.LoadScene("MainMenu");

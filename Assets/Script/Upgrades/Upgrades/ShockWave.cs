@@ -24,7 +24,7 @@ public class Shockwave : MonoBehaviour
     {
         Entity hitEntity = other.GetComponent<Entity>();
 
-        if (hitEntity != null && hitEntity.entityName != "Player" && !hitEntities.Contains(hitEntity))
+        if (hitEntity != null && hitEntity.entityName != "Player" && hitEntity.entityName != "Block" && !hitEntities.Contains(hitEntity))
         {
             hitEntity.TakeDamage(damage);
 

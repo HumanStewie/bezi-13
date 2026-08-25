@@ -21,6 +21,7 @@ public class TippingLogic : MonoBehaviour
     [Header("UI References")]
     [SerializeField] private TextMeshProUGUI tippingPoint;
 
+    [SerializeField] private TextMeshProUGUI degree;
     [SerializeField] private Camera mainCamera;
     [SerializeField] private CameraSwitcher switcher;
     [SerializeField] private Arrow arrow;
@@ -30,6 +31,7 @@ public class TippingLogic : MonoBehaviour
     private GridManager gridManager;
     private float xTilt;
     private float zTilt;
+    private float degreeTilt;
     private Vector3 centerOfMass;
     private float totalWeight;
 
@@ -84,6 +86,8 @@ public class TippingLogic : MonoBehaviour
 
     private void Update()
     {
+        degreeTilt = Vector3.Angle(transform.up, Vector3.up);
+        degree.text = $"Degree: {Mathf.Round(degreeTilt * 10.0f) / 10.0f}°/35°";
         if (xTilt > 0.02f || xTilt < -0.02f || zTilt > 0.02f || zTilt < -0.02f)
         {
             arrow.gameObject.SetActive(true);

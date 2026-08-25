@@ -196,7 +196,7 @@ public class PlayerUpgrades : MonoBehaviour
             }
             yield return null;
         }
-        GridManager.Instance.ChangeTileColor(chosenTile, new Color(0, 0, 0.35f, 0), new Color(0, 0, 0.643f, 0));
+        GridManager.Instance.ChangeTileColor(chosenTile, new Color(0, 0, 0.643f, 0), new Color(0, 0, 0.35f, 0));
         GridManager.Instance.ChangeIconColor(chosenTile, Color.white);
 
     }
@@ -233,9 +233,17 @@ public class PlayerUpgrades : MonoBehaviour
     }
     private void SpinningBall2()
     {
+        StartCoroutine(SpawnBalls());
+    }
+
+    private IEnumerator SpawnBalls()
+    {
         Instantiate(spinningBall);
+        yield return new WaitForSeconds(0.2f);
         Instantiate(spinningBall);
+        yield return new WaitForSeconds(0.2f);
         Instantiate(spinningBall);
+        yield return new WaitForSeconds(0.2f);
     }
     private void PillarMan1()
     {
