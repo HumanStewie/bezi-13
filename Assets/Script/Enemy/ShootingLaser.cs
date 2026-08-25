@@ -119,6 +119,7 @@ public class ShootingLaser : MonoBehaviour
 
         laserLine.enabled = true;
         MusicManager.Instance.PlayHandLazerSoundDuring(transform.position);
+        CameraShake.Instance.ShakeCamera(6f, 2f);
         float attackTimer = 0f;
         float damageTickTimer = 0f;
 
