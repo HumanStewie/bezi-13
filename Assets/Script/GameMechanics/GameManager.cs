@@ -498,7 +498,8 @@ public class GameManager : MonoBehaviour
     void InstatiateEnemy(GameObject enemy)
     {
         var choosenCoord = GridManager.Instance.SelectRandomPossible();
-        Instantiate(enemy, GridManager.Instance.CoordToWorldPos(choosenCoord), Quaternion.identity);
+        var entity = Instantiate(enemy, GridManager.Instance.CoordToWorldPos(choosenCoord), Quaternion.identity);
+        entity.GetComponent<Entity>().coords = choosenCoord;
         MusicManager.Instance.PlayEnemySpawnSound(GridManager.Instance.CoordToWorldPos(choosenCoord));
 
     }

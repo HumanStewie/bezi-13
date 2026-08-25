@@ -47,10 +47,6 @@ public class BlockPlacer : MonoBehaviour
 
         foreach (var tile in GridManager.Instance.GetTilesInRange(entity.coords, 1))
         {
-            if (tile == currentTargetTile)
-            {
-                break;
-            }
             if (GridManager.Instance.GetDistance(tile, currentTargetTile) < distance && GridManager.Instance.GetEntityAtPosition(tile) == null)
             {
                 bestTile = tile;
@@ -65,16 +61,31 @@ public class BlockPlacer : MonoBehaviour
             StartCoroutine(Attacking());
         }
     }
-    IEnumerator Attacking()
+IEnumerator Attacking()
     {
         isAttacking = true;
+        
         List<Vector2Int> tiles = GridManager.Instance.GetTilesInRange(entity.coords, 2);
+        
+        List<Vector2Int> emptyTiles = new List<Vector2Int>();
+        foreach (var t in tiles)
+        {
+            if (GridManager.Instance.GetEntityAtPosition(t) == null)
+            {
+                emptyTiles.Add(t);
+            }
+        }
 
-        var rand = Random.Range(0, tiles.Count);
+        if (emptyTiles.Count == 0)
+        {
+            isAttacking = false;
+            hasTarget = false;
+            yield break; 
+        }
 
-        var randTile = tiles[rand];
-        /*var randTileWorldPos = GridManager.Instance.GetNode(randTile).transform.position;
-        randTileWorldPos.y = transform.position.y + 1;*/
+        var rand = Random.Range(0, emptyTiles.Count);
+        var randTile = emptyTiles[rand];
+        
         var randTileWorldPos = GridManager.Instance.CoordToWorldPos(randTile);
         GridManager.Instance.RotateEntityToTarget(entity, randTile);
 
@@ -83,14 +94,13 @@ public class BlockPlacer : MonoBehaviour
 
         Node node = GridManager.Instance.Grid.GetValueOrDefault(randTile);
         Vector3 spawnPos = node.transform.position;
-        spawnPos += node.transform.up;
+        spawnPos += node.transform.up; 
+        
         var block = Instantiate(blockPrefab, spawnPos, node.transform.rotation, GridManager.Instance.transform);
         MusicManager.Instance.PlayBlockPlaceSound(spawnPos);
         transform.LookAt(block.transform);
 
         animator.SetBool("IsAttacking", false);
-
-
 
         isAttacking = false;
         hasTarget = false;

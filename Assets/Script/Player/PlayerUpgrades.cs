@@ -239,11 +239,8 @@ public class PlayerUpgrades : MonoBehaviour
     private IEnumerator SpawnBalls()
     {
         Instantiate(spinningBall);
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.5f);
         Instantiate(spinningBall);
-        yield return new WaitForSeconds(0.2f);
-        Instantiate(spinningBall);
-        yield return new WaitForSeconds(0.2f);
     }
     private void PillarMan1()
     {
