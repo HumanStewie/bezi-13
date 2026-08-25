@@ -277,6 +277,18 @@ PrefabInstance:
       propertyPath: GameWin
       value: 
       objectReference: {fileID: 8300000, guid: e326383395dfd264eb2e1b6d0915d092, type: 3}
+    - target: {fileID: 4051072010240173101, guid: c3f3c6c836037e54c8550d908df3742b, type: 3}
+      propertyPath: AbilitiesVolume
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4051072010240173101, guid: c3f3c6c836037e54c8550d908df3742b, type: 3}
+      propertyPath: GoldenWindVolume
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4051072010240173101, guid: c3f3c6c836037e54c8550d908df3742b, type: 3}
+      propertyPath: blockPlaceVolume
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 5430693344634326373, guid: c3f3c6c836037e54c8550d908df3742b, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.87952
