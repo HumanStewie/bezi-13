@@ -65,6 +65,7 @@ public class Entity : MonoBehaviour
                 Destroy(indicators[i]);
             }
             indicators.Clear();
+            CameraShake.Instance.ShakeCamera(0.5f, 0.1f);
             Destroy(gameObject);
         }
         else

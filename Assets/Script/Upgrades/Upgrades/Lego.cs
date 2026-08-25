@@ -42,6 +42,7 @@ public class Lego : MonoBehaviour
                 Newentity.TakeDamage(10f);
             }
         }
+        CameraShake.Instance.ShakeCamera(0.2f, 0.2f);
         Destroy(gameObject,0.2f);
     }
 }

@@ -446,6 +446,7 @@ if (Input.GetKeyDown(KeyCode.W)) TryMove(wDir, WRotation);
 
         if (blockObj != null)
         {
+            CameraShake.Instance.ShakeCamera(2f, 0.2f);
             blockObj.transform.position = endPos;
             blockObj.transform.rotation = node.transform.rotation;
             MusicManager.Instance.PlayBlockPlaceSound(endPos);

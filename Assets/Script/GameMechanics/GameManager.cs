@@ -538,7 +538,7 @@ public class GameManager : MonoBehaviour
 
     void Wave5()
     {
-        float valueCost = 17f;
+        float valueCost = 19f;
         while (valueCost > 0)
         {
             int roll = UnityEngine.Random.Range(0, 100);
@@ -552,7 +552,7 @@ public class GameManager : MonoBehaviour
 
     void Wave6()
     {
-        float valueCost = 20f;
+        float valueCost = 22f;
         InstatiateEnemy(LaserShooter);
         valueCost -= 2.5f;
 
@@ -569,7 +569,7 @@ public class GameManager : MonoBehaviour
 
     void Wave7()
     {
-        float valueCost = 23f;
+        float valueCost = 26f;
         InstatiateEnemy(Tanker);
         valueCost -= 5f;
 
@@ -588,29 +588,29 @@ public class GameManager : MonoBehaviour
 
     void Wave8()
     {
-        float valueCost = 26f;
+        float valueCost = 30f;
         while (valueCost > 0)
         {
             int roll = UnityEngine.Random.Range(0, 100);
-            if (roll < 15) { InstatiateEnemy(NormalHand); valueCost -= 1f; }
-            else if (roll < 30) { InstatiateEnemy(ShootingHand); valueCost -= 1.5f; }
-            else if (roll < 50) { InstatiateEnemy(Exploder); valueCost -= 1.5f; }
-            else if (roll < 70) { InstatiateEnemy(Placer); valueCost -= 2f; }
-            else if (roll < 90) { InstatiateEnemy(LaserShooter); valueCost -= 2.5f; }
+            if (roll < 10) { InstatiateEnemy(NormalHand); valueCost -= 1f; }
+            else if (roll < 20) { InstatiateEnemy(ShootingHand); valueCost -= 1.5f; }
+            else if (roll < 30) { InstatiateEnemy(Exploder); valueCost -= 1.5f; }
+            else if (roll < 60) { InstatiateEnemy(Placer); valueCost -= 2f; }
+            else if (roll < 80) { InstatiateEnemy(LaserShooter); valueCost -= 2.5f; }
             else { InstatiateEnemy(Tanker); valueCost -= 5f; }
         }
     }
 
     void Wave9()
     {
-        float valueCost = 29f;
+        float valueCost = 32f;
         while (valueCost > 0)
         {
             int roll = UnityEngine.Random.Range(0, 100);
-            if (roll < 15) { InstatiateEnemy(NormalHand); valueCost -= 1f; }
+            if (roll < 5) { InstatiateEnemy(NormalHand); valueCost -= 1f; }
             else if (roll < 30) { InstatiateEnemy(ShootingHand); valueCost -= 1.5f; }
-            else if (roll < 50) { InstatiateEnemy(Exploder); valueCost -= 1.5f; }
-            else if (roll < 65) { InstatiateEnemy(Placer); valueCost -= 2f; }
+            else if (roll < 40) { InstatiateEnemy(Exploder); valueCost -= 1.5f; }
+            else if (roll < 50) { InstatiateEnemy(Placer); valueCost -= 2f; }
             else if (roll < 85) { InstatiateEnemy(LaserShooter); valueCost -= 2.5f; }
             else { InstatiateEnemy(Tanker); valueCost -= 5f; }
         }
@@ -618,7 +618,7 @@ public class GameManager : MonoBehaviour
 
     void Wave10()
     {
-        float valueCost = 31f;
+        float valueCost = 40f;
 
         InstatiateEnemy(Tanker);
         InstatiateEnemy(Tanker);
@@ -638,7 +638,7 @@ public class GameManager : MonoBehaviour
     void WaveEndless()
     {
         float valueCost = addedDifficulty;
-        addedDifficulty += 5;
+        addedDifficulty += 4;
         while (valueCost > 0)
         {
             int roll = UnityEngine.Random.Range(0, 100);

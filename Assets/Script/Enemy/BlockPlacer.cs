@@ -49,7 +49,6 @@ public class BlockPlacer : MonoBehaviour
         {
             if (tile == currentTargetTile)
             {
-                bestTile = tile;
                 break;
             }
             if (GridManager.Instance.GetDistance(tile, currentTargetTile) < distance && GridManager.Instance.GetEntityAtPosition(tile) == null)
