@@ -23,7 +23,7 @@ public class Lego : MonoBehaviour
     {
         Entity entityOnTile = GridManager.Instance.GetEntityAtPosition(coords);
 
-        if (entityOnTile != null && entityOnTile.entityName != "Player")
+        if (entityOnTile != null && entityOnTile.entityName != "Player" && entityOnTile.entityName != "Block")
         {
             entityOnTile.TakeDamage((int)Damage);
 
