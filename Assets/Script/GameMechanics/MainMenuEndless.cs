@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel;
 using TMPro;
 using UnityEngine;
@@ -22,6 +23,11 @@ public class MainMenuEndless : MonoBehaviour
     {
         Instance = this;
         DontDestroyOnLoad(gameObject);
+    }
+
+    private void Start()
+    {
+        CheckIfCanEndLess();
     }
 
     void CheckIfCanEndLess()
