@@ -258,7 +258,7 @@ public class PlayerUpgrades : MonoBehaviour
 
         if (tipping != null)
         {
-            tipping.ApplyPillarManBuff(2.0f, 0.6f);
+            tipping.ApplyPillarManBuff(2f, 0.8f);
         }
     }
     private void Professional()
